@@ -21,13 +21,13 @@ export default function SectionWrapper({ children, id, className, accent }: Sect
   return (
     <motion.section
       id={id}
-      initial={{ opacity: 0, y: 40 }}
+      initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-80px" }}
       transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
       className={cn(
-        "relative px-6 py-20 md:py-28",
-        accent && `border-l-4 ${accentBorders[accent]}`,
+        "relative px-6 py-24 md:py-32",
+        accent && `border-l-2 ${accentBorders[accent]}`,
         className
       )}
     >

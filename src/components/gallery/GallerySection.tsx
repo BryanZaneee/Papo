@@ -13,27 +13,24 @@ export default function GallerySection() {
 
   return (
     <SectionWrapper id="gallery" accent="orange">
-      <div className="flex items-center gap-4 mb-12">
+      <div className="flex items-end gap-6 mb-10">
         <motion.h2
-          initial={{ opacity: 0, x: -30, rotate: -3 }}
-          whileInView={{ opacity: 1, x: 0, rotate: -1 }}
+          initial={{ opacity: 0, x: -20 }}
+          whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
-          className="inline-block bg-orange px-5 py-2 font-display text-4xl font-800 uppercase tracking-tight text-ink md:text-5xl"
+          className="font-display text-5xl font-800 uppercase tracking-tighter text-cream md:text-6xl"
         >
           Gallery
         </motion.h2>
-        <motion.span
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
+        <motion.div
+          initial={{ scaleX: 0 }}
+          whileInView={{ scaleX: 1 }}
           viewport={{ once: true }}
-          transition={{ delay: 0.3 }}
-          className="font-hand text-xl text-orange rotate-[4deg]"
-        >
-          snaps & moments
-        </motion.span>
+          className="mb-3 h-px flex-1 origin-left bg-cream/10"
+        />
       </div>
 
-      <div className="grid auto-rows-[200px] grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+      <div className="grid auto-rows-[200px] grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-4">
         {galleryImages.map((image, i) => (
           <GalleryImageCard
             key={image.id}

@@ -13,27 +13,24 @@ export default function VideoSection() {
 
   return (
     <SectionWrapper id="videos" accent="blue">
-      <div className="flex items-center gap-4 mb-12">
+      <div className="flex items-end gap-6 mb-10">
         <motion.h2
-          initial={{ opacity: 0, x: -30, rotate: 2 }}
-          whileInView={{ opacity: 1, x: 0, rotate: 1 }}
+          initial={{ opacity: 0, x: -20 }}
+          whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
-          className="inline-block bg-blue px-5 py-2 font-display text-4xl font-800 uppercase tracking-tight text-cream md:text-5xl"
+          className="font-display text-5xl font-800 uppercase tracking-tighter text-cream md:text-6xl"
         >
           Videos
         </motion.h2>
-        <motion.span
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
+        <motion.div
+          initial={{ scaleX: 0 }}
+          whileInView={{ scaleX: 1 }}
           viewport={{ once: true }}
-          transition={{ delay: 0.3 }}
-          className="font-hand text-xl text-blue rotate-[-3deg]"
-        >
-          watch the magic
-        </motion.span>
+          className="mb-3 h-px flex-1 origin-left bg-cream/10"
+        />
       </div>
 
-      <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {videos.map((video, i) => (
           <VideoCard
             key={video.id}

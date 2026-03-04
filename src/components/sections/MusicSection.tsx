@@ -7,78 +7,60 @@ import { tracks } from "@/data/tracks";
 export default function MusicSection() {
   return (
     <SectionWrapper id="music" accent="pink">
-      <div className="flex flex-col gap-12">
-        {/* Section title — zine style */}
-        <div className="flex items-center gap-4">
+      <div className="flex flex-col gap-10">
+        {/* Section header */}
+        <div className="flex items-end gap-6">
           <motion.h2
-            initial={{ opacity: 0, x: -30, rotate: -3 }}
-            whileInView={{ opacity: 1, x: 0, rotate: -2 }}
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="inline-block bg-pink px-5 py-2 font-display text-4xl font-800 uppercase tracking-tight text-ink md:text-5xl"
+            className="font-display text-5xl font-800 uppercase tracking-tighter text-cream md:text-6xl"
           >
             Music
           </motion.h2>
-          <motion.span
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
+          <motion.div
+            initial={{ scaleX: 0 }}
+            whileInView={{ scaleX: 1 }}
             viewport={{ once: true }}
-            transition={{ delay: 0.3 }}
-            className="font-hand text-xl text-pink rotate-3"
-          >
-            latest heat!
-          </motion.span>
+            className="mb-3 h-px flex-1 origin-left bg-cream/10"
+          />
         </div>
 
-        {/* Track list — poster/zine style */}
-        <div className="grid gap-3">
-          {tracks.map((track, i) => {
-            const accents = ["border-pink", "border-lime", "border-blue", "border-orange", "border-pink"];
-            const bgHovers = ["hover:bg-pink/10", "hover:bg-lime/10", "hover:bg-blue/10", "hover:bg-orange/10", "hover:bg-pink/10"];
-            return (
-              <motion.div
-                key={track.id}
-                initial={{ opacity: 0, x: i % 2 === 0 ? -20 : 20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.08 }}
-                className={`group flex items-center gap-4 border-l-4 ${accents[i % accents.length]} bg-surface/50 px-5 py-4 transition-colors ${bgHovers[i % bgHovers.length]} cursor-pointer`}
-              >
-                <span className="font-display text-3xl font-800 text-cream/15 transition-colors group-hover:text-cream/40">
-                  {String(i + 1).padStart(2, "0")}
+        {/* Track list */}
+        <div className="grid gap-0 border-t border-cream/10">
+          {tracks.map((track, i) => (
+            <motion.div
+              key={track.id}
+              initial={{ opacity: 0, x: -10 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.06 }}
+              className="group flex cursor-pointer items-center gap-5 border-b border-cream/10 px-2 py-5 transition-colors hover:bg-cream/[0.03]"
+            >
+              <span className="font-mono text-xs text-cream/20 w-6">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <div className="flex-1 min-w-0">
+                <p className="font-display text-lg font-700 uppercase tracking-wide text-cream/80 transition-colors group-hover:text-cream">
+                  {track.title}
+                </p>
+              </div>
+              {track.genre && (
+                <span className="hidden font-mono text-[10px] uppercase tracking-widest text-cream/20 sm:block">
+                  {track.genre}
                 </span>
-                <div className="flex-1 min-w-0">
-                  <p className="font-display text-lg font-700 uppercase tracking-wide truncate">
-                    {track.title}
-                  </p>
-                  {track.genre && (
-                    <span className="font-mono text-[10px] uppercase tracking-widest text-cream/30">
-                      {track.genre}
-                    </span>
-                  )}
-                </div>
-                <span className="font-mono text-xs text-cream/25">
-                  {Math.floor(track.duration / 60)}:{String(track.duration % 60).padStart(2, "0")}
-                </span>
-                <svg
-                  className="h-6 w-6 text-cream/20 transition-colors group-hover:text-pink"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                >
+              )}
+              <span className="font-mono text-xs text-cream/20">
+                {Math.floor(track.duration / 60)}:{String(track.duration % 60).padStart(2, "0")}
+              </span>
+              <div className="w-6 text-cream/0 transition-colors group-hover:text-pink">
+                <svg viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5">
                   <path d="M8 5v14l11-7z" />
                 </svg>
-              </motion.div>
-            );
-          })}
+              </div>
+            </motion.div>
+          ))}
         </div>
-
-        <motion.p
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          className="font-hand text-base text-cream/30 text-center rotate-1"
-        >
-          use the player bar at the bottom to listen
-        </motion.p>
       </div>
     </SectionWrapper>
   );

@@ -19,10 +19,10 @@ export default function AudioControls({
     <div className="flex items-center gap-2">
       <button
         onClick={onSkipPrev}
-        className="text-cream/30 transition-colors hover:text-cream"
+        className="text-cream/25 transition-colors hover:text-cream"
         aria-label="Previous track"
       >
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
           <path d="M6 6h2v12H6V6zm3.5 6 8.5 6V6l-8.5 6z" />
         </svg>
       </button>
@@ -30,19 +30,19 @@ export default function AudioControls({
       <motion.button
         whileTap={{ scale: 0.9 }}
         onClick={onTogglePlay}
-        className={`flex h-10 w-10 items-center justify-center border-2 transition-colors ${
+        className={`flex h-9 w-9 items-center justify-center border transition-colors ${
           isPlaying
             ? "border-pink bg-pink text-ink"
-            : "border-cream/30 text-cream/60 hover:border-pink hover:bg-pink/10 hover:text-pink"
+            : "border-cream/20 text-cream/50 hover:border-cream/40 hover:text-cream"
         }`}
         aria-label={isPlaying ? "Pause" : "Play"}
       >
         {isPlaying ? (
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
             <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z" />
           </svg>
         ) : (
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
             <path d="M8 5v14l11-7z" />
           </svg>
         )}
@@ -50,10 +50,10 @@ export default function AudioControls({
 
       <button
         onClick={onSkipNext}
-        className="text-cream/30 transition-colors hover:text-cream"
+        className="text-cream/25 transition-colors hover:text-cream"
         aria-label="Next track"
       >
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
           <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z" />
         </svg>
       </button>

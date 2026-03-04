@@ -23,98 +23,74 @@ export default function Header() {
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
         scrolled
-          ? "bg-ink/90 backdrop-blur-md border-b-4 border-pink"
+          ? "bg-ink/90 backdrop-blur-md border-b border-border"
           : "bg-transparent"
       )}
     >
-      <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-        {/* Logo — bold sticker style */}
+      <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
         <a
           href="#"
-          className="relative inline-block rotate-[-1deg] bg-pink px-4 py-1 font-display text-2xl font-800 tracking-[0.15em] text-ink transition-transform hover:rotate-[1deg] hover:scale-105"
+          className="bg-pink px-4 py-1.5 font-display text-xl font-800 tracking-[0.2em] text-ink transition-opacity hover:opacity-80"
         >
           {SITE.name}
         </a>
 
         {/* Desktop Nav */}
         <div className="hidden items-center gap-1 md:flex">
-          {NAV_LINKS.map((link, i) => {
-            const colors = [
-              "hover:bg-pink hover:text-ink",
-              "hover:bg-lime hover:text-ink",
-              "hover:bg-blue hover:text-cream",
-              "hover:bg-orange hover:text-ink",
-              "hover:bg-pink hover:text-ink",
-            ];
-            return (
-              <a
-                key={link.href}
-                href={link.href}
-                className={cn(
-                  "px-4 py-2 font-display text-sm font-700 uppercase tracking-wider text-cream/70 transition-all duration-150",
-                  colors[i % colors.length]
-                )}
-              >
-                {link.label}
-              </a>
-            );
-          })}
+          {NAV_LINKS.map((link) => (
+            <a
+              key={link.href}
+              href={link.href}
+              className="px-4 py-2 font-display text-xs font-600 uppercase tracking-[0.2em] text-cream/50 transition-colors hover:text-cream"
+            >
+              {link.label}
+            </a>
+          ))}
         </div>
 
-        {/* Mobile Hamburger — thick lines */}
+        {/* Mobile Hamburger */}
         <button
           onClick={() => setMenuOpen(!menuOpen)}
-          className="relative z-50 flex h-10 w-10 flex-col items-center justify-center gap-2 md:hidden"
+          className="relative z-50 flex h-10 w-10 flex-col items-center justify-center gap-1.5 md:hidden"
           aria-label="Toggle menu"
         >
           <motion.span
-            animate={menuOpen ? { rotate: 45, y: 10 } : { rotate: 0, y: 0 }}
-            className="block h-1 w-8 bg-pink"
+            animate={menuOpen ? { rotate: 45, y: 7 } : { rotate: 0, y: 0 }}
+            className="block h-0.5 w-7 bg-cream"
           />
           <motion.span
-            animate={menuOpen ? { opacity: 0, scaleX: 0 } : { opacity: 1, scaleX: 1 }}
-            className="block h-1 w-8 bg-lime"
+            animate={menuOpen ? { opacity: 0 } : { opacity: 1 }}
+            className="block h-0.5 w-7 bg-cream"
           />
           <motion.span
-            animate={menuOpen ? { rotate: -45, y: -10 } : { rotate: 0, y: 0 }}
-            className="block h-1 w-8 bg-blue"
+            animate={menuOpen ? { rotate: -45, y: -7 } : { rotate: 0, y: 0 }}
+            className="block h-0.5 w-7 bg-cream"
           />
         </button>
 
-        {/* Mobile Menu — full screen poster */}
+        {/* Mobile Menu */}
         <AnimatePresence>
           {menuOpen && (
             <motion.div
-              initial={{ clipPath: "circle(0% at 95% 5%)" }}
-              animate={{ clipPath: "circle(150% at 95% 5%)" }}
-              exit={{ clipPath: "circle(0% at 95% 5%)" }}
-              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-              className="fixed inset-0 z-40 flex flex-col items-center justify-center gap-2 bg-ink md:hidden"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className="fixed inset-0 z-40 flex flex-col items-start justify-center gap-1 bg-ink px-12 md:hidden"
             >
-              {/* Decorative dots */}
-              <div className="pointer-events-none absolute inset-0 opacity-10 halftone text-pink" />
-
-              {NAV_LINKS.map((link, i) => {
-                const bgColors = ["bg-pink", "bg-lime", "bg-blue", "bg-orange", "bg-pink"];
-                const textColors = ["text-ink", "text-ink", "text-cream", "text-ink", "text-ink"];
-                return (
-                  <motion.a
-                    key={link.href}
-                    href={link.href}
-                    onClick={() => setMenuOpen(false)}
-                    initial={{ opacity: 0, x: -40, rotate: -5 }}
-                    animate={{ opacity: 1, x: 0, rotate: (i % 2 === 0 ? -2 : 2) }}
-                    transition={{ delay: i * 0.08 }}
-                    className={cn(
-                      "px-8 py-3 font-display text-4xl font-800 uppercase tracking-wider transition-transform hover:scale-110",
-                      bgColors[i % bgColors.length],
-                      textColors[i % textColors.length]
-                    )}
-                  >
-                    {link.label}
-                  </motion.a>
-                );
-              })}
+              {NAV_LINKS.map((link, i) => (
+                <motion.a
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setMenuOpen(false)}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: i * 0.06 }}
+                  className="py-2 font-display text-5xl font-800 uppercase tracking-tight text-cream/80 transition-colors hover:text-pink"
+                >
+                  {link.label}
+                </motion.a>
+              ))}
             </motion.div>
           )}
         </AnimatePresence>
