@@ -1,7 +1,6 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { cn } from "@/lib/utils";
 
 interface AudioControlsProps {
   isPlaying: boolean;
@@ -17,10 +16,10 @@ export default function AudioControls({
   onSkipPrev,
 }: AudioControlsProps) {
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-2">
       <button
         onClick={onSkipPrev}
-        className="text-foreground/40 transition-colors hover:text-foreground"
+        className="text-cream/30 transition-colors hover:text-cream"
         aria-label="Previous track"
       >
         <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -31,20 +30,19 @@ export default function AudioControls({
       <motion.button
         whileTap={{ scale: 0.9 }}
         onClick={onTogglePlay}
-        className={cn(
-          "flex h-10 w-10 items-center justify-center rounded-full border transition-colors",
+        className={`flex h-10 w-10 items-center justify-center border-2 transition-colors ${
           isPlaying
-            ? "border-cyan text-cyan"
-            : "border-foreground/30 text-foreground/60 hover:border-foreground hover:text-foreground"
-        )}
+            ? "border-pink bg-pink text-ink"
+            : "border-cream/30 text-cream/60 hover:border-pink hover:bg-pink/10 hover:text-pink"
+        }`}
         aria-label={isPlaying ? "Pause" : "Play"}
       >
         {isPlaying ? (
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
             <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z" />
           </svg>
         ) : (
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
             <path d="M8 5v14l11-7z" />
           </svg>
         )}
@@ -52,7 +50,7 @@ export default function AudioControls({
 
       <button
         onClick={onSkipNext}
-        className="text-foreground/40 transition-colors hover:text-foreground"
+        className="text-cream/30 transition-colors hover:text-cream"
         aria-label="Next track"
       >
         <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">

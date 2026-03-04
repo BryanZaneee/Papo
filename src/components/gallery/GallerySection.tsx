@@ -6,46 +6,43 @@ import SectionWrapper from "@/components/layout/SectionWrapper";
 import GalleryImageCard from "./GalleryImage";
 import Lightbox from "./Lightbox";
 import { galleryImages } from "@/data/gallery";
-import { staggerContainer, fadeInUp } from "@/lib/animations";
 import type { GalleryImage } from "@/types";
 
 export default function GallerySection() {
   const [selectedImage, setSelectedImage] = useState<GalleryImage | null>(null);
 
   return (
-    <SectionWrapper id="gallery">
-      <motion.div
-        variants={staggerContainer}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true }}
-      >
+    <SectionWrapper id="gallery" accent="orange">
+      <div className="flex items-center gap-4 mb-12">
         <motion.h2
-          variants={fadeInUp}
-          className="mb-4 text-center text-3xl font-bold tracking-tight md:text-4xl"
+          initial={{ opacity: 0, x: -30, rotate: -3 }}
+          whileInView={{ opacity: 1, x: 0, rotate: -1 }}
+          viewport={{ once: true }}
+          className="inline-block bg-orange px-5 py-2 font-display text-4xl font-800 uppercase tracking-tight text-ink md:text-5xl"
         >
           Gallery
         </motion.h2>
-        <motion.p
-          variants={fadeInUp}
-          className="mb-12 text-center font-mono text-sm text-foreground/40"
+        <motion.span
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.3 }}
+          className="font-hand text-xl text-orange rotate-[4deg]"
         >
-          Live shows, studio, and behind the scenes
-        </motion.p>
+          snaps & moments
+        </motion.span>
+      </div>
 
-        <motion.div
-          variants={staggerContainer}
-          className="grid auto-rows-[200px] grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4"
-        >
-          {galleryImages.map((image) => (
-            <GalleryImageCard
-              key={image.id}
-              image={image}
-              onClick={() => setSelectedImage(image)}
-            />
-          ))}
-        </motion.div>
-      </motion.div>
+      <div className="grid auto-rows-[200px] grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+        {galleryImages.map((image, i) => (
+          <GalleryImageCard
+            key={image.id}
+            image={image}
+            index={i}
+            onClick={() => setSelectedImage(image)}
+          />
+        ))}
+      </div>
 
       <AnimatePresence>
         {selectedImage && (

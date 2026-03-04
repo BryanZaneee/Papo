@@ -19,6 +19,8 @@ function formatTime(seconds: number) {
   return `${m}:${s.toString().padStart(2, "0")}`;
 }
 
+const accentColors = ["text-pink", "text-lime", "text-blue", "text-orange", "text-pink"];
+
 export default function TrackList({
   tracks,
   currentTrack,
@@ -31,20 +33,20 @@ export default function TrackList({
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 20 }}
-          className="absolute bottom-full left-0 right-0 mb-2 max-h-80 overflow-y-auto rounded-xl border border-border bg-surface/95 backdrop-blur-xl"
+          initial={{ opacity: 0, y: 20, scale: 0.95 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: 20, scale: 0.95 }}
+          className="absolute bottom-full left-0 right-0 mb-2 max-h-80 overflow-y-auto border-4 border-pink bg-ink/98 backdrop-blur-md"
         >
-          <div className="flex items-center justify-between border-b border-border px-4 py-3">
-            <span className="font-mono text-xs tracking-wider text-foreground/40">
-              TRACKLIST
+          <div className="flex items-center justify-between border-b-2 border-cream/10 px-4 py-3">
+            <span className="font-display text-xs font-700 uppercase tracking-widest text-pink">
+              Tracklist
             </span>
             <button
               onClick={onClose}
-              className="font-mono text-xs text-foreground/30 hover:text-foreground"
+              className="font-display text-xs font-700 uppercase text-cream/30 hover:text-cream"
             >
-              CLOSE
+              Close
             </button>
           </div>
           {tracks.map((track, i) => {
@@ -54,16 +56,15 @@ export default function TrackList({
                 key={track.id}
                 onClick={() => onTrackSelect(track)}
                 className={cn(
-                  "flex w-full items-center gap-4 px-4 py-3 text-left transition-colors hover:bg-surface-light",
-                  isActive && "bg-surface-light"
+                  "flex w-full items-center gap-4 px-4 py-3 text-left transition-colors hover:bg-cream/5",
+                  isActive && "bg-pink/10 border-l-4 border-pink"
                 )}
               >
-                <span className="w-6 font-mono text-xs text-foreground/20">
+                <span className={cn("w-6 font-display text-sm font-700", accentColors[i % accentColors.length])}>
                   {isActive && isPlaying ? (
                     <motion.span
                       animate={{ opacity: [1, 0.3, 1] }}
                       transition={{ duration: 1, repeat: Infinity }}
-                      className="text-cyan"
                     >
                       ▶
                     </motion.span>
@@ -72,21 +73,14 @@ export default function TrackList({
                   )}
                 </span>
                 <div className="flex-1 min-w-0">
-                  <p
-                    className={cn(
-                      "truncate text-sm",
-                      isActive ? "text-cyan" : "text-foreground/70"
-                    )}
-                  >
+                  <p className={cn("truncate font-display text-sm font-600 uppercase", isActive ? "text-pink" : "text-cream/70")}>
                     {track.title}
                   </p>
                   {track.genre && (
-                    <p className="font-mono text-[10px] text-foreground/25">{track.genre}</p>
+                    <p className="font-hand text-xs text-cream/25">{track.genre}</p>
                   )}
                 </div>
-                <span className="font-mono text-xs text-foreground/20">
-                  {formatTime(track.duration)}
-                </span>
+                <span className="font-mono text-xs text-cream/20">{formatTime(track.duration)}</span>
               </button>
             );
           })}

@@ -25,10 +25,9 @@ export default function AudioPlayer() {
         initial={{ y: 100 }}
         animate={{ y: 0 }}
         transition={{ delay: 0.5, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        className="fixed bottom-0 left-0 right-0 z-50 border-t border-border bg-surface/90 backdrop-blur-xl"
+        className="fixed bottom-0 left-0 right-0 z-50 border-t-4 border-pink bg-ink/95 backdrop-blur-md"
       >
-        <div className="relative mx-auto flex max-w-7xl items-center gap-4 px-4 py-3">
-          {/* Track List Dropdown */}
+        <div className="relative mx-auto flex max-w-6xl items-center gap-4 px-4 py-3">
           <TrackList
             tracks={tracks}
             currentTrack={player.currentTrack}
@@ -46,18 +45,21 @@ export default function AudioPlayer() {
             onClick={() => setShowTrackList(!showTrackList)}
             className="flex min-w-0 flex-1 items-center gap-3 text-left sm:flex-none sm:w-48"
           >
-            <div className="h-10 w-10 shrink-0 rounded bg-surface-light" />
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center border-2 border-pink bg-pink/10">
+              <svg className="h-4 w-4 text-pink" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z" />
+              </svg>
+            </div>
             <div className="min-w-0">
-              <p className="truncate text-sm font-medium">
-                {player.currentTrack?.title || "No track selected"}
+              <p className="truncate font-display text-sm font-700 uppercase">
+                {player.currentTrack?.title || "Select a track"}
               </p>
-              <p className="truncate font-mono text-[10px] text-foreground/30">
+              <p className="truncate font-hand text-xs text-cream/30">
                 {player.currentTrack?.artist || "—"}
               </p>
             </div>
           </button>
 
-          {/* Controls */}
           <AudioControls
             isPlaying={player.isPlaying}
             onTogglePlay={player.togglePlay}
@@ -67,7 +69,7 @@ export default function AudioPlayer() {
 
           {/* Seek Bar */}
           <div className="hidden flex-1 items-center gap-2 sm:flex">
-            <span className="font-mono text-[10px] text-foreground/30 w-8 text-right">
+            <span className="font-mono text-[10px] text-cream/30 w-8 text-right">
               {formatTime(player.currentTime)}
             </span>
             <input
@@ -76,9 +78,9 @@ export default function AudioPlayer() {
               max={player.duration || 100}
               value={player.currentTime}
               onChange={(e) => player.seek(Number(e.target.value))}
-              className="h-1 flex-1 cursor-pointer appearance-none rounded-full bg-border [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-cyan"
+              className="h-1.5 flex-1 cursor-pointer appearance-none bg-cream/10 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:bg-pink [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-cream"
             />
-            <span className="font-mono text-[10px] text-foreground/30 w-8">
+            <span className="font-mono text-[10px] text-cream/30 w-8">
               {formatTime(player.duration)}
             </span>
           </div>
@@ -90,13 +92,7 @@ export default function AudioPlayer() {
 
           {/* Volume */}
           <div className="hidden items-center gap-2 md:flex">
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              className="text-foreground/30"
-            >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" className="text-lime/40">
               <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z" />
             </svg>
             <input
@@ -106,7 +102,7 @@ export default function AudioPlayer() {
               step={0.01}
               value={player.volume}
               onChange={(e) => player.setVolume(Number(e.target.value))}
-              className="h-1 w-16 cursor-pointer appearance-none rounded-full bg-border [&::-webkit-slider-thumb]:h-2 [&::-webkit-slider-thumb]:w-2 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-foreground/40"
+              className="h-1 w-16 cursor-pointer appearance-none bg-cream/10 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:bg-lime"
             />
           </div>
         </div>

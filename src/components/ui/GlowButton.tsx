@@ -8,13 +8,13 @@ interface GlowButtonProps {
   className?: string;
   onClick?: () => void;
   href?: string;
-  variant?: "magenta" | "cyan" | "violet";
+  variant?: "pink" | "blue" | "lime";
 }
 
-const glowColors = {
-  magenta: "shadow-magenta-glow hover:shadow-[0_0_30px_var(--magenta-glow)] border-magenta/40 hover:border-magenta",
-  cyan: "shadow-cyan-glow hover:shadow-[0_0_30px_var(--cyan-glow)] border-cyan/40 hover:border-cyan",
-  violet: "shadow-violet-glow hover:shadow-[0_0_30px_var(--violet-glow)] border-violet/40 hover:border-violet",
+const styles = {
+  pink: "bg-pink text-ink shadow-[4px_4px_0_var(--lime)] hover:shadow-[6px_6px_0_var(--cream)]",
+  blue: "bg-blue text-cream shadow-[4px_4px_0_var(--pink)] hover:shadow-[6px_6px_0_var(--cream)]",
+  lime: "bg-lime text-ink shadow-[4px_4px_0_var(--blue)] hover:shadow-[6px_6px_0_var(--cream)]",
 };
 
 export default function GlowButton({
@@ -22,31 +22,37 @@ export default function GlowButton({
   className,
   onClick,
   href,
-  variant = "cyan",
+  variant = "pink",
 }: GlowButtonProps) {
   const baseClasses = cn(
-    "inline-flex items-center justify-center rounded-full border px-8 py-3 text-sm font-medium tracking-wider text-foreground transition-all duration-300",
-    glowColors[variant],
+    "inline-flex items-center justify-center px-8 py-3 font-display text-sm font-700 uppercase tracking-wider transition-all duration-150",
+    styles[variant],
     className
-  );
-
-  const inner = (
-    <motion.span
-      whileHover={{ scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
-      className={baseClasses}
-    >
-      {children}
-    </motion.span>
   );
 
   if (href) {
     return (
-      <a href={href} target="_blank" rel="noopener noreferrer">
-        {inner}
-      </a>
+      <motion.a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        whileHover={{ scale: 1.05, rotate: -1 }}
+        whileTap={{ scale: 0.95 }}
+        className={baseClasses}
+      >
+        {children}
+      </motion.a>
     );
   }
 
-  return <button onClick={onClick}>{inner}</button>;
+  return (
+    <motion.button
+      onClick={onClick}
+      whileHover={{ scale: 1.05, rotate: -1 }}
+      whileTap={{ scale: 0.95 }}
+      className={baseClasses}
+    >
+      {children}
+    </motion.button>
+  );
 }
