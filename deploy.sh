@@ -21,6 +21,6 @@ npm install --production >> "$LOG_FILE" 2>&1
 npm run build >> "$LOG_FILE" 2>&1
 
 # Restart the application
-pm2 restart papo >> "$LOG_FILE" 2>&1 || pm2 start npm --name "papo" -- start >> "$LOG_FILE" 2>&1
+pm2 restart papo >> "$LOG_FILE" 2>&1 || PORT=3002 pm2 start npm --name "papo" -- start >> "$LOG_FILE" 2>&1
 
 echo "[$(date)] Deployment completed successfully" >> "$LOG_FILE"
