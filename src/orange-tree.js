@@ -7,8 +7,14 @@ function drawOrangeTree() {
     const docHeight = document.documentElement.scrollHeight;
     const canvasWidth = 1200;
 
+    // Size canvas to actual content bottom (footer), not full docHeight
+    const footerElForHeight = document.querySelector('.footer');
+    const canvasHeight = footerElForHeight
+        ? footerElForHeight.offsetTop + footerElForHeight.offsetHeight
+        : docHeight;
+
     canvas.width = canvasWidth;
-    canvas.height = docHeight;
+    canvas.height = canvasHeight;
 
     const cx = canvasWidth / 2; // center x
     const trunkColor = '#5a3a1a';
@@ -98,14 +104,23 @@ function drawOrangeTree() {
         ctx.stroke();
     }
 
-    // ── LAYOUT ZONES (responsive) ──
+    // ── LAYOUT ZONES (anchored to actual DOM elements) ──
     const isMobile = window.innerWidth <= 900;
-    const canopyTop = isMobile ? docHeight * 0.005 : docHeight * 0.03;
-    const canopyBottom = isMobile ? docHeight * 0.08 : docHeight * 0.22;
+    const heroEl = document.querySelector('.hero');
+    const footerEl = document.querySelector('.footer');
+    const heroHeight = heroEl ? heroEl.offsetHeight : window.innerHeight;
+    const footerTop = footerEl ? footerEl.offsetTop : docHeight - 100;
+    const footerBottom = footerEl ? (footerEl.offsetTop + footerEl.offsetHeight) : docHeight;
+
+    // Canopy sits within the hero section — next to / behind PAPO text
+    const canopyTop = isMobile ? heroHeight * 0.02 : heroHeight * 0.1;
+    const canopyBottom = isMobile ? heroHeight * 0.55 : heroHeight * 0.72;
     const trunkTop = canopyBottom - 60;
-    const trunkBottom = docHeight * 0.82;
-    const rootTop = trunkBottom - 20;
-    const rootBottom = docHeight * 0.99;
+    // Trunk ends where footer begins
+    const trunkBottom = footerTop + 10;
+    // Roots live inside the footer area
+    const rootTop = footerTop - 10;
+    const rootBottom = footerBottom;
 
     // ══════════════════
     // 1. TRUNK (drawn first so branches overlay)
@@ -219,16 +234,18 @@ function drawOrangeTree() {
     ctx.lineWidth = 2;
     ctx.stroke();
 
-    // Trunk base flares into roots
+    // Trunk base flares into roots — scaled to fit footer area
+    const rootZoneHeight = rootBottom - rootTop;
+    const rootScale = Math.min(1, rootZoneHeight / 300);
     const rootSpread = [
-        { angle: -0.8, length: 380, width: 16 },
-        { angle: -0.5, length: 450, width: 14 },
-        { angle: -0.2, length: 400, width: 12 },
-        { angle: 0.15, length: 420, width: 13 },
-        { angle: 0.45, length: 440, width: 15 },
-        { angle: 0.75, length: 390, width: 12 },
-        { angle: -1.1, length: 300, width: 10 },
-        { angle: 1.0, length: 320, width: 11 },
+        { angle: -0.8, length: 280 * rootScale, width: 14 },
+        { angle: -0.5, length: 340 * rootScale, width: 12 },
+        { angle: -0.2, length: 300 * rootScale, width: 10 },
+        { angle: 0.15, length: 320 * rootScale, width: 11 },
+        { angle: 0.45, length: 330 * rootScale, width: 13 },
+        { angle: 0.75, length: 290 * rootScale, width: 10 },
+        { angle: -1.1, length: 220 * rootScale, width: 8 },
+        { angle: 1.0, length: 240 * rootScale, width: 9 },
     ];
 
     rootSpread.forEach(r => {
@@ -289,7 +306,11 @@ function initTree() {
         setTimeout(initTree, 300);
         return;
     }
-    treeBgEl.style.height = docH + 'px';
+    const footerEl = document.querySelector('.footer');
+    const treeHeight = footerEl
+        ? footerEl.offsetTop + footerEl.offsetHeight
+        : docH;
+    treeBgEl.style.height = treeHeight + 'px';
     drawOrangeTree();
 }
 
