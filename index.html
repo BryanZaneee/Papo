@@ -13,7 +13,13 @@
     <link rel="stylesheet" href="src/styles.css?v=4">
 </head>
 
-<body>
+<body class="game-active">
+
+    <!-- ═══ RUNNER GAME OVERLAY ═══ -->
+    <div id="gameOverlay" class="game-overlay">
+        <canvas id="gameCanvas"></canvas>
+        <button id="gameSkip" class="game-skip">SKIP →</button>
+    </div>
 
     <!-- ═══ ORANGE TREE BACKGROUND ═══ -->
     <div class="tree-bg" id="treeBg">
@@ -275,6 +281,7 @@
     </div>
 
     <!-- ═══ SCRIPTS ═══ -->
+    <script src="src/runner-game.js?v=1"></script>
     <script src="src/scroll-reveal.js?v=4" defer></script>
     <script src="src/cursor-trail.js?v=4" defer></script>
     <script src="src/orange-tree.js?v=4" defer></script>
