@@ -70,7 +70,7 @@
         var d = z / MAX_Z;
         var perspective = 1 / (1 + d * 5);
         var horizonY = canvas.height * 0.05;
-        var playerY = canvas.height * 0.95;
+        var playerY = canvas.height * 0.93;
         return { y: horizonY + (playerY - horizonY) * perspective, scale: perspective };
     }
 
@@ -198,6 +198,7 @@
         setTimeout(function () {
             overlay.style.display = 'none';
             document.body.classList.remove('game-active');
+            window.scrollTo(0, 0);
         }, 800);
     }
 
@@ -380,27 +381,41 @@
     function drawRoad(horizonY, offset) {
         var cx = canvas.width / 2;
         var baseW = canvas.width * 0.65;
-        var segments = 50;
+        var segments = 150;
 
+        // Draw road as a single smooth surface first, then overlay markings
+        // Solid road base — no alternating colors for the surface itself
         for (var i = 0; i < segments; i++) {
             var z1 = (i / segments) * MAX_Z;
             var z2 = ((i + 1) / segments) * MAX_Z;
             var p1 = project(z1), p2 = project(z2);
             var w1 = baseW * p1.scale, w2 = baseW * p2.scale;
 
-            var seg = Math.floor((z1 + offset * 0.5) / 15);
-            var light = seg % 2 === 0;
-
-            // Surface
-            ctx.fillStyle = light ? COLORS.road : COLORS.roadLight;
+            // Smooth gradient: slightly lighter near player, darker in distance
+            var depthT = i / segments;
+            var r = Math.round(51 - depthT * 10);
+            var g = Math.round(40 - depthT * 8);
+            var b = Math.round(22 - depthT * 5);
+            ctx.fillStyle = 'rgb(' + r + ',' + g + ',' + b + ')';
             ctx.beginPath();
             ctx.moveTo(cx - w1, p1.y); ctx.lineTo(cx + w1, p1.y);
             ctx.lineTo(cx + w2, p2.y); ctx.lineTo(cx - w2, p2.y);
             ctx.fill();
+        }
 
-            // Rumble strips
-            var rw1 = w1 * 0.05, rw2 = w2 * 0.05;
+        // Rumble strips — drawn as separate pass with fewer, chunkier segments
+        var rumbleSegs = 60;
+        for (var i = 0; i < rumbleSegs; i++) {
+            var z1 = (i / rumbleSegs) * MAX_Z;
+            var z2 = ((i + 1) / rumbleSegs) * MAX_Z;
+            var p1 = project(z1), p2 = project(z2);
+            var w1 = baseW * p1.scale, w2 = baseW * p2.scale;
+            var rw1 = w1 * 0.04, rw2 = w2 * 0.04;
+
+            var seg = Math.floor((z1 + offset * 0.5) / 20);
+            var light = seg % 2 === 0;
             ctx.fillStyle = light ? COLORS.rumble : COLORS.rumbleDim;
+
             ctx.beginPath();
             ctx.moveTo(cx - w1 - rw1, p1.y); ctx.lineTo(cx - w1, p1.y);
             ctx.lineTo(cx - w2, p2.y); ctx.lineTo(cx - w2 - rw2, p2.y);
@@ -409,14 +424,23 @@
             ctx.moveTo(cx + w1, p1.y); ctx.lineTo(cx + w1 + rw1, p1.y);
             ctx.lineTo(cx + w2 + rw2, p2.y); ctx.lineTo(cx + w2, p2.y);
             ctx.fill();
+        }
 
-            // Lane lines
-            if (light && i % 2 === 0) {
-                ctx.strokeStyle = COLORS.lane;
-                ctx.lineWidth = Math.max(1, 2 * p1.scale);
-                ctx.beginPath(); ctx.moveTo(cx - w1 * 0.33, p1.y); ctx.lineTo(cx - w2 * 0.33, p2.y); ctx.stroke();
-                ctx.beginPath(); ctx.moveTo(cx + w1 * 0.33, p1.y); ctx.lineTo(cx + w2 * 0.33, p2.y); ctx.stroke();
-            }
+        // Lane dashes — separate pass, spaced out
+        var dashSegs = 40;
+        for (var i = 0; i < dashSegs; i++) {
+            var z1 = (i / dashSegs) * MAX_Z;
+            var z2 = ((i + 0.4) / dashSegs) * MAX_Z; // short dashes
+            var p1 = project(z1), p2 = project(z2);
+            var w1 = baseW * p1.scale, w2 = baseW * p2.scale;
+
+            var seg = Math.floor((z1 + offset * 0.5) / 20);
+            if (seg % 2 !== 0) continue; // skip every other for dashed look
+
+            ctx.strokeStyle = 'rgba(240,230,208,0.2)';
+            ctx.lineWidth = Math.max(1, 2.5 * p1.scale);
+            ctx.beginPath(); ctx.moveTo(cx - w1 * 0.33, p1.y); ctx.lineTo(cx - w2 * 0.33, p2.y); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(cx + w1 * 0.33, p1.y); ctx.lineTo(cx + w2 * 0.33, p2.y); ctx.stroke();
         }
 
         // Finish line preview

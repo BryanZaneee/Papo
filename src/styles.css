@@ -156,9 +156,13 @@ img {
     50% { box-shadow: 0 0 12px 4px rgba(192, 106, 26, 0.25); }
 }
 
-/* Hide EPK content while game is active */
+/* Lock EPK completely while game is active */
 body.game-active {
     overflow: hidden;
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
 }
 
 body.game-active .tree-bg {
@@ -739,9 +743,6 @@ body.game-active .tree-bg {
 .track-num {
     font-family: 'Bebas Neue', sans-serif;
     font-size: 1.1rem;
-    color: var(--fg-dim);
-    width: 2rem;
-    flex-shrink: 0;
 }
 
 .track-name {
@@ -1069,6 +1070,107 @@ body.game-active .tree-bg {
     letter-spacing: 0.3em;
     color: var(--fg-dim);
 }
+
+/* ═══════════════════════════════════════════
+   JUICE DRIP EFFECT
+   ═══════════════════════════════════════════ */
+.juice-drip {
+    position: relative;
+    display: inline;
+}
+
+/* Main drip — hangs from the bottom-center of the text */
+.juice-drip::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 42%;
+    width: 3px;
+    height: 0;
+    background: linear-gradient(to bottom, var(--accent), #e87a20, transparent);
+    border-radius: 0 0 50% 50%;
+    opacity: 0;
+    animation: juiceDrip 4s ease-in 1s infinite;
+}
+
+/* Droplet blob that forms at the tip */
+.juice-drip::before {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: calc(42% - 2px);
+    width: 7px;
+    height: 7px;
+    background: radial-gradient(circle, #e87a20 30%, rgba(232, 122, 32, 0.6) 70%, transparent);
+    border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
+    opacity: 0;
+    animation: juiceDroplet 4s ease-in 1s infinite;
+}
+
+@keyframes juiceDrip {
+    0% {
+        height: 0;
+        opacity: 0;
+    }
+    8% {
+        height: 0;
+        opacity: 0.8;
+    }
+    /* Drip elongates */
+    35% {
+        height: 22px;
+        opacity: 0.9;
+    }
+    /* Drip stretches thin as droplet pulls away */
+    42% {
+        height: 28px;
+        opacity: 0.5;
+    }
+    /* Drip retracts after droplet detaches */
+    50% {
+        height: 4px;
+        opacity: 0.3;
+    }
+    55%, 100% {
+        height: 0;
+        opacity: 0;
+    }
+}
+
+@keyframes juiceDroplet {
+    0%, 8% {
+        opacity: 0;
+        transform: translateY(0) scale(0.4);
+    }
+    /* Blob forms at drip tip */
+    20% {
+        opacity: 0;
+        transform: translateY(0) scale(0.4);
+    }
+    30% {
+        opacity: 0.9;
+        transform: translateY(16px) scale(1);
+    }
+    /* Droplet stretches as it's about to detach */
+    38% {
+        opacity: 0.9;
+        transform: translateY(22px) scale(1.1, 0.85);
+    }
+    /* Detach and fall */
+    42% {
+        opacity: 0.8;
+        transform: translateY(28px) scale(0.9);
+    }
+    55% {
+        opacity: 0.3;
+        transform: translateY(48px) scale(0.5);
+    }
+    62%, 100% {
+        opacity: 0;
+        transform: translateY(56px) scale(0.2);
+    }
+}
+
 
 /* ═══════════════════════════════════════════
    ANIMATIONS
