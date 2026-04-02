@@ -37,8 +37,10 @@ There is no build step, no linting, and no tests.
 
 ## Deployment
 
+- **Live site:** https://ayopapo.studio
 - **GitHub:** `BryanZaneee/Papo` — push to `main` branch
-- **VPS:** `ssh root@100.88.216.70` — SSH in and git pull to update the live site
+- **VPS:** `ssh root@100.88.216.70` — Caddy serves from `/var/www/papo-static/`
+- **Deploy:** push to GitHub, then `ssh root@100.88.216.70 "cd /var/www/papo-static && git fetch origin && git checkout -f origin/main -- ."`
 
 ## Assets
 
