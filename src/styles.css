@@ -694,6 +694,8 @@ body.game-active .tree-bg {
     align-items: center;
     flex: 1;
     min-width: 0;
+    position: relative;
+    z-index: 1;
 }
 
 .track-play-btn {
@@ -774,9 +776,9 @@ body.game-active .tree-bg {
 
 /* Custom Audio Player */
 .track-player {
-    width: 100%;
-    flex-basis: 100%;
-    padding-top: 0.5rem;
+    flex: 0 0 100%;
+    padding-top: 0.6rem;
+    margin-top: 0.4rem;
     display: none;
 }
 
@@ -1087,7 +1089,7 @@ body.game-active .tree-bg {
 .juice-drip::after {
     content: '';
     position: absolute;
-    top: 100%;
+    top: calc(100% - 3px);
     left: 42%;
     width: 3px;
     height: 0;
@@ -1102,7 +1104,7 @@ body.game-active .tree-bg {
 .juice-drip::before {
     content: '';
     position: absolute;
-    top: 100%;
+    top: calc(100% - 3px);
     left: calc(42% - 2px);
     width: 7px;
     height: 7px;
@@ -1116,12 +1118,14 @@ body.game-active .tree-bg {
 /* Hero subtitle — larger drip scaled up for bigger text, offset timing */
 .hero-subtitle .juice-drip::after {
     width: 4px;
+    top: calc(100% - 8px);
     animation: juiceDrip 5s ease-in 2.5s infinite;
 }
 
 .hero-subtitle .juice-drip::before {
     width: 9px;
     height: 9px;
+    top: calc(100% - 8px);
     left: calc(42% - 3px);
     animation: juiceDropletHero 5s ease-in 2.5s infinite;
 }
@@ -1224,31 +1228,27 @@ body.game-active .tree-bg {
 /* ═══════════════════════════════════════════
    ANIMATIONS
    ═══════════════════════════════════════════ */
+/* Motion.js handles reveal animations via inView() + animate() springs.
+   We only set initial hidden state here — Motion drives the entrance. */
 .reveal {
     opacity: 0;
-    transform: translateY(30px);
-    transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.reveal.visible {
-    opacity: 1;
-    transform: translateY(0);
+/* ═══════════════════════════════════════════
+   AUDIO-REACTIVE
+   ═══════════════════════════════════════════ */
+:root {
+    --audio-bass: 0;
+    --audio-energy: 0;
 }
 
-.reveal-delay-1 {
-    transition-delay: 0.1s;
+.audio-reactive-glow {
+    filter: drop-shadow(0 0 calc(4px + var(--audio-bass) * 20px) rgba(232, 122, 32, calc(0.1 + var(--audio-bass) * 0.5)));
+    transition: filter 0.08s linear;
 }
 
-.reveal-delay-2 {
-    transition-delay: 0.2s;
-}
-
-.reveal-delay-3 {
-    transition-delay: 0.3s;
-}
-
-.reveal-delay-4 {
-    transition-delay: 0.4s;
+.tree-bg.audio-active canvas {
+    transition: opacity 0.08s linear;
 }
 
 /* Glitch hover on name */

@@ -193,13 +193,27 @@
     function enterSite() {
         var overlay = document.getElementById('gameOverlay');
         if (!overlay) return;
-        overlay.style.transition = 'opacity 0.8s ease';
-        overlay.style.opacity = '0';
-        setTimeout(function () {
-            overlay.style.display = 'none';
-            document.body.classList.remove('game-active');
-            window.scrollTo(0, 0);
-        }, 800);
+
+        // Use Motion spring for a more dynamic exit if available
+        if (typeof Motion !== 'undefined' && Motion.animate) {
+            Motion.animate(overlay, { opacity: [1, 0] }, {
+                duration: 0.9,
+                ease: [0.22, 1, 0.36, 1],
+            }).then(function () {
+                overlay.style.display = 'none';
+                document.body.classList.remove('game-active');
+                window.scrollTo(0, 0);
+            });
+        } else {
+            // Fallback
+            overlay.style.transition = 'opacity 0.8s ease';
+            overlay.style.opacity = '0';
+            setTimeout(function () {
+                overlay.style.display = 'none';
+                document.body.classList.remove('game-active');
+                window.scrollTo(0, 0);
+            }, 800);
+        }
     }
 
     // ═══════════════════════════════════════════
