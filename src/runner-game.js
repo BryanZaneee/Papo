@@ -69,7 +69,7 @@
     function project(z) {
         var d = z / MAX_Z;
         var perspective = 1 / (1 + d * 5);
-        var horizonY = canvas.height * 0.18;
+        var horizonY = canvas.height * 0.05;
         var playerY = canvas.height * 0.95;
         return { y: horizonY + (playerY - horizonY) * perspective, scale: perspective };
     }
@@ -318,7 +318,7 @@
             ctx.translate((Math.random() - 0.5) * screenShake, (Math.random() - 0.5) * screenShake);
         }
 
-        var horizonY = canvas.height * 0.18;
+        var horizonY = canvas.height * 0.05;
 
         // Sky
         var sky = ctx.createLinearGradient(0, 0, 0, horizonY);
@@ -489,25 +489,39 @@
                 ctx.beginPath(); ctx.arc(x + oo[i][0] * s, y + oo[i][1] * s, s * 0.1, 0, Math.PI * 2); ctx.fill();
             }
         } else if (obs.jumpable) {
-            // Low obstacle — bright, clearly jumpable
-            var sw = s * 0.8, sh = s * 0.45;
-            // Glowing base
-            ctx.fillStyle = 'rgba(232,122,32,0.25)';
-            ctx.beginPath(); ctx.ellipse(x, y, sw * 0.7, sh * 0.3, 0, 0, Math.PI * 2); ctx.fill();
-            // Crate body — orange tinted
-            ctx.fillStyle = '#8B5E2B';
-            rrect(x - sw / 2, y - sh, sw, sh, s * 0.06);
+            // Fire hydrant — short, clearly jumpable
+            var hw = s * 0.3, hh = s * 0.7;
+            // Base
+            ctx.fillStyle = '#cc2222';
+            rrect(x - hw * 0.6, y - hh * 0.15, hw * 1.2, hh * 0.15, s * 0.02);
             ctx.fill();
-            ctx.strokeStyle = COLORS.accent;
-            ctx.lineWidth = Math.max(1.5, s * 0.05);
-            rrect(x - sw / 2, y - sh, sw, sh, s * 0.06);
-            ctx.stroke();
-            // Up arrow above it
+            // Body
+            ctx.fillStyle = '#dd3333';
+            rrect(x - hw / 2, y - hh, hw, hh, s * 0.04);
+            ctx.fill();
+            // Top cap
+            ctx.fillStyle = '#bb2222';
+            rrect(x - hw * 0.35, y - hh - hh * 0.18, hw * 0.7, hh * 0.18, s * 0.03);
+            ctx.fill();
+            // Nub on top
+            ctx.fillStyle = '#cc2222';
+            ctx.beginPath(); ctx.arc(x, y - hh - hh * 0.18, hw * 0.2, 0, Math.PI * 2); ctx.fill();
+            // Side nozzles
+            ctx.fillStyle = '#aa1818';
+            rrect(x - hw * 0.75, y - hh * 0.65, hw * 0.3, hh * 0.12, s * 0.02);
+            ctx.fill();
+            rrect(x + hw * 0.45, y - hh * 0.65, hw * 0.3, hh * 0.12, s * 0.02);
+            ctx.fill();
+            // Highlight stripe
+            ctx.fillStyle = 'rgba(255,255,255,0.15)';
+            rrect(x - hw * 0.15, y - hh * 0.9, hw * 0.12, hh * 0.6, s * 0.01);
+            ctx.fill();
+            // Bouncing arrow above
             var bounce = Math.sin(performance.now() * 0.008) * 3 * scale;
-            ctx.fillStyle = COLORS.accent;
+            ctx.fillStyle = '#ff4444';
             ctx.font = "bold " + Math.max(12, s * 0.5) + "px 'Bebas Neue', sans-serif";
             ctx.textAlign = 'center';
-            ctx.fillText('\u2191 JUMP', x, y - sh - 6 * scale + bounce);
+            ctx.fillText('\u2191 JUMP', x, y - hh - hh * 0.3 + bounce);
         } else {
             // Tall speaker — not jumpable
             var sw = s * 0.7, sh = s * 1.1;
