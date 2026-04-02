@@ -743,6 +743,9 @@ body.game-active .tree-bg {
 .track-num {
     font-family: 'Bebas Neue', sans-serif;
     font-size: 1.1rem;
+    color: var(--fg-dim);
+    width: 2rem;
+    flex-shrink: 0;
 }
 
 .track-name {
@@ -1077,34 +1080,50 @@ body.game-active .tree-bg {
 .juice-drip {
     position: relative;
     display: inline;
+    overflow: visible;
 }
 
-/* Main drip — hangs from the bottom-center of the text */
+/* Main drip streak — anchored to the bottom of the text */
 .juice-drip::after {
     content: '';
     position: absolute;
-    bottom: -2px;
+    top: 100%;
     left: 42%;
     width: 3px;
     height: 0;
     background: linear-gradient(to bottom, var(--accent), #e87a20, transparent);
     border-radius: 0 0 50% 50%;
     opacity: 0;
+    pointer-events: none;
     animation: juiceDrip 4s ease-in 1s infinite;
 }
 
-/* Droplet blob that forms at the tip */
+/* Droplet blob that forms at the tip and falls */
 .juice-drip::before {
     content: '';
     position: absolute;
-    bottom: -2px;
+    top: 100%;
     left: calc(42% - 2px);
     width: 7px;
     height: 7px;
     background: radial-gradient(circle, #e87a20 30%, rgba(232, 122, 32, 0.6) 70%, transparent);
     border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
     opacity: 0;
+    pointer-events: none;
     animation: juiceDroplet 4s ease-in 1s infinite;
+}
+
+/* Hero subtitle — larger drip scaled up for bigger text, offset timing */
+.hero-subtitle .juice-drip::after {
+    width: 4px;
+    animation: juiceDrip 5s ease-in 2.5s infinite;
+}
+
+.hero-subtitle .juice-drip::before {
+    width: 9px;
+    height: 9px;
+    left: calc(42% - 3px);
+    animation: juiceDropletHero 5s ease-in 2.5s infinite;
 }
 
 @keyframes juiceDrip {
@@ -1171,6 +1190,36 @@ body.game-active .tree-bg {
     }
 }
 
+@keyframes juiceDropletHero {
+    0%, 8% {
+        opacity: 0;
+        transform: translateY(0) scale(0.5);
+    }
+    20% {
+        opacity: 0;
+        transform: translateY(0) scale(0.5);
+    }
+    30% {
+        opacity: 0.9;
+        transform: translateY(20px) scale(1.2);
+    }
+    38% {
+        opacity: 0.9;
+        transform: translateY(28px) scale(1.3, 0.9);
+    }
+    42% {
+        opacity: 0.8;
+        transform: translateY(36px) scale(1);
+    }
+    55% {
+        opacity: 0.3;
+        transform: translateY(64px) scale(0.5);
+    }
+    62%, 100% {
+        opacity: 0;
+        transform: translateY(76px) scale(0.2);
+    }
+}
 
 /* ═══════════════════════════════════════════
    ANIMATIONS

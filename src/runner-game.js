@@ -213,8 +213,11 @@
 
     function spawnAt(z) {
         var lane = Math.floor(Math.random() * LANE_COUNT);
-        var type = Math.random() < 0.5 ? 'tree' : 'speaker';
-        var jumpable = type === 'speaker' && Math.random() < 0.4;
+        var r = Math.random();
+        var type, jumpable;
+        if (r < 0.4) { type = 'tree'; jumpable = false; }           // 40% trees — must dodge
+        else if (r < 0.7) { type = 'hydrant'; jumpable = true; }    // 30% fire hydrants — jump
+        else { type = 'speaker'; jumpable = true; }                  // 30% speakers — jump
         obstacles.push({ z: z, lane: lane, type: type, jumpable: jumpable });
 
         // Collectible in a different lane
@@ -381,30 +384,27 @@
     function drawRoad(horizonY, offset) {
         var cx = canvas.width / 2;
         var baseW = canvas.width * 0.65;
-        var segments = 150;
 
-        // Draw road as a single smooth surface first, then overlay markings
-        // Solid road base — no alternating colors for the surface itself
-        for (var i = 0; i < segments; i++) {
-            var z1 = (i / segments) * MAX_Z;
-            var z2 = ((i + 1) / segments) * MAX_Z;
-            var p1 = project(z1), p2 = project(z2);
-            var w1 = baseW * p1.scale, w2 = baseW * p2.scale;
+        // Road surface — single gradient-filled trapezoid (1 draw call)
+        var pNear = project(0), pFar = project(MAX_Z);
+        var wNear = baseW * pNear.scale, wFar = baseW * pFar.scale;
 
-            // Smooth gradient: slightly lighter near player, darker in distance
-            var depthT = i / segments;
-            var r = Math.round(51 - depthT * 10);
-            var g = Math.round(40 - depthT * 8);
-            var b = Math.round(22 - depthT * 5);
-            ctx.fillStyle = 'rgb(' + r + ',' + g + ',' + b + ')';
-            ctx.beginPath();
-            ctx.moveTo(cx - w1, p1.y); ctx.lineTo(cx + w1, p1.y);
-            ctx.lineTo(cx + w2, p2.y); ctx.lineTo(cx - w2, p2.y);
-            ctx.fill();
-        }
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(cx - wNear, pNear.y); ctx.lineTo(cx + wNear, pNear.y);
+        ctx.lineTo(cx + wFar, pFar.y); ctx.lineTo(cx - wFar, pFar.y);
+        ctx.closePath();
+        ctx.clip();
 
-        // Rumble strips — drawn as separate pass with fewer, chunkier segments
-        var rumbleSegs = 60;
+        var roadGrad = ctx.createLinearGradient(0, pFar.y, 0, pNear.y);
+        roadGrad.addColorStop(0, '#292014');
+        roadGrad.addColorStop(1, '#3a2e1e');
+        ctx.fillStyle = roadGrad;
+        ctx.fillRect(0, pFar.y, canvas.width, pNear.y - pFar.y);
+        ctx.restore();
+
+        // Rumble strips — 30 chunky segments (alternating orange/dark)
+        var rumbleSegs = 30;
         for (var i = 0; i < rumbleSegs; i++) {
             var z1 = (i / rumbleSegs) * MAX_Z;
             var z2 = ((i + 1) / rumbleSegs) * MAX_Z;
@@ -412,9 +412,8 @@
             var w1 = baseW * p1.scale, w2 = baseW * p2.scale;
             var rw1 = w1 * 0.04, rw2 = w2 * 0.04;
 
-            var seg = Math.floor((z1 + offset * 0.5) / 20);
-            var light = seg % 2 === 0;
-            ctx.fillStyle = light ? COLORS.rumble : COLORS.rumbleDim;
+            var seg = Math.floor((z1 + offset * 0.5) / 25);
+            ctx.fillStyle = seg % 2 === 0 ? COLORS.rumble : COLORS.rumbleDim;
 
             ctx.beginPath();
             ctx.moveTo(cx - w1 - rw1, p1.y); ctx.lineTo(cx - w1, p1.y);
@@ -426,18 +425,18 @@
             ctx.fill();
         }
 
-        // Lane dashes — separate pass, spaced out
-        var dashSegs = 40;
+        // Lane dashes — 20 dashes
+        var dashSegs = 20;
         for (var i = 0; i < dashSegs; i++) {
             var z1 = (i / dashSegs) * MAX_Z;
-            var z2 = ((i + 0.4) / dashSegs) * MAX_Z; // short dashes
+            var z2 = ((i + 0.35) / dashSegs) * MAX_Z;
             var p1 = project(z1), p2 = project(z2);
             var w1 = baseW * p1.scale, w2 = baseW * p2.scale;
 
-            var seg = Math.floor((z1 + offset * 0.5) / 20);
-            if (seg % 2 !== 0) continue; // skip every other for dashed look
+            var seg = Math.floor((z1 + offset * 0.5) / 25);
+            if (seg % 2 !== 0) continue;
 
-            ctx.strokeStyle = 'rgba(240,230,208,0.2)';
+            ctx.strokeStyle = 'rgba(240,230,208,0.18)';
             ctx.lineWidth = Math.max(1, 2.5 * p1.scale);
             ctx.beginPath(); ctx.moveTo(cx - w1 * 0.33, p1.y); ctx.lineTo(cx - w2 * 0.33, p2.y); ctx.stroke();
             ctx.beginPath(); ctx.moveTo(cx + w1 * 0.33, p1.y); ctx.lineTo(cx + w2 * 0.33, p2.y); ctx.stroke();
@@ -500,63 +499,43 @@
         ctx.beginPath(); ctx.ellipse(x, y, s * 0.7, s * 0.18, 0, 0, Math.PI * 2); ctx.fill();
 
         if (obs.type === 'tree') {
+            // Tall tree — must dodge, cannot jump
             ctx.fillStyle = COLORS.treeTrunk;
             ctx.fillRect(x - s * 0.1, y - s * 2, s * 0.2, s * 2);
             ctx.fillStyle = COLORS.treeCanopy;
             ctx.beginPath(); ctx.arc(x, y - s * 2.2, s * 0.65, 0, Math.PI * 2); ctx.fill();
             ctx.fillStyle = COLORS.treeCanopyDark;
             ctx.beginPath(); ctx.arc(x - s * 0.15, y - s * 2.4, s * 0.35, 0, Math.PI * 2); ctx.fill();
-            // Oranges
             ctx.fillStyle = COLORS.orange;
             var oo = [[0.25, -2.0], [-0.2, -2.3], [0.1, -2.5], [-0.35, -1.95]];
             for (var i = 0; i < oo.length; i++) {
                 ctx.beginPath(); ctx.arc(x + oo[i][0] * s, y + oo[i][1] * s, s * 0.1, 0, Math.PI * 2); ctx.fill();
             }
-        } else if (obs.jumpable) {
-            // Fire hydrant — short, clearly jumpable
+        } else if (obs.type === 'hydrant') {
+            // Fire hydrant — jumpable
             var hw = s * 0.3, hh = s * 0.7;
-            // Base
             ctx.fillStyle = '#cc2222';
-            rrect(x - hw * 0.6, y - hh * 0.15, hw * 1.2, hh * 0.15, s * 0.02);
-            ctx.fill();
-            // Body
+            rrect(x - hw * 0.6, y - hh * 0.15, hw * 1.2, hh * 0.15, s * 0.02); ctx.fill();
             ctx.fillStyle = '#dd3333';
-            rrect(x - hw / 2, y - hh, hw, hh, s * 0.04);
-            ctx.fill();
-            // Top cap
+            rrect(x - hw / 2, y - hh, hw, hh, s * 0.04); ctx.fill();
             ctx.fillStyle = '#bb2222';
-            rrect(x - hw * 0.35, y - hh - hh * 0.18, hw * 0.7, hh * 0.18, s * 0.03);
-            ctx.fill();
-            // Nub on top
+            rrect(x - hw * 0.35, y - hh - hh * 0.18, hw * 0.7, hh * 0.18, s * 0.03); ctx.fill();
             ctx.fillStyle = '#cc2222';
             ctx.beginPath(); ctx.arc(x, y - hh - hh * 0.18, hw * 0.2, 0, Math.PI * 2); ctx.fill();
-            // Side nozzles
             ctx.fillStyle = '#aa1818';
-            rrect(x - hw * 0.75, y - hh * 0.65, hw * 0.3, hh * 0.12, s * 0.02);
-            ctx.fill();
-            rrect(x + hw * 0.45, y - hh * 0.65, hw * 0.3, hh * 0.12, s * 0.02);
-            ctx.fill();
-            // Highlight stripe
+            rrect(x - hw * 0.75, y - hh * 0.65, hw * 0.3, hh * 0.12, s * 0.02); ctx.fill();
+            rrect(x + hw * 0.45, y - hh * 0.65, hw * 0.3, hh * 0.12, s * 0.02); ctx.fill();
             ctx.fillStyle = 'rgba(255,255,255,0.15)';
-            rrect(x - hw * 0.15, y - hh * 0.9, hw * 0.12, hh * 0.6, s * 0.01);
-            ctx.fill();
-            // Bouncing arrow above
-            var bounce = Math.sin(performance.now() * 0.008) * 3 * scale;
-            ctx.fillStyle = '#ff4444';
-            ctx.font = "bold " + Math.max(12, s * 0.5) + "px 'Bebas Neue', sans-serif";
-            ctx.textAlign = 'center';
-            ctx.fillText('\u2191 JUMP', x, y - hh - hh * 0.3 + bounce);
+            rrect(x - hw * 0.15, y - hh * 0.9, hw * 0.12, hh * 0.6, s * 0.01); ctx.fill();
         } else {
-            // Tall speaker — not jumpable
-            var sw = s * 0.7, sh = s * 1.1;
+            // Speaker — short, jumpable
+            var sw = s * 0.6, sh = s * 0.65;
             ctx.fillStyle = COLORS.speakerBody;
-            rrect(x - sw / 2, y - sh, sw, sh, s * 0.08);
-            ctx.fill();
+            rrect(x - sw / 2, y - sh, sw, sh, s * 0.06); ctx.fill();
             ctx.fillStyle = COLORS.speakerCone;
             ctx.beginPath(); ctx.arc(x, y - sh * 0.5, sw * 0.28, 0, Math.PI * 2); ctx.fill();
             ctx.strokeStyle = COLORS.speakerRing;
-            ctx.lineWidth = Math.max(1, s * 0.03);
-            ctx.stroke();
+            ctx.lineWidth = Math.max(1, s * 0.03); ctx.stroke();
             ctx.strokeStyle = COLORS.accent;
             ctx.lineWidth = Math.max(1, s * 0.05);
             ctx.beginPath(); ctx.arc(x, y - sh * 0.5, sw * 0.13, 0, Math.PI * 2); ctx.stroke();
