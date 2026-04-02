@@ -115,7 +115,8 @@ function drawOrangeTree() {
     // Canopy sits within the hero section — next to / behind PAPO text
     const canopyTop = isMobile ? heroHeight * 0.02 : heroHeight * 0.1;
     const canopyBottom = isMobile ? heroHeight * 0.55 : heroHeight * 0.72;
-    const trunkTop = canopyBottom - 60;
+    // Trunk starts below the hero so only canopy is visible in hero area
+    const trunkTop = heroHeight;
     // Trunk ends where footer begins
     const trunkBottom = footerTop + 10;
     // Roots live inside the footer area
