@@ -35,6 +35,11 @@ There is no build step, no linting, and no tests.
 - **Reveal animations**: Elements with class `.reveal` animate in on scroll; stagger via `.reveal-delay-1` through `.reveal-delay-4`
 - **Audio player**: Track items with `data-src` attribute get custom players. `.track-info` div wraps clickable content, `.track-player` div holds progress bar and time.
 
+## Deployment
+
+- **GitHub:** `BryanZaneee/Papo` — push to `main` branch
+- **VPS:** `ssh root@100.88.216.70` — SSH in and git pull to update the live site
+
 ## Assets
 
 - `Assets/Music_/` — WAV audio files (7 tracks), referenced via `data-src` attributes on `.track-item` elements
