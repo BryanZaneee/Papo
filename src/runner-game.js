@@ -69,14 +69,14 @@
     function project(z) {
         var d = z / MAX_Z;
         var perspective = 1 / (1 + d * 5);
-        var horizonY = canvas.height * 0.38;
-        var playerY = canvas.height * 0.82;
+        var horizonY = canvas.height * 0.28;
+        var playerY = canvas.height * 0.92;
         return { y: horizonY + (playerY - horizonY) * perspective, scale: perspective };
     }
 
     function laneToX(lane, scale) {
         var cx = canvas.width / 2;
-        var halfW = canvas.width * 0.22 * scale;
+        var halfW = canvas.width * 0.275 * scale;
         return cx + (lane - 1) * halfW * 0.7;
     }
 
@@ -317,7 +317,7 @@
             ctx.translate((Math.random() - 0.5) * screenShake, (Math.random() - 0.5) * screenShake);
         }
 
-        var horizonY = canvas.height * 0.38;
+        var horizonY = canvas.height * 0.28;
 
         // Sky
         var sky = ctx.createLinearGradient(0, 0, 0, horizonY);
@@ -378,7 +378,7 @@
     // ── Road ──────────────────────────────────
     function drawRoad(horizonY, offset) {
         var cx = canvas.width / 2;
-        var baseW = canvas.width * 0.44;
+        var baseW = canvas.width * 0.55;
         var segments = 50;
 
         for (var i = 0; i < segments; i++) {
@@ -443,7 +443,7 @@
     // ── Decorations ───────────────────────────
     function drawDecoration(dec, y, scale) {
         var cx = canvas.width / 2;
-        var hw = canvas.width * 0.22 * scale;
+        var hw = canvas.width * 0.275 * scale;
         var x = cx + dec.side * (hw + dec.offset * hw);
         var s = 30 * scale * dec.size;
         if (s < 2) return;
