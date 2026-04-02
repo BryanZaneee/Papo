@@ -37,10 +37,16 @@ There is no build step, no linting, and no tests.
 
 ## Deployment
 
-- **Live site:** https://ayopapo.studio
+- **Live site:** https://ayopapo.studio (behind Cloudflare)
 - **GitHub:** `BryanZaneee/Papo` — push to `main` branch
 - **VPS:** `ssh root@100.88.216.70` — Caddy serves from `/var/www/papo-static/`
-- **Deploy:** push to GitHub, then `ssh root@100.88.216.70 "cd /var/www/papo-static && git fetch origin && git checkout -f origin/main -- ."`
+
+**IMPORTANT:** After every `git push`, you MUST also update the VPS — there is no auto-deploy:
+```
+ssh root@100.88.216.70 "cd /var/www/papo-static && git fetch origin && git checkout -f origin/main -- ."
+```
+
+When updating CSS or JS files, bump the `?v=` query string in `index.html` to bust Cloudflare/browser cache (e.g., `styles.css?v=3`).
 
 ## Assets
 
