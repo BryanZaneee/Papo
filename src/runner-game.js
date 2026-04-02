@@ -69,14 +69,14 @@
     function project(z) {
         var d = z / MAX_Z;
         var perspective = 1 / (1 + d * 5);
-        var horizonY = canvas.height * 0.28;
-        var playerY = canvas.height * 0.92;
+        var horizonY = canvas.height * 0.18;
+        var playerY = canvas.height * 0.95;
         return { y: horizonY + (playerY - horizonY) * perspective, scale: perspective };
     }
 
     function laneToX(lane, scale) {
         var cx = canvas.width / 2;
-        var halfW = canvas.width * 0.275 * scale;
+        var halfW = canvas.width * 0.32 * scale;
         return cx + (lane - 1) * halfW * 0.7;
     }
 
@@ -213,7 +213,7 @@
     function spawnAt(z) {
         var lane = Math.floor(Math.random() * LANE_COUNT);
         var type = Math.random() < 0.5 ? 'tree' : 'speaker';
-        var jumpable = type === 'speaker' && Math.random() < 0.25;
+        var jumpable = type === 'speaker' && Math.random() < 0.4;
         obstacles.push({ z: z, lane: lane, type: type, jumpable: jumpable });
 
         // Collectible in a different lane
@@ -284,6 +284,7 @@
             if (!c.collected && c.z < 8 && c.z > -12 && c.lane === pLane) {
                 c.collected = true;
                 score += 10;
+                distance += 60; // oranges boost you toward the finish line
             }
         }
 
@@ -317,7 +318,7 @@
             ctx.translate((Math.random() - 0.5) * screenShake, (Math.random() - 0.5) * screenShake);
         }
 
-        var horizonY = canvas.height * 0.28;
+        var horizonY = canvas.height * 0.18;
 
         // Sky
         var sky = ctx.createLinearGradient(0, 0, 0, horizonY);
@@ -378,7 +379,7 @@
     // ── Road ──────────────────────────────────
     function drawRoad(horizonY, offset) {
         var cx = canvas.width / 2;
-        var baseW = canvas.width * 0.55;
+        var baseW = canvas.width * 0.65;
         var segments = 50;
 
         for (var i = 0; i < segments; i++) {
@@ -443,7 +444,7 @@
     // ── Decorations ───────────────────────────
     function drawDecoration(dec, y, scale) {
         var cx = canvas.width / 2;
-        var hw = canvas.width * 0.275 * scale;
+        var hw = canvas.width * 0.32 * scale;
         var x = cx + dec.side * (hw + dec.offset * hw);
         var s = 30 * scale * dec.size;
         if (s < 2) return;
@@ -487,8 +488,29 @@
             for (var i = 0; i < oo.length; i++) {
                 ctx.beginPath(); ctx.arc(x + oo[i][0] * s, y + oo[i][1] * s, s * 0.1, 0, Math.PI * 2); ctx.fill();
             }
+        } else if (obs.jumpable) {
+            // Low obstacle — bright, clearly jumpable
+            var sw = s * 0.8, sh = s * 0.45;
+            // Glowing base
+            ctx.fillStyle = 'rgba(232,122,32,0.25)';
+            ctx.beginPath(); ctx.ellipse(x, y, sw * 0.7, sh * 0.3, 0, 0, Math.PI * 2); ctx.fill();
+            // Crate body — orange tinted
+            ctx.fillStyle = '#8B5E2B';
+            rrect(x - sw / 2, y - sh, sw, sh, s * 0.06);
+            ctx.fill();
+            ctx.strokeStyle = COLORS.accent;
+            ctx.lineWidth = Math.max(1.5, s * 0.05);
+            rrect(x - sw / 2, y - sh, sw, sh, s * 0.06);
+            ctx.stroke();
+            // Up arrow above it
+            var bounce = Math.sin(performance.now() * 0.008) * 3 * scale;
+            ctx.fillStyle = COLORS.accent;
+            ctx.font = "bold " + Math.max(12, s * 0.5) + "px 'Bebas Neue', sans-serif";
+            ctx.textAlign = 'center';
+            ctx.fillText('\u2191 JUMP', x, y - sh - 6 * scale + bounce);
         } else {
-            var sw = s * 0.7, sh = s * (obs.jumpable ? 0.6 : 1.1);
+            // Tall speaker — not jumpable
+            var sw = s * 0.7, sh = s * 1.1;
             ctx.fillStyle = COLORS.speakerBody;
             rrect(x - sw / 2, y - sh, sw, sh, s * 0.08);
             ctx.fill();
@@ -642,18 +664,20 @@
         }
 
         // Controls hint
-        if (distance < 180) {
-            var a = Math.max(0, 1 - distance / 180);
+        if (distance < 300) {
+            var a = Math.max(0, 1 - distance / 300);
             ctx.globalAlpha = a;
             ctx.fillStyle = COLORS.textDim;
             ctx.font = "11px 'Space Mono', monospace";
             ctx.textAlign = 'center';
             var mobile = 'ontouchstart' in window;
-            ctx.fillText(
-                mobile ? 'SWIPE \u2190 \u2192 TO DODGE  //  SWIPE \u2191 TO JUMP'
-                    : '\u2190 \u2192 ARROWS TO DODGE  //  SPACE TO JUMP',
-                canvas.width / 2, canvas.height - 40
-            );
+            var hintY = canvas.height - 50;
+            if (mobile) {
+                ctx.fillText('SWIPE \u2190 \u2192 TO SWITCH LANES  //  SWIPE \u2191 TO JUMP', canvas.width / 2, hintY);
+            } else {
+                ctx.fillText('\u2190 \u2192 TO SWITCH LANES  //  SPACE TO JUMP OVER LOW OBSTACLES', canvas.width / 2, hintY);
+            }
+            ctx.fillText('COLLECT \uD83C\uDF4A TO REACH THE FINISH FASTER', canvas.width / 2, hintY + 18);
             ctx.globalAlpha = 1;
         }
     }
@@ -664,7 +688,8 @@
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
         var cx = canvas.width / 2;
-        var cy = canvas.height / 2;
+        var cy = canvas.height * 0.42;
+        var mobile = 'ontouchstart' in window;
 
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
@@ -677,31 +702,35 @@
         ctx.shadowBlur = 0;
         ctx.fillStyle = COLORS.text;
         ctx.font = "bold " + Math.min(80, canvas.width * 0.12) + "px 'Anton', sans-serif";
-        ctx.fillText('AYOPAPO', cx, cy - 70);
+        ctx.fillText('AYOPAPO', cx, cy - 80);
         ctx.restore();
 
-        // Subtitle
+        // EPK goal text
         ctx.fillStyle = COLORS.accent;
-        ctx.font = "italic 22px 'Playfair Display', serif";
-        ctx.fillText('Navigate to the finish line', cx, cy - 10);
+        ctx.font = "italic " + Math.min(22, canvas.width * 0.04) + "px 'Playfair Display', serif";
+        ctx.fillText('Reach the finish line to enter the EPK', cx, cy - 20);
 
         // Prompt
         var pulse = 0.5 + 0.5 * Math.sin(performance.now() * 0.004);
         ctx.globalAlpha = 0.4 + pulse * 0.6;
         ctx.fillStyle = COLORS.text;
         ctx.font = "14px 'Space Mono', monospace";
-        var mobile = 'ontouchstart' in window;
-        ctx.fillText(mobile ? 'TAP TO START' : 'PRESS SPACE TO START', cx, cy + 40);
+        ctx.fillText(mobile ? 'TAP TO START' : 'PRESS SPACE TO START', cx, cy + 30);
         ctx.globalAlpha = 1;
 
         // Controls
         ctx.fillStyle = COLORS.textDim;
         ctx.font = "11px 'Space Mono', monospace";
-        ctx.fillText(
-            mobile ? 'SWIPE \u2190 \u2192 TO DODGE  //  SWIPE \u2191 TO JUMP'
-                : '\u2190 \u2192 TO DODGE  //  SPACE TO JUMP',
-            cx, cy + 80
-        );
+        var lineY = cy + 70;
+        if (mobile) {
+            ctx.fillText('SWIPE \u2190 \u2192 TO SWITCH LANES', cx, lineY);
+            ctx.fillText('SWIPE \u2191 TO JUMP OVER LOW OBSTACLES', cx, lineY + 20);
+            ctx.fillText('COLLECT \uD83C\uDF4A TO REACH THE FINISH FASTER', cx, lineY + 40);
+        } else {
+            ctx.fillText('\u2190 \u2192 ARROWS TO SWITCH LANES', cx, lineY);
+            ctx.fillText('SPACE TO JUMP OVER LOW OBSTACLES', cx, lineY + 20);
+            ctx.fillText('COLLECT \uD83C\uDF4A TO REACH THE FINISH FASTER', cx, lineY + 40);
+        }
 
         ctx.textBaseline = 'alphabetic';
     }
