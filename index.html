@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PAPO — Electronic Press Kit</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,900&family=Oswald:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="src/styles.css">
+</head>
+
+<body>
+
+    <!-- ═══ GRAIN TOGGLE ═══ -->
+    <button class="grain-toggle" onclick="document.body.classList.toggle('no-grain'); this.textContent = document.body.classList.contains('no-grain') ? 'GRAIN: OFF' : 'GRAIN: ON'">GRAIN: ON</button>
+
+    <!-- ═══ ORANGE TREE BACKGROUND ═══ -->
+    <div class="tree-bg" id="treeBg">
+        <canvas id="treeCanvas"></canvas>
+    </div>
+
+    <!-- ═══ HERO ═══ -->
+    <section class="hero section-tree-visible">
+        <div class="hero-left">
+            <div class="hero-tag reveal">
+                <span class="globe">🌐</span>
+                <span class="globe">🌐</span>
+                <span class="globe">🌐</span>
+                <span style="margin-left: 0.5rem;">ELECTRONIC PRESS KIT // 2026</span>
+            </div>
+
+            <h1 class="hero-name reveal reveal-delay-1">
+                <span class="glitch-text">PAPO</span>
+            </h1>
+
+            <p class="hero-subtitle reveal reveal-delay-2">
+                Rapper, DJ &amp; Producer
+            </p>
+
+            <div class="hero-meta reveal reveal-delay-3">
+                <span><span class="dot"></span> Based in Gainesville, FL</span>
+                <span><span class="dot"></span> Est. 20XX</span>
+            </div>
+        </div>
+
+        <div class="hero-right">
+            <img class="hero-image-main" src="Assets/Photos/DSC02086.JPG" alt="PAPO — Rapper, DJ & Producer">
+            <div class="hero-overlay-text">
+                <div class="big">26</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ BIO GRID ═══ -->
+    <section class="bio-section section-tree-hidden">
+        <div class="bio-cell feature dark reveal">
+            <div class="bio-label">Biography</div>
+            <div class="bio-text">
+                Born in South Florida in 1993, <span class="highlight">Ayo Papo</span> — known as "Papocito" — grew up moving across the state, absorbing and being shaped by the competitive spirit of Fort Myers and the Latin and R&B sounds of his household. The result is a signature style of uniquely pocketed compositions that carry the warmth, grit, and groove of the South.
+                <br><br>
+                Inspired by the genre-defying artistry of Sam Gellaitry, Dominic Fike, and Kid Cudi, his music is melodic yet raw, polished yet deeply personal. His singles Gushy featuring LocalHotBoy and Jook Jook featuring WhoDidIt? highlight his ability to blend infectious energy with intentional lyricism — and his upcoming project <span class="highlight">Juice Worth The Squeeze</span> is set to be his most ambitious work yet.
+                <br><br>
+                With a refined sound and a clear vision, Papocito is stepping into his moment.
+            </div>
+        </div>
+
+        <div class="bio-cell reveal reveal-delay-1"
+            style="display:flex; flex-direction:column; justify-content:center;">
+            <div class="bio-label">Available For</div>
+            <div class="bio-big-text" style="margin-bottom:1rem; font-size:2.2rem;">LIVE SHOWS<br><span
+                    style="color:#e87a20;">DJ SETS</span><br>FESTIVALS<br><span style="color:#e87a20;">PRIVATE
+                    EVENTS</span><br>COLLABORATIONS</div>
+            <div class="bio-text" style="font-size:0.7rem; color:var(--fg-dim); margin-top:1rem;">
+                placeholder subtext
+            </div>
+        </div>
+
+        <div class="bio-cell dark reveal reveal-delay-2">
+            <div class="bio-label">Genre</div>
+            <div class="bio-big-text" style="margin-bottom:1.5rem;"><span class="accent">×</span> HIP-HOP<br><span class="accent">×</span>
+                ELECTRONIC<br><span class="accent">×</span> DANCEHALL</div>
+            <div class="bio-text" style="font-size:0.7rem; color:var(--fg-dim);">
+                placeholder subtext
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ RELEASES ═══ -->
+    <section class="music-section section-tree-hidden" style="grid-template-columns:1fr;">
+        <div style="padding:4rem; text-align:center;">
+            <div class="section-label reveal" style="justify-content:center;"><span class="stars">✦✦✦</span> Releases</div>
+            <div class="album-cover reveal reveal-delay-1" style="margin-left:auto; margin-right:auto;">
+                <img src="jookjook.png" alt="Jook Jook — Cover Art" class="album-cover-img">
+            </div>
+            <h3 class="album-title reveal reveal-delay-2">Jook Jook</h3>
+            <div class="album-year reveal reveal-delay-2">2026 // INDEPENDENT</div>
+
+            <div style="margin-top:2.5rem;">
+                <div class="section-label reveal"><span class="stars">✦✦✦</span> Tracklist</div>
+                <ul class="track-list">
+                    <li class="track-item reveal" data-src="Assets/Music_/1.Gushy ft. Localhotboy .wav">
+                        <div class="track-info">
+                            <div class="track-play-btn"></div>
+                            <span class="track-num">01</span>
+                            <span class="track-name">GUSHY<span class="track-feat">ft. Localhotboy</span></span>
+                        </div>
+                    </li>
+                    <li class="track-item reveal reveal-delay-1" data-src="Assets/Music_/2.Gyawd it_s hot interlude Ft. Tipot.wav">
+                        <div class="track-info">
+                            <div class="track-play-btn"></div>
+                            <span class="track-num">02</span>
+                            <span class="track-name">GYAWD IT'S HOT INTERLUDE<span class="track-feat">ft. Tipot</span></span>
+                        </div>
+                    </li>
+                    <li class="track-item reveal reveal-delay-1" data-src="Assets/Music_/3.Vert Burt Ft. Teddy Txne.wav">
+                        <div class="track-info">
+                            <div class="track-play-btn"></div>
+                            <span class="track-num">03</span>
+                            <span class="track-name">VERT BURT<span class="track-feat">ft. Teddy Txne</span></span>
+                        </div>
+                    </li>
+                    <li class="track-item reveal reveal-delay-2" data-src="Assets/Music_/4.Cheffin (Off 8th) Interlude.wav">
+                        <div class="track-info">
+                            <div class="track-play-btn"></div>
+                            <span class="track-num">04</span>
+                            <span class="track-name">CHEFFIN (OFF 8TH) INTERLUDE</span>
+                        </div>
+                    </li>
+                    <li class="track-item reveal reveal-delay-2" data-src="Assets/Music_/5.Jook Jook ft. whodidit.wav">
+                        <div class="track-info">
+                            <div class="track-play-btn"></div>
+                            <span class="track-num">05</span>
+                            <span class="track-name">JOOK JOOK<span class="track-feat">ft. whodidit</span></span>
+                        </div>
+                    </li>
+                    <li class="track-item reveal reveal-delay-3" data-src="Assets/Music_/6.Boutta Crashout _0 Interlude.wav">
+                        <div class="track-info">
+                            <div class="track-play-btn"></div>
+                            <span class="track-num">06</span>
+                            <span class="track-name">BOUTTA CRASHOUT INTERLUDE</span>
+                        </div>
+                    </li>
+                    <li class="track-item reveal reveal-delay-3" data-src="Assets/Music_/7.Papo Made This ft. Teddy Txne.wav">
+                        <div class="track-info">
+                            <div class="track-play-btn"></div>
+                            <span class="track-num">07</span>
+                            <span class="track-name">PAPO MADE THIS<span class="track-feat">ft. Teddy Txne</span></span>
+                        </div>
+                    </li>
+                </ul>
+                <div style="margin-top:2rem; padding-top:1.5rem; border-top:1px solid rgba(240,236,228,0.08);">
+                    <div style="font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--fg-dim);">
+                        7 TRACKS // INDEPENDENT
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ PHOTO COLLAGE ═══ -->
+    <section class="collage-section section-tree-visible">
+        <div class="collage-header reveal">
+            <h2 class="collage-title">GALLERY <span class="accent">✦</span></h2>
+            <span class="collage-subtitle">Behind the scenes &amp; on stage</span>
+        </div>
+
+        <div class="collage-grid">
+            <div class="collage-item c1 reveal">
+                <img src="Assets/Photos/AyoPapo_1.jpeg" alt="PAPO" loading="lazy">
+            </div>
+            <div class="collage-item c2 reveal reveal-delay-1">
+                <img src="Assets/Photos/DSC02620.JPG" alt="PAPO portrait" loading="lazy">
+            </div>
+            <div class="collage-item c3 reveal reveal-delay-2">
+                <img src="Assets/Photos/DSC02910.JPG" alt="PAPO DJ set" loading="lazy">
+            </div>
+            <div class="collage-item c4 reveal reveal-delay-1">
+                <img src="Assets/Photos/IMG_0115%203.JPG" alt="PAPO studio session" loading="lazy">
+            </div>
+            <div class="collage-item c5 reveal reveal-delay-2">
+                <img src="Assets/Photos/IMG_0218%202.jpg" alt="PAPO behind the scenes" loading="lazy">
+            </div>
+            <div class="collage-item c6 reveal reveal-delay-3">
+                <img src="Assets/Photos/IMG_0560.JPG" alt="PAPO editorial" loading="lazy">
+            </div>
+            <div class="collage-item c7 reveal reveal-delay-2">
+                <img src="Assets/Photos/IMG_1228.JPG" alt="PAPO live crowd" loading="lazy">
+            </div>
+            <div class="collage-item c8 reveal reveal-delay-3">
+                <img src="Assets/Photos/IMG_1280.JPG" alt="PAPO candid" loading="lazy">
+            </div>
+            <div class="collage-item c9 reveal reveal-delay-3">
+                <img src="Assets/Photos/IMG_6116.JPG" alt="PAPO performance" loading="lazy">
+            </div>
+            <div class="collage-item c10 reveal reveal-delay-4">
+                <img src="Assets/Photos/IMG_9783.JPG" alt="PAPO on stage" loading="lazy">
+            </div>
+            <div class="collage-item c11 reveal reveal-delay-4">
+                <img src="Assets/Photos/P1010002.JPG" alt="PAPO backstage" loading="lazy">
+            </div>
+            <div class="collage-item c12 reveal reveal-delay-4">
+                <img src="Assets/Photos/36052C08-BC91-42F3-BB32-1A0140EF9E9B.JPG" alt="PAPO photo" loading="lazy">
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ CONTACT / BOOKING ═══ -->
+    <section class="contact-section section-tree-hidden">
+        <div class="contact-left">
+            <div class="section-label reveal"><span class="stars">✦✦✦</span> Get In Touch</div>
+            <h2 class="contact-heading reveal reveal-delay-1">
+                BOOK<br><span class="italic">Papo</span>
+            </h2>
+
+            <div class="contact-details">
+                <div class="contact-row reveal reveal-delay-2">
+                    <span class="contact-row-label">Booking</span>
+                    <span class="contact-row-value"><a
+                            href="mailto:booking@papomusic.com">booking@papomusic.com</a></span>
+                </div>
+                <div class="contact-row reveal reveal-delay-2">
+                    <span class="contact-row-label">Management</span>
+                    <span class="contact-row-value"><a href="mailto:mgmt@papomusic.com">mgmt@papomusic.com</a></span>
+                </div>
+                <div class="contact-row reveal reveal-delay-3">
+                    <span class="contact-row-label">Press</span>
+                    <span class="contact-row-value"><a href="mailto:press@papomusic.com">press@papomusic.com</a></span>
+                </div>
+                <div class="contact-row reveal reveal-delay-3">
+                    <span class="contact-row-label">DJ Inquiries</span>
+                    <span class="contact-row-value"><a href="mailto:dj@papomusic.com">dj@papomusic.com</a></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="contact-right">
+            <div class="section-label reveal" style="align-self:flex-start;">
+                <span class="stars">✦✦✦</span> Follow
+            </div>
+            <div class="social-links">
+                <a class="social-link reveal reveal-delay-1" href="https://www.instagram.com/papocitoo/"
+                    target="_blank">INSTAGRAM <span class="arrow">→</span></a>
+                <a class="social-link reveal reveal-delay-2"
+                    href="https://open.spotify.com/artist/6UlBkddI4ImO6R2oTNrErA" target="_blank">SPOTIFY <span
+                        class="arrow">→</span></a>
+                <a class="social-link reveal reveal-delay-2"
+                    href="https://music.apple.com/us/artist/ayooo-papo/1630292624" target="_blank">APPLE MUSIC <span
+                        class="arrow">→</span></a>
+                <a class="social-link reveal reveal-delay-3" href="https://soundcloud.com/ayopapo"
+                    target="_blank">SOUNDCLOUD <span class="arrow">→</span></a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ FOOTER ═══ -->
+    <footer class="footer section-tree-visible">
+        <span>© 2026 PAPO. ALL RIGHTS RESERVED.</span>
+        <span>ELECTRONIC PRESS KIT</span>
+        <span>Designed &amp; made with love by <a href="https://bryanzane.com" target="_blank"
+                style="color:#e87a20; text-decoration:underline; text-underline-offset:3px;">Bryan Zane</a></span>
+    </footer>
+
+    <!-- ═══ LIGHTBOX ═══ -->
+    <div class="lightbox" id="lightbox">
+        <button class="lightbox-close">ESC</button>
+        <img src="" alt="Gallery fullscreen">
+    </div>
+
+    <!-- ═══ SCRIPTS ═══ -->
+    <script src="src/scroll-reveal.js" defer></script>
+    <script src="src/cursor-trail.js" defer></script>
+    <script src="src/orange-tree.js" defer></script>
+    <script src="src/audio-player.js" defer></script>
+    <script src="src/lightbox.js" defer></script>
+
+</body>
+
+</html>

@@ -1,0 +1,12 @@
+# Audio files (too large for git)
+*.wav
+*.WAV
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Screenshot folders (reference only)
+tree-view/
+footer-view/
+mobile-view/
