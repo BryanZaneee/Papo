@@ -8,7 +8,7 @@ for (let i = 0; i < trailLength; i++) {
         position: fixed;
         width: ${4 - i * 0.4}px;
         height: ${4 - i * 0.4}px;
-        background: #5c4e85;
+        background: #c06a1a;
         border-radius: 50%;
         pointer-events: none;
         z-index: 10000;
