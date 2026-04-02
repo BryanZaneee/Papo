@@ -154,6 +154,10 @@ body.game-active {
     overflow: hidden;
 }
 
+body.game-active .tree-bg {
+    display: none;
+}
+
 /* ═══════════════════════════════════════════
    SCROLLING TICKER
    ═══════════════════════════════════════════ */
@@ -1141,8 +1145,27 @@ body.game-active {
         grid-template-columns: 1fr;
     }
 
+    .bio-cell {
+        padding: 2.5rem 1.5rem;
+    }
+
     .bio-cell.feature {
         grid-column: span 1;
+    }
+
+    .bio-big-text {
+        font-size: clamp(1.8rem, 6vw, 3rem);
+    }
+
+    .bio-oranges {
+        grid-column: span 1 !important;
+        flex-wrap: wrap !important;
+        gap: 1rem !important;
+        padding: 1.5rem !important;
+    }
+
+    .bio-oranges img {
+        width: 80px !important;
     }
 
     .collage-section {
@@ -1193,6 +1216,20 @@ body.game-active {
 
     .contact-right {
         padding: 2rem 1.5rem;
+    }
+
+    .contact-row {
+        gap: 1rem;
+    }
+
+    .contact-row-label {
+        width: auto;
+        min-width: 70px;
+        flex-shrink: 1;
+    }
+
+    .contact-row-value {
+        word-break: break-word;
     }
 
     .music-left,
