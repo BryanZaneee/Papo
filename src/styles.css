@@ -1457,6 +1457,10 @@ body.game-active .tree-bg {
         transform: translateY(-69%);
     }
 
+    .bio-genre {
+        background-position: center 15% !important;
+    }
+
     .contact-cutout {
         width: 130px;
         right: 0.5rem;
