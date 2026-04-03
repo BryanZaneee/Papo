@@ -358,7 +358,7 @@ body.game-active .tree-bg {
 
 .hero-cutout img {
     display: inline-block;
-    width: 24.5vw;
+    width: 20.9vw;
     margin-left: -1%;
     transform: translateY(-70%);
     filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.6));
@@ -1452,9 +1452,9 @@ body.game-active .tree-bg {
     }
 
     .hero-cutout img {
-        width: 45.5vw;
-        margin-left: -1%;
-        transform: translateY(-58%);
+        width: 31.5vw;
+        margin-left: 0%;
+        transform: translateY(-69%);
     }
 
     .contact-cutout {
