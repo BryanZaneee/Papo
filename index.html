@@ -11,7 +11,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,900&family=Oswald:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="src/styles.css?v=12">
+    <link rel="stylesheet" href="src/styles.css?v=14">
     <!-- Preload critical EPK assets while game runs -->
     <link rel="preload" as="image" href="Assets/Photos/DSC02086.JPG">
     <link rel="preload" as="image" href="Assets/jookjook.png?v=2">
@@ -66,6 +66,11 @@
         </div>
     </section>
 
+    <!-- ═══ HERO CUTOUT ═══ -->
+    <div class="hero-cutout">
+        <img src="Assets/flavor/papo2.png" alt="PAPO">
+    </div>
+
     <!-- ═══ BIO GRID ═══ -->
     <section class="bio-section section-tree-hidden">
         <div class="bio-cell feature dark reveal">
@@ -79,7 +84,7 @@
             </div>
         </div>
 
-        <div class="bio-cell reveal reveal-delay-1"
+        <div class="bio-cell bio-available reveal reveal-delay-1"
             style="display:flex; flex-direction:column; justify-content:center;">
             <div class="bio-label">Available For</div>
             <div class="bio-big-text" style="margin-bottom:1rem; font-size:2.2rem;">LIVE SHOWS<br><span
@@ -90,7 +95,7 @@
             </div>
         </div>
 
-        <div class="bio-cell dark reveal reveal-delay-2">
+        <div class="bio-cell dark bio-genre reveal reveal-delay-2">
             <div class="bio-label">Genre</div>
             <div class="bio-big-text" style="margin-bottom:1.5rem;"><span class="accent">×</span> HIP-HOP<br><span class="accent">×</span>
                 ELECTRONIC<br><span class="accent">×</span> DANCEHALL</div>
@@ -187,14 +192,11 @@
         </div>
 
         <div class="collage-grid">
-            <div class="collage-item c1 reveal">
-                <img src="Assets/Photos/AyoPapo_1.jpeg" alt="PAPO" loading="lazy">
-            </div>
             <div class="collage-item c2 reveal reveal-delay-1">
                 <img src="Assets/Photos/DSC02620.JPG" alt="PAPO portrait" loading="lazy">
             </div>
             <div class="collage-item c3 reveal reveal-delay-2">
-                <img src="Assets/Photos/DSC02910.JPG" alt="PAPO DJ set" loading="lazy">
+                <img src="Assets/Photos/IMG_9783.JPG" alt="PAPO on stage" loading="lazy">
             </div>
             <div class="collage-item c4 reveal reveal-delay-1">
                 <img src="Assets/Photos/IMG_0115%203.JPG" alt="PAPO studio session" loading="lazy">
@@ -214,9 +216,6 @@
             <div class="collage-item c9 reveal reveal-delay-3">
                 <img src="Assets/Photos/IMG_6116.JPG" alt="PAPO performance" loading="lazy">
             </div>
-            <div class="collage-item c10 reveal reveal-delay-4">
-                <img src="Assets/Photos/IMG_9783.JPG" alt="PAPO on stage" loading="lazy">
-            </div>
             <div class="collage-item c11 reveal reveal-delay-4">
                 <img src="Assets/Photos/P1010002.JPG" alt="PAPO backstage" loading="lazy">
             </div>
@@ -229,6 +228,7 @@
     <!-- ═══ CONTACT / BOOKING ═══ -->
     <section class="contact-section section-tree-hidden">
         <div class="contact-left">
+            <img class="contact-cutout" src="Assets/flavor/papo1.png" alt="PAPO at the decks" loading="lazy">
             <div class="section-label reveal"><span class="stars">✦✦✦</span> Get In Touch</div>
             <h2 class="contact-heading reveal reveal-delay-1">
                 BOOK<br><span class="italic">Papo</span>
@@ -257,8 +257,11 @@
 
         <div class="contact-right">
             <div class="section-label reveal" style="align-self:flex-start;">
-                <span class="stars">✦✦✦</span> Follow
+                <span class="stars">✦✦✦</span> Connect
             </div>
+            <h2 class="contact-heading follow-heading reveal reveal-delay-1">
+                FOLLOW<br><span class="italic">Papo</span>
+            </h2>
             <div class="social-links">
                 <a class="social-link reveal reveal-delay-1" href="https://www.instagram.com/papocitoo/"
                     target="_blank">INSTAGRAM <span class="arrow">→</span></a>

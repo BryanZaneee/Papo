@@ -346,6 +346,25 @@ body.game-active .tree-bg {
     opacity: 0.8;
 }
 
+/* ═══ HERO CUTOUT ═══ */
+.hero-cutout {
+    position: relative;
+    z-index: 4;
+    height: 0;
+    overflow: visible;
+    text-align: left;
+    pointer-events: none;
+}
+
+.hero-cutout img {
+    display: inline-block;
+    width: 24.5vw;
+    margin-left: -1%;
+    transform: translateY(-70%);
+    filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.6));
+    z-index: 4;
+}
+
 /* ═══════════════════════════════════════════
    BIO SECTION — EDITORIAL GRID
    ═══════════════════════════════════════════ */
@@ -369,6 +388,42 @@ body.game-active .tree-bg {
 
 .bio-cell.feature {
     grid-column: span 2;
+}
+
+.bio-available {
+    background: url('../../Assets/Photos/AyoPapo_1.jpeg') center/cover no-repeat;
+    position: relative;
+}
+
+.bio-available::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(26, 18, 8, 0.7);
+    z-index: 0;
+}
+
+.bio-available > * {
+    position: relative;
+    z-index: 1;
+}
+
+.bio-genre {
+    background: url('../../Assets/Photos/DSC02910.JPG') center/cover no-repeat !important;
+    position: relative;
+}
+
+.bio-genre::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(26, 18, 8, 0.7);
+    z-index: 0;
+}
+
+.bio-genre > * {
+    position: relative;
+    z-index: 1;
 }
 
 .bio-label {
@@ -453,7 +508,7 @@ body.game-active .tree-bg {
 .collage-grid {
     display: grid;
     grid-template-columns: repeat(12, 1fr);
-    grid-template-rows: 300px 250px 300px 250px;
+    grid-template-rows: 300px 250px 300px;
     gap: 12px;
 }
 
@@ -483,6 +538,14 @@ body.game-active .tree-bg {
 .collage-item:hover img {
     filter: brightness(1.1) contrast(1.05);
     transform: scale(1.05);
+}
+
+.collage-item.c11 img {
+    object-position: top center;
+}
+
+.collage-item.c12 img {
+    object-position: top center;
 }
 
 /* Lightbox */
@@ -542,64 +605,54 @@ body.game-active .tree-bg {
     border-color: var(--accent);
 }
 
-.collage-item.c1 {
-    grid-column: 1 / 6;
+.collage-item.c2 {
+    grid-column: 1 / 5;
     grid-row: 1 / 2;
 }
 
-.collage-item.c2 {
-    grid-column: 6 / 9;
-    grid-row: 1 / 3;
-}
-
 .collage-item.c3 {
-    grid-column: 9 / 13;
+    grid-column: 5 / 9;
     grid-row: 1 / 2;
 }
 
 .collage-item.c4 {
+    grid-column: 9 / 13;
+    grid-row: 1 / 2;
+}
+
+.collage-item.c5 {
     grid-column: 1 / 4;
     grid-row: 2 / 3;
 }
 
-.collage-item.c5 {
-    grid-column: 4 / 6;
-    grid-row: 2 / 3;
-}
-
 .collage-item.c6 {
-    grid-column: 9 / 13;
+    grid-column: 4 / 7;
     grid-row: 2 / 3;
 }
 
 .collage-item.c7 {
-    grid-column: 1 / 5;
-    grid-row: 3 / 4;
+    grid-column: 7 / 10;
+    grid-row: 2 / 3;
 }
 
 .collage-item.c8 {
-    grid-column: 5 / 9;
-    grid-row: 3 / 4;
+    grid-column: 10 / 13;
+    grid-row: 2 / 3;
 }
 
 .collage-item.c9 {
-    grid-column: 9 / 13;
-    grid-row: 3 / 4;
-}
-
-.collage-item.c10 {
     grid-column: 1 / 5;
-    grid-row: 4 / 5;
+    grid-row: 3 / 4;
 }
 
 .collage-item.c11 {
     grid-column: 5 / 9;
-    grid-row: 4 / 5;
+    grid-row: 3 / 4;
 }
 
 .collage-item.c12 {
     grid-column: 9 / 13;
-    grid-row: 4 / 5;
+    grid-row: 3 / 4;
 }
 
 .collage-placeholder {
@@ -942,7 +995,21 @@ body.game-active .tree-bg {
     padding: 5rem 4rem;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
+    position: relative;
+}
+
+.contact-cutout {
+    position: absolute;
+    right: 27px;
+    top: 29%;
+    transform: translateY(-50%) rotate(3deg);
+    width: 235px;
+    height: auto;
+    filter: drop-shadow(0 6px 20px rgba(192, 106, 26, 0.35));
+    z-index: 3;
+    pointer-events: none;
+    opacity: 0.85;
 }
 
 .contact-heading {
@@ -996,14 +1063,32 @@ body.game-active .tree-bg {
 }
 
 .contact-right {
-    background: var(--bg-card);
+    background: url('../../Assets/Photos/IMG_9783.JPG') center/cover no-repeat;
     border-left: 2px solid var(--fg);
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 4rem;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 5rem 4rem;
     position: relative;
+}
+
+.contact-right::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(26, 18, 8, 0.7);
+    z-index: 0;
+}
+
+.contact-right > * {
+    position: relative;
+    z-index: 1;
+}
+
+.follow-heading {
+    align-self: flex-start;
+    margin-bottom: 2rem;
 }
 
 .social-links {
@@ -1306,6 +1391,11 @@ body.game-active .tree-bg {
         padding: 3rem 2rem;
     }
 
+    .hero-meta {
+        color: var(--fg);
+        text-shadow: 0 1px 6px rgba(0, 0, 0, 0.8), 0 0 12px rgba(0, 0, 0, 0.5);
+    }
+
     .bio-section {
         grid-template-columns: 1fr;
     }
@@ -1359,6 +1449,18 @@ body.game-active .tree-bg {
 
     .press-grid {
         grid-template-columns: 1fr;
+    }
+
+    .hero-cutout img {
+        width: 45.5vw;
+        margin-left: -1%;
+        transform: translateY(-58%);
+    }
+
+    .contact-cutout {
+        width: 130px;
+        right: 0.5rem;
+        opacity: 0.6;
     }
 
     .contact-section {
