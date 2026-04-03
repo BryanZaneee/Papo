@@ -21,7 +21,7 @@ There is no build step, no linting, and no tests.
 
 - **`index.html`** — Lean HTML shell (~230 lines). Links to external CSS/JS. Contains all semantic sections: hero, bio grid, photo collage (12 items), music/tracklist (7 tracks with custom audio player), press quotes, contact/booking, footer.
 - **`src/styles.css`** — All CSS including custom properties, section layouts, audio player styles, animations, and responsive breakpoints (900px).
-- **`src/runner-game.js`** — 3-lane pseudo-3D runner game that gates the EPK. Player dodges orange trees and speakers, collects oranges, and runs to a finish line. Renders on a full-screen `<canvas>` overlay (`#gameOverlay`). On completion or skip, the overlay fades out and reveals the EPK. Supports keyboard (arrows/WASD/space) and mobile (swipe). Game states: `title → playing → crashed | finished`.
+- **`src/runner-game.js`** — 3-lane pseudo-3D runner game (vanilla Canvas 2D) that gates the EPK. Player dodges orange trees and speakers, jumps over fire hydrants and short speakers, collects oranges (+10 score, +60 distance boost). Renders on a full-screen `<canvas>` overlay (`#gameOverlay`). On completion or skip, the overlay fades out and reveals the EPK. Supports keyboard (arrows/WASD/space) and mobile (swipe). Game states: `title → playing → crashed | finished`.
 - **`src/scroll-reveal.js`** — IntersectionObserver adds `.visible` class to `.reveal` elements on scroll.
 - **`src/cursor-trail.js`** — Animated 8-dot trail following mouse position.
 - **`src/orange-tree.js`** — Procedurally generated background tree (canopy, trunk, branches, roots) drawn on a full-page `<canvas>` that resizes with the document.
@@ -35,7 +35,7 @@ There is no build step, no linting, and no tests.
 - **Typography stack**: Anton (hero name), Bebas Neue (headings/labels), Space Mono (body), Playfair Display (editorial/italic), Oswald (loaded but lightly used)
 - **Reveal animations**: Elements with class `.reveal` animate in on scroll; stagger via `.reveal-delay-1` through `.reveal-delay-4`
 - **Audio player**: Track items with `data-src` attribute get custom players. `.track-info` div wraps clickable content, `.track-player` div holds progress bar and time.
-- **Runner game gate**: `#gameOverlay` with `<canvas>` covers the page on load. `body.game-active` locks scroll. On skip/finish, overlay fades out and `game-active` class is removed. Skip button (`#gameSkip`) always visible at bottom-right.
+- **Runner game gate**: `#gameOverlay` with `<canvas id="gameCanvas">` covers the page on load. `body.game-active` locks scroll with `position:fixed` and hides tree background. On skip/finish, overlay fades out, `game-active` class removed, scroll resets to top. Skip button (`#gameSkip`) always visible at bottom-right with pulsing glow.
 
 ## Deployment
 
