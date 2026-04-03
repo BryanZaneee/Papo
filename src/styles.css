@@ -391,7 +391,7 @@ body.game-active .tree-bg {
 }
 
 .bio-available {
-    background: url('../../Assets/Photos/AyoPapo_1.jpeg') center/cover no-repeat;
+    background: url('../../Assets/Photos/AyoPapo_1.jpeg') center 15%/cover no-repeat;
     position: relative;
 }
 
@@ -409,7 +409,7 @@ body.game-active .tree-bg {
 }
 
 .bio-genre {
-    background: url('../../Assets/Photos/DSC02910.JPG') center top/cover no-repeat !important;
+    background: url('../../Assets/Photos/DSC02910.JPG') center 30%/cover no-repeat !important;
     position: relative;
 }
 
