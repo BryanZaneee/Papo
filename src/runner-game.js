@@ -848,13 +848,50 @@
     }
 
     // ═══════════════════════════════════════════
+    //  BACKGROUND ASSET PRELOADER
+    // ═══════════════════════════════════════════
+    function preloadEPKAssets() {
+        // Prefetch gallery and other images into browser cache while game runs.
+        // Uses requestIdleCallback (or setTimeout fallback) so it never
+        // competes with the game's rendering budget.
+        var urls = [
+            'Assets/Photos/AyoPapo_1.jpeg',
+            'Assets/Photos/DSC02620.JPG',
+            'Assets/Photos/DSC02910.JPG',
+            'Assets/Photos/IMG_0115%203.JPG',
+            'Assets/Photos/IMG_0218%202.jpg',
+            'Assets/Photos/IMG_0560.JPG',
+            'Assets/Photos/IMG_1228.JPG',
+            'Assets/Photos/IMG_1280.JPG',
+            'Assets/Photos/IMG_6116.JPG',
+            'Assets/Photos/IMG_9783.JPG',
+            'Assets/Photos/P1010002.JPG',
+            'Assets/Photos/36052C08-BC91-42F3-BB32-1A0140EF9E9B.JPG',
+        ];
+        var idx = 0;
+        function next() {
+            if (idx >= urls.length) return;
+            var img = new Image();
+            img.src = urls[idx++];
+            // Load next image after this one finishes (or errors), with idle scheduling
+            img.onload = img.onerror = function () {
+                if (window.requestIdleCallback) requestIdleCallback(next);
+                else setTimeout(next, 100);
+            };
+        }
+        // Start after a brief delay so the game boots first
+        setTimeout(next, 1500);
+    }
+
+    // ═══════════════════════════════════════════
     //  BOOT
     // ═══════════════════════════════════════════
     window.skipRunnerGame = enterSite;
 
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
+        document.addEventListener('DOMContentLoaded', function () { init(); preloadEPKAssets(); });
     } else {
         init();
+        preloadEPKAssets();
     }
 })();
