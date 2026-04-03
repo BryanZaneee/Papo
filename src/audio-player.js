@@ -1,6 +1,11 @@
 // ═══════════════════════════════════════════
 // CUSTOM AUDIO PLAYER
 // ═══════════════════════════════════════════
+//
+// Each .track-item[data-src] gets a hidden Audio element + progress bar.
+// Click .track-info to play/pause. Only one track plays at a time.
+// Toggles .playing class, which audio-reactive.js observes.
+//
 (function () {
     let currentAudio = null;
     let currentTrackItem = null;

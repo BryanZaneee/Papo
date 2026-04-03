@@ -1,7 +1,8 @@
+// Click any collage image → fullscreen lightbox. ESC or click to close.
 (function () {
-    const lightbox = document.getElementById('lightbox');
-    const lbImg = lightbox.querySelector('img');
-    const closeBtn = lightbox.querySelector('.lightbox-close');
+    var lightbox = document.getElementById('lightbox');
+    var lbImg = lightbox.querySelector('img');
+    var closeBtn = lightbox.querySelector('.lightbox-close');
 
     document.querySelectorAll('.collage-item img').forEach(img => {
         img.addEventListener('click', () => {
