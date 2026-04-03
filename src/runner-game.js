@@ -190,7 +190,10 @@
         seedObstacles();
     }
 
+    var entered = false;
     function enterSite() {
+        if (entered) return;
+        entered = true;
         var overlay = document.getElementById('gameOverlay');
         if (!overlay) return;
         overlay.style.transition = 'opacity 0.8s ease';
