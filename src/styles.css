@@ -216,6 +216,7 @@ body.game-active .tree-bg {
     display: grid;
     grid-template-columns: 1fr 1fr;
     position: relative;
+    overflow: hidden;
 }
 
 .hero-left {
