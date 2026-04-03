@@ -409,7 +409,7 @@ body.game-active .tree-bg {
 }
 
 .bio-genre {
-    background: url('../../Assets/Photos/DSC02910.JPG') center/cover no-repeat !important;
+    background: url('../../Assets/Photos/DSC02910.JPG') center top/cover no-repeat !important;
     position: relative;
 }
 
