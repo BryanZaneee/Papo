@@ -26,11 +26,8 @@
     var SMOOTHING = 0.3;
 
     // ── CACHED DOM REFS ──────────────────────
-    var treeBg = document.getElementById('treeBg');
-    var treeCanvas = document.getElementById('treeCanvas');
     var heroName = document.querySelector('.hero-name');
     var albumCover = document.querySelector('.album-cover-img');
-    var contactHeading = document.querySelector('.contact-heading');
     var socialLinks = document.querySelectorAll('.social-link');
     var followLabel = document.querySelector('.contact-right .section-label');
     var footerEl = document.querySelector('.footer');
@@ -158,7 +155,6 @@
 
         if (!running) {
             running = true;
-            if (treeBg) treeBg.classList.add('audio-active');
             initLavaLamp();
             if (lavaCanvas) lavaCanvas.style.opacity = '1';
             requestAnimationFrame(tick);
@@ -167,13 +163,11 @@
 
     function disconnectVisuals() {
         running = false;
-        if (treeBg) treeBg.classList.remove('audio-active');
 
         bass = 0; mids = 0; treble = 0; energy = 0;
         applyVisuals();
 
         // Clear inline styles
-        if (contactHeading) { contactHeading.style.transform = ''; contactHeading.style.textShadow = ''; }
         if (followLabel) followLabel.style.textShadow = '';
         socialLinks.forEach(function (l) { l.style.textShadow = ''; l.style.borderColor = ''; });
         footerSpans.forEach(function (s) { s.style.letterSpacing = ''; s.style.textShadow = ''; });
@@ -223,10 +217,7 @@
         root.style.setProperty('--audio-bass', bass.toFixed(3));
         root.style.setProperty('--audio-energy', energy.toFixed(3));
 
-        // 1. Tree opacity pulses with bass
-        if (treeCanvas) treeCanvas.style.opacity = 0.35 + bass * 0.2;
-
-        // 2. Hero name scales on bass hits
+        // 1. Hero name scales on bass hits
         if (heroName) heroName.style.transform = bass > 0.15 ? 'scale(' + (1 + bass * 0.025) + ')' : '';
 
         // 3. Album cover glow with energy
@@ -262,18 +253,7 @@
             root.style.setProperty('--accent', '#c06a1a');
         }
 
-        // 8. "BOOK Papo" heading — scale + glow on bass
-        if (contactHeading) {
-            if (bass > 0.12) {
-                contactHeading.style.transform = 'scale(' + (1 + bass * 0.03) + ')';
-                contactHeading.style.textShadow = '0 0 ' + Math.floor(6 + bass * 24) + 'px rgba(232,122,32,' + (0.1 + bass * 0.5).toFixed(2) + ')';
-            } else {
-                contactHeading.style.transform = '';
-                contactHeading.style.textShadow = '';
-            }
-        }
-
-        // 9. Social links — staggered glow on mids
+        // 8. Social links — staggered glow on mids
         socialLinks.forEach(function (link, i) {
             var val = Math.max(0, mids - i * 0.08);
             if (val > 0.1) {

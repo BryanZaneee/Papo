@@ -13,29 +13,37 @@
     const JUMP_DURATION = 0.55;
     const JUMP_HEIGHT = 80;
 
+    // Daytime street palette: blue sky + clouds, green grass, black asphalt
+    // with white markings, blue runner, red apples on trees, cyan gem pickups.
     const COLORS = {
-        sky: '#0a0804',
-        skyHorizon: '#1a1208',
-        ground: '#2a1e12',
-        groundDark: '#1a1208',
-        road: '#332816',
-        roadLight: '#3d3020',
-        rumble: '#c06a1a',
-        rumbleDim: '#2a1e12',
-        lane: 'rgba(240,230,208,0.25)',
-        player: '#e87a20',
-        playerGlow: 'rgba(232,122,32,0.4)',
-        text: '#f0e6d0',
-        textDim: '#9c8a72',
-        accent: '#e87a20',
+        sky: '#5fb8e0',
+        skyHorizon: '#bfe2f0',
+        cloud: 'rgba(255,255,255,0.92)',
+        cloudSoft: 'rgba(255,255,255,0.55)',
+        ground: '#5a8a3e',
+        groundDark: '#3d6a26',
+        road: '#262626',
+        roadLight: '#3a3a3a',
+        rumble: '#f0f0f0',
+        rumbleDim: '#f0f0f0',
+        lane: 'rgba(255,255,255,0.75)',
+        player: '#2a5fa0',
+        playerGlow: 'rgba(120,180,255,0.45)',
+        text: '#f0f6ff',
+        textDim: '#a8c0d4',
+        accent: '#5fb8e0',
         treeTrunk: '#6b4226',
         treeCanopy: '#3a7a2a',
         treeCanopyDark: '#2d5a1e',
-        orange: '#e87a20',
-        leaf: '#4a8a2e',
+        fruit: '#c8312b',
+        orangeCanopy: '#d4882e',
+        orangeCanopyDark: '#a85a14',
+        orangeFruit: '#ff8a1f',
+        pickup: '#5fb8e0',
+        pickupShine: 'rgba(255,255,255,0.85)',
         speakerBody: '#2a2a2a',
-        speakerCone: '#1a1a1a',
-        speakerRing: '#444',
+        speakerCone: '#101010',
+        speakerRing: '#888888',
         shadow: 'rgba(0,0,0,0.3)',
     };
 
@@ -62,6 +70,7 @@
     let finishTimer = 0;
     let screenShake = 0;
     let titleRoadOffset = 0; // animate road on title screen
+    let clouds = [];
 
     // ═══════════════════════════════════════════
     //  PROJECTION
@@ -69,7 +78,7 @@
     function project(z) {
         var d = z / MAX_Z;
         var perspective = 1 / (1 + d * 5);
-        var horizonY = canvas.height * 0.05;
+        var horizonY = canvas.height * 0.22;
         var playerY = canvas.height * 0.93;
         return { y: horizonY + (playerY - horizonY) * perspective, scale: perspective };
     }
@@ -95,16 +104,23 @@
         resize();
         window.addEventListener('resize', resize);
 
-        // Generate roadside decorations
+        // Generate roadside decorations: green trees, orange trees, speakers
         for (var i = 0; i < 40; i++) {
+            var roll = Math.random();
+            var decType;
+            if (roll < 0.45) decType = 'tree';
+            else if (roll < 0.75) decType = 'orangeTree';
+            else decType = 'speaker';
             decorations.push({
                 z: Math.random() * MAX_Z,
                 side: Math.random() < 0.5 ? -1 : 1,
                 offset: 1.3 + Math.random() * 0.8,
-                type: Math.random() < 0.7 ? 'tree' : 'speaker',
+                type: decType,
                 size: 0.5 + Math.random() * 0.5,
             });
         }
+
+        spawnClouds();
 
         setupInput();
         lastTime = performance.now();
@@ -162,6 +178,18 @@
         // Skip button
         var skipBtn = document.getElementById('gameSkip');
         if (skipBtn) skipBtn.addEventListener('click', function (e) { e.stopPropagation(); enterSite(); });
+    }
+
+    function spawnClouds() {
+        clouds = [];
+        for (var i = 0; i < 7; i++) {
+            clouds.push({
+                x: Math.random() * canvas.width,
+                y: canvas.height * (0.02 + Math.random() * 0.14),
+                scale: 0.6 + Math.random() * 0.9,
+                speed: 6 + Math.random() * 10,
+            });
+        }
     }
 
     function moveLeft() { if (targetLane > 0) { laneFrom = playerLane; targetLane--; laneT = 0; } }
@@ -235,6 +263,19 @@
     //  UPDATE
     // ═══════════════════════════════════════════
     function update(dt) {
+        // Clouds drift in every state
+        for (var ci = 0; ci < clouds.length; ci++) {
+            var c = clouds[ci];
+            c.x += c.speed * dt;
+            var w = 60 * c.scale;
+            if (c.x - w * 2 > canvas.width) {
+                c.x = -w * 2;
+                c.y = canvas.height * (0.02 + Math.random() * 0.14);
+                c.scale = 0.6 + Math.random() * 0.9;
+                c.speed = 6 + Math.random() * 10;
+            }
+        }
+
         if (gameState === 'title') {
             titleRoadOffset += 60 * dt;
             return;
@@ -291,7 +332,7 @@
             if (!c.collected && c.z < 8 && c.z > -12 && c.lane === pLane) {
                 c.collected = true;
                 score += 10;
-                distance += 60; // oranges boost you toward the finish line
+                distance += 60; // gems boost you toward the finish line
             }
         }
 
@@ -325,7 +366,7 @@
             ctx.translate((Math.random() - 0.5) * screenShake, (Math.random() - 0.5) * screenShake);
         }
 
-        var horizonY = canvas.height * 0.05;
+        var horizonY = canvas.height * 0.22;
 
         // Sky
         var sky = ctx.createLinearGradient(0, 0, 0, horizonY);
@@ -333,6 +374,9 @@
         sky.addColorStop(1, COLORS.skyHorizon);
         ctx.fillStyle = sky;
         ctx.fillRect(0, 0, canvas.width, horizonY);
+
+        // Clouds drift across the upper sky
+        drawClouds();
 
         // Ground
         var gnd = ctx.createLinearGradient(0, horizonY, 0, canvas.height);
@@ -383,6 +427,28 @@
         if (gameState === 'finished') drawFinish();
     }
 
+    // ── Clouds ────────────────────────────────
+    function drawClouds() {
+        for (var i = 0; i < clouds.length; i++) {
+            var c = clouds[i];
+            var s = 30 * c.scale;
+            // Soft underbelly
+            ctx.fillStyle = COLORS.cloudSoft;
+            ctx.beginPath();
+            ctx.ellipse(c.x + s * 0.5, c.y + s * 0.4, s * 1.6, s * 0.5, 0, 0, Math.PI * 2);
+            ctx.fill();
+            // Fluffy top
+            ctx.fillStyle = COLORS.cloud;
+            ctx.beginPath();
+            ctx.arc(c.x, c.y, s, 0, Math.PI * 2);
+            ctx.arc(c.x + s * 0.85, c.y - s * 0.25, s * 0.85, 0, Math.PI * 2);
+            ctx.arc(c.x + s * 1.6, c.y, s * 0.7, 0, Math.PI * 2);
+            ctx.arc(c.x + s * 0.45, c.y + s * 0.25, s * 0.6, 0, Math.PI * 2);
+            ctx.arc(c.x - s * 0.45, c.y + s * 0.1, s * 0.55, 0, Math.PI * 2);
+            ctx.fill();
+        }
+    }
+
     // ── Road ──────────────────────────────────
     function drawRoad(horizonY, offset) {
         var cx = canvas.width / 2;
@@ -400,13 +466,13 @@
         ctx.clip();
 
         var roadGrad = ctx.createLinearGradient(0, pFar.y, 0, pNear.y);
-        roadGrad.addColorStop(0, '#292014');
-        roadGrad.addColorStop(1, '#3a2e1e');
+        roadGrad.addColorStop(0, COLORS.road);
+        roadGrad.addColorStop(1, COLORS.roadLight);
         ctx.fillStyle = roadGrad;
         ctx.fillRect(0, pFar.y, canvas.width, pNear.y - pFar.y);
         ctx.restore();
 
-        // Rumble strips — 30 chunky segments (alternating orange/dark)
+        // Edge stripes — 30 white segments along the road shoulder
         var rumbleSegs = 30;
         for (var i = 0; i < rumbleSegs; i++) {
             var z1 = (i / rumbleSegs) * MAX_Z;
@@ -439,7 +505,7 @@
             var seg = Math.floor((z1 + offset * 0.5) / 25);
             if (seg % 2 !== 0) continue;
 
-            ctx.strokeStyle = 'rgba(240,230,208,0.18)';
+            ctx.strokeStyle = 'rgba(255,255,255,0.7)';
             ctx.lineWidth = Math.max(1, 2.5 * p1.scale);
             ctx.beginPath(); ctx.moveTo(cx - w1 * 0.33, p1.y); ctx.lineTo(cx - w2 * 0.33, p2.y); ctx.stroke();
             ctx.beginPath(); ctx.moveTo(cx + w1 * 0.33, p1.y); ctx.lineTo(cx + w2 * 0.33, p2.y); ctx.stroke();
@@ -457,7 +523,7 @@
                     var checks = 10;
                     var cw = (fw * 2) / checks;
                     for (var c = 0; c < checks; c++) {
-                        ctx.fillStyle = c % 2 === 0 ? '#fff' : '#222';
+                        ctx.fillStyle = c % 2 === 0 ? COLORS.text : COLORS.skyHorizon;
                         ctx.globalAlpha = 0.7;
                         ctx.fillRect(cx - fw + c * cw, fp.y - 4 * fp.scale, cw, 8 * fp.scale);
                     }
@@ -480,13 +546,24 @@
             ctx.fillRect(x - s * 0.12, y - s * 1.5, s * 0.24, s * 1.5);
             ctx.fillStyle = COLORS.treeCanopy;
             ctx.beginPath(); ctx.arc(x, y - s * 1.8, s * 0.7, 0, Math.PI * 2); ctx.fill();
-            ctx.fillStyle = COLORS.orange;
+            ctx.fillStyle = COLORS.fruit;
             ctx.beginPath(); ctx.arc(x + s * 0.3, y - s * 1.7, s * 0.12, 0, Math.PI * 2); ctx.fill();
             ctx.beginPath(); ctx.arc(x - s * 0.2, y - s * 2.0, s * 0.1, 0, Math.PI * 2); ctx.fill();
+        } else if (dec.type === 'orangeTree') {
+            ctx.fillStyle = COLORS.treeTrunk;
+            ctx.fillRect(x - s * 0.12, y - s * 1.5, s * 0.24, s * 1.5);
+            ctx.fillStyle = COLORS.orangeCanopy;
+            ctx.beginPath(); ctx.arc(x, y - s * 1.8, s * 0.7, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = COLORS.orangeCanopyDark;
+            ctx.beginPath(); ctx.arc(x - s * 0.18, y - s * 1.95, s * 0.32, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = COLORS.orangeFruit;
+            ctx.beginPath(); ctx.arc(x + s * 0.32, y - s * 1.65, s * 0.13, 0, Math.PI * 2); ctx.fill();
+            ctx.beginPath(); ctx.arc(x - s * 0.05, y - s * 2.05, s * 0.11, 0, Math.PI * 2); ctx.fill();
+            ctx.beginPath(); ctx.arc(x + s * 0.18, y - s * 1.95, s * 0.1, 0, Math.PI * 2); ctx.fill();
         } else {
-            ctx.fillStyle = '#333';
+            ctx.fillStyle = COLORS.speakerBody;
             ctx.fillRect(x - s * 0.3, y - s * 0.8, s * 0.6, s * 0.8);
-            ctx.fillStyle = '#222';
+            ctx.fillStyle = COLORS.speakerCone;
             ctx.beginPath(); ctx.arc(x, y - s * 0.4, s * 0.2, 0, Math.PI * 2); ctx.fill();
         }
     }
@@ -509,7 +586,7 @@
             ctx.beginPath(); ctx.arc(x, y - s * 2.2, s * 0.65, 0, Math.PI * 2); ctx.fill();
             ctx.fillStyle = COLORS.treeCanopyDark;
             ctx.beginPath(); ctx.arc(x - s * 0.15, y - s * 2.4, s * 0.35, 0, Math.PI * 2); ctx.fill();
-            ctx.fillStyle = COLORS.orange;
+            ctx.fillStyle = COLORS.fruit;
             var oo = [[0.25, -2.0], [-0.2, -2.3], [0.1, -2.5], [-0.35, -1.95]];
             for (var i = 0; i < oo.length; i++) {
                 ctx.beginPath(); ctx.arc(x + oo[i][0] * s, y + oo[i][1] * s, s * 0.1, 0, Math.PI * 2); ctx.fill();
@@ -555,10 +632,10 @@
 
         ctx.fillStyle = COLORS.playerGlow;
         ctx.beginPath(); ctx.arc(x, cy, s * 1.5, 0, Math.PI * 2); ctx.fill();
-        ctx.fillStyle = COLORS.orange;
+        ctx.fillStyle = COLORS.pickup;
         ctx.beginPath(); ctx.arc(x, cy, s, 0, Math.PI * 2); ctx.fill();
-        ctx.fillStyle = COLORS.leaf;
-        ctx.beginPath(); ctx.ellipse(x + s * 0.3, cy - s * 0.85, s * 0.45, s * 0.18, 0.5, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = COLORS.pickupShine;
+        ctx.beginPath(); ctx.arc(x - s * 0.35, cy - s * 0.35, s * 0.32, 0, Math.PI * 2); ctx.fill();
     }
 
     // ── Player ────────────────────────────────
@@ -663,7 +740,7 @@
         var by = 28;
 
         // Bar bg
-        ctx.fillStyle = 'rgba(240,230,208,0.08)';
+        ctx.fillStyle = 'rgba(255,255,255,0.18)';
         rrect(bx, by, bw, bh, 3); ctx.fill();
         // Bar fill
         ctx.fillStyle = COLORS.accent;
@@ -680,7 +757,7 @@
             ctx.fillStyle = COLORS.accent;
             ctx.font = "18px 'Bebas Neue', sans-serif";
             ctx.textAlign = 'left';
-            ctx.fillText('\uD83C\uDF4A ' + score, 20, by + 4);
+            ctx.fillText('\uD83D\uDC8E ' + score, 20, by + 4);
         }
 
         // Controls hint
@@ -697,14 +774,14 @@
             } else {
                 ctx.fillText('\u2190 \u2192 TO SWITCH LANES  //  SPACE TO JUMP OVER LOW OBSTACLES', canvas.width / 2, hintY);
             }
-            ctx.fillText('COLLECT \uD83C\uDF4A TO REACH THE FINISH FASTER', canvas.width / 2, hintY + 18);
+            ctx.fillText('COLLECT \uD83D\uDC8E TO REACH THE FINISH FASTER', canvas.width / 2, hintY + 18);
             ctx.globalAlpha = 1;
         }
     }
 
     // ── Title Screen ──────────────────────────
     function drawTitle() {
-        ctx.fillStyle = 'rgba(10,8,4,0.65)';
+        ctx.fillStyle = 'rgba(20,30,45,0.7)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
         var cx = canvas.width / 2;
@@ -716,7 +793,7 @@
 
         // Title
         ctx.save();
-        ctx.shadowColor = '#5c4e85';
+        ctx.shadowColor = COLORS.accent;
         ctx.shadowOffsetX = 5;
         ctx.shadowOffsetY = 5;
         ctx.shadowBlur = 0;
@@ -745,11 +822,11 @@
         if (mobile) {
             ctx.fillText('SWIPE \u2190 \u2192 TO SWITCH LANES', cx, lineY);
             ctx.fillText('SWIPE \u2191 TO JUMP OVER LOW OBSTACLES', cx, lineY + 20);
-            ctx.fillText('COLLECT \uD83C\uDF4A TO REACH THE FINISH FASTER', cx, lineY + 40);
+            ctx.fillText('COLLECT \uD83D\uDC8E TO REACH THE FINISH FASTER', cx, lineY + 40);
         } else {
             ctx.fillText('\u2190 \u2192 ARROWS TO SWITCH LANES', cx, lineY);
             ctx.fillText('SPACE TO JUMP OVER LOW OBSTACLES', cx, lineY + 20);
-            ctx.fillText('COLLECT \uD83C\uDF4A TO REACH THE FINISH FASTER', cx, lineY + 40);
+            ctx.fillText('COLLECT \uD83D\uDC8E TO REACH THE FINISH FASTER', cx, lineY + 40);
         }
 
         ctx.textBaseline = 'alphabetic';
@@ -763,7 +840,7 @@
             ctx.fillRect(0, 0, canvas.width, canvas.height);
         }
         var alpha = Math.min(0.7, crashTimer * 2);
-        ctx.fillStyle = 'rgba(10,8,4,' + alpha + ')';
+        ctx.fillStyle = 'rgba(20,30,45,' + alpha + ')';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
         if (crashTimer > 0.25) {
@@ -791,7 +868,7 @@
     function drawFinish() {
         finishTimer += 0.016;
         var alpha = Math.min(0.85, finishTimer);
-        ctx.fillStyle = 'rgba(10,8,4,' + alpha + ')';
+        ctx.fillStyle = 'rgba(20,30,45,' + alpha + ')';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
         if (finishTimer > 0.3) {
@@ -799,7 +876,7 @@
             ctx.textAlign = 'center';
 
             ctx.save();
-            ctx.shadowColor = '#5c4e85';
+            ctx.shadowColor = COLORS.text;
             ctx.shadowOffsetX = 3;
             ctx.shadowOffsetY = 3;
             ctx.shadowBlur = 0;
@@ -811,7 +888,7 @@
             if (score > 0) {
                 ctx.fillStyle = COLORS.textDim;
                 ctx.font = "14px 'Space Mono', monospace";
-                ctx.fillText('\uD83C\uDF4A ' + score + ' oranges collected', cx, cy + 10);
+                ctx.fillText('\uD83D\uDC8E ' + score + ' gems collected', cx, cy + 10);
             }
 
             ctx.fillStyle = COLORS.text;

@@ -9,16 +9,13 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Playfair+Display:ital,wght@1,400;1,900&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Playfair+Display:ital,wght@1,400;1,900&family=Fraunces:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="src/styles.css?v=15">
+    <link rel="stylesheet" href="src/styles.css?v=25">
     <!-- Preload critical EPK assets while game runs -->
-    <link rel="preload" as="image" href="Assets/Photos/DSC02086.JPG">
+    <link rel="preload" as="image" href="Assets/Photos/IMG_1228.JPG">
+    <link rel="preload" as="image" href="Assets/flavor/treebackground.png?v=20260427">
     <link rel="preload" as="image" href="Assets/jookjook.png?v=2">
-    <link rel="preload" as="image" href="Assets/orange1.png">
-    <link rel="preload" as="image" href="Assets/orange2.png">
-    <link rel="preload" as="image" href="Assets/orange3.png">
-    <link rel="preload" as="image" href="Assets/orange4.png">
 </head>
 
 <body class="game-active">
@@ -29,13 +26,13 @@
         <button id="gameSkip" class="game-skip">SKIP →</button>
     </div>
 
-    <!-- ═══ ORANGE TREE BACKGROUND ═══ -->
-    <div class="tree-bg" id="treeBg">
-        <canvas id="treeCanvas"></canvas>
-    </div>
-
     <!-- ═══ HERO ═══ -->
     <section class="hero section-tree-visible">
+        <video class="hero-video" autoplay muted loop playsinline preload="auto"
+            poster="Assets/Videos/hero-bg-poster.jpg">
+            <source src="Assets/Videos/hero-bg.mp4" type="video/mp4">
+        </video>
+        <div class="hero-video-veil"></div>
         <div class="hero-left">
             <div class="hero-tag reveal">
                 <span class="globe">🌐</span>
@@ -58,12 +55,6 @@
             </div>
         </div>
 
-        <div class="hero-right">
-            <img class="hero-image-main" src="Assets/Photos/DSC02086.JPG" alt="PAPO — Rapper, DJ & Producer">
-            <div class="hero-overlay-text">
-                <div class="big">26</div>
-            </div>
-        </div>
     </section>
 
     <!-- ═══ HERO CUTOUT ═══ -->
@@ -71,44 +62,51 @@
         <img src="Assets/flavor/papo2.png" alt="PAPO">
     </div>
 
-    <!-- ═══ BIO GRID ═══ -->
+    <!-- ═══ TREE-BACKED TRUNK (bio → footer) ═══ -->
+    <div class="trunk-bg">
+        <img class="trunk-bg-img" src="Assets/flavor/treebackground.png?v=20260427" alt="" aria-hidden="true">
+
+    <!-- ═══ BIOGRAPHY ═══ -->
     <section class="bio-section section-tree-hidden">
-        <div class="bio-cell feature dark reveal">
-            <div class="bio-label">Biography</div>
-            <div class="bio-text">
-                Born in South Florida in 1993, <span class="highlight">Ayo Papo</span> — known as "Papocito" — grew up moving across the state, absorbing and being shaped by the competitive spirit of Fort Myers and the Latin and R&B sounds of his household. The result is a signature style of uniquely pocketed compositions that carry the warmth, grit, and groove of the South.
-                <br><br>
-                Inspired by the genre-defying artistry of Sam Gellaitry, Dominic Fike, and Kid Cudi, his music is melodic yet raw, polished yet deeply personal. His singles Gushy featuring LocalHotBoy and Jook Jook featuring WhoDidIt? highlight his ability to blend infectious energy with intentional lyricism — and his upcoming project <span class="highlight">Juice Worth The Squeeze</span> is set to be his most ambitious work yet.
-                <br><br>
-                With a refined sound and a clear vision, Papocito is stepping into his moment.
-            </div>
-        </div>
+        <div class="bio-feature reveal">
+            <div class="bio-text-col">
+                <div class="bio-label">Biography</div>
+                <div class="bio-text">
+                    Born in South Florida in 1993, <span class="highlight">Ayo Papo</span> — known as "Papocito" — grew up moving across the state, absorbing and being shaped by the competitive spirit of Fort Myers and the Latin and R&B sounds of his household. The result is a signature style of uniquely pocketed compositions that carry the warmth, grit, and groove of the South.
+                    <br><br>
+                    From late-night cyphers in Gainesville parking lots to packed-out shows at The Wooly and Heartwood, Papo has spent the last several years sharpening a live presence that meets the studio version head-on. He produces nearly everything he releases, threading 808s through samples pulled from his parents' record shelves and his own field recordings — humid summer nights, AM radio, the rumble of I-75.
+                    <br><br>
+                    Inspired by the genre-defying artistry of Sam Gellaitry, Dominic Fike, and Kid Cudi, his music is melodic yet raw, polished yet deeply personal. His singles Gushy featuring LocalHotBoy and Jook Jook featuring WhoDidIt? highlight his ability to blend infectious energy with intentional lyricism — and his upcoming project <span class="highlight">Juice Worth The Squeeze</span> is set to be his most ambitious work yet.
+                    <br><br>
+                    With a refined sound and a clear vision, Papocito is stepping into his moment.
+                </div>
 
-        <div class="bio-cell bio-available reveal reveal-delay-1"
-            style="display:flex; flex-direction:column; justify-content:center;">
-            <div class="bio-label">Available For</div>
-            <div class="bio-big-text" style="margin-bottom:1rem; font-size:2.2rem;">LIVE SHOWS<br><span
-                    style="color:#e87a20;">DJ SETS</span><br>FESTIVALS<br><span style="color:#e87a20;">PRIVATE
-                    EVENTS</span><br>COLLABORATIONS</div>
-            <div class="bio-text" style="font-size:0.7rem; color:var(--fg-dim); margin-top:1rem;">
-                Booking inquiries → booking@papomusic.com
+                <div class="bio-meta-grid">
+                    <div class="bio-meta-block">
+                        <div class="bio-label">Available For</div>
+                        <ul class="bio-bullets">
+                            <li>Live Shows</li>
+                            <li>DJ Sets</li>
+                            <li>Festivals</li>
+                            <li>Private Events</li>
+                            <li>Collaborations</li>
+                        </ul>
+                    </div>
+                    <div class="bio-meta-block">
+                        <div class="bio-label">Genre</div>
+                        <ul class="bio-bullets">
+                            <li>Hip-Hop</li>
+                            <li>Electronic</li>
+                            <li>Dancehall</li>
+                        </ul>
+                        <div class="bio-meta-tag">Blending Southern bounce with global bass</div>
+                    </div>
+                </div>
             </div>
-        </div>
 
-        <div class="bio-cell dark bio-genre reveal reveal-delay-2">
-            <div class="bio-label">Genre</div>
-            <div class="bio-big-text" style="margin-bottom:1.5rem;"><span class="accent">×</span> HIP-HOP<br><span class="accent">×</span>
-                ELECTRONIC<br><span class="accent">×</span> DANCEHALL</div>
-            <div class="bio-text" style="font-size:0.7rem; color:var(--fg-dim);">
-                Blending Southern bounce with global bass
+            <div class="bio-image-col">
+                <img src="Assets/Photos/IMG_1228.JPG" alt="PAPO portrait" loading="lazy">
             </div>
-        </div>
-
-        <div class="bio-cell bio-oranges reveal reveal-delay-3" style="grid-column: span 2; display:flex; justify-content:center; align-items:center; gap:2rem; padding:2rem;">
-            <img src="Assets/orange2.png" alt="Orange" style="width:120px; height:auto; filter:drop-shadow(0 4px 12px rgba(232,122,32,0.3));">
-            <img src="Assets/orange3.png" alt="Orange slices" style="width:150px; height:auto; filter:drop-shadow(0 4px 12px rgba(232,122,32,0.3));">
-            <img src="Assets/orange1.png" alt="Orange cross-section" style="width:120px; height:auto; filter:drop-shadow(0 4px 12px rgba(232,122,32,0.3));">
-            <img src="Assets/orange4.png" alt="Orange halves" style="width:140px; height:auto; filter:drop-shadow(0 4px 12px rgba(232,122,32,0.3));">
         </div>
     </section>
 
@@ -284,6 +282,8 @@
         <span>Designed &amp; made with love by <a href="https://bryanzane.com" target="_blank"
                 style="color:#e87a20; text-decoration:underline; text-underline-offset:3px;">Bryan Zane</a></span>
     </footer>
+    </div>
+    <!-- ═══ /TRUNK-BG ═══ -->
 
     <!-- ═══ LIGHTBOX ═══ -->
     <div class="lightbox" id="lightbox">
@@ -293,12 +293,11 @@
 
     <!-- ═══ SCRIPTS ═══ -->
     <script src="https://cdn.jsdelivr.net/npm/motion@12/dist/motion.js"></script>
-    <script src="src/runner-game.js?v=13"></script>
+    <script src="src/runner-game.js?v=16"></script>
     <script src="src/scroll-reveal.js?v=5" defer></script>
     <script src="src/cursor-trail.js?v=5" defer></script>
-    <script src="src/orange-tree.js?v=5" defer></script>
     <script src="src/audio-player.js?v=5" defer></script>
-    <script src="src/audio-reactive.js?v=1" defer></script>
+    <script src="src/audio-reactive.js?v=2" defer></script>
     <script src="src/lightbox.js?v=4" defer></script>
 
 
