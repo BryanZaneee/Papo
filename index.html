@@ -11,7 +11,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Playfair+Display:ital,wght@1,400;1,900&family=Fraunces:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="src/styles.css?v=25">
+    <link rel="stylesheet" href="src/styles.css?v=28">
     <!-- Preload critical EPK assets while game runs -->
     <link rel="preload" as="image" href="Assets/Photos/IMG_1228.JPG">
     <link rel="preload" as="image" href="Assets/flavor/treebackground.png?v=20260427">
@@ -111,18 +111,24 @@
     </section>
 
     <!-- ═══ RELEASES ═══ -->
-    <section class="music-section section-tree-hidden" style="grid-template-columns:1fr;">
-        <div style="padding:4rem; text-align:center;">
-            <div class="section-label reveal" style="justify-content:center;"><span class="stars">✦✦✦</span> Releases</div>
-            <div class="album-cover reveal reveal-delay-1" style="margin-left:auto; margin-right:auto;">
-                <img src="Assets/jookjook.png?v=2" alt="Jook Jook — Cover Art" class="album-cover-img">
-            </div>
-            <h3 class="album-title reveal reveal-delay-2">Jook Jook</h3>
-            <div class="album-year reveal reveal-delay-2">2026 // INDEPENDENT</div>
+    <section class="music-section section-tree-hidden">
+        <div class="music-inner">
+            <div class="section-label reveal"><span class="stars">✦✦✦</span> Releases</div>
 
-            <div style="margin-top:2.5rem;">
-                <div class="section-label reveal" style="justify-content:center;"><span class="stars">✦✦✦</span> Tracklist</div>
-                <ul class="track-list" style="text-align:left;">
+            <div class="album-feature reveal reveal-delay-1">
+                <div class="album-cover">
+                    <img src="Assets/jookjook.png?v=2" alt="Jook Jook — Cover Art" class="album-cover-img">
+                </div>
+                <div class="album-meta">
+                    <h3 class="album-title">Jook Jook</h3>
+                    <div class="album-year">2026 // INDEPENDENT</div>
+                    <div class="album-blurb">A Florida record. Seven cuts: humid, melodic, pocketed.</div>
+                </div>
+            </div>
+
+            <div class="tracklist-block">
+                <div class="section-label reveal"><span class="stars">✦✦✦</span> Tracklist</div>
+                <ul class="track-list">
                     <li class="track-item reveal" data-src="Assets/Music_/1.Gushy ft. Localhotboy .wav">
                         <div class="track-info">
                             <div class="track-play-btn"></div>
@@ -173,11 +179,7 @@
                         </div>
                     </li>
                 </ul>
-                <div style="margin-top:2rem; padding-top:1.5rem; border-top:1px solid rgba(240,236,228,0.08);">
-                    <div style="font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--fg-dim);">
-                        7 TRACKS // INDEPENDENT
-                    </div>
-                </div>
+                <div class="tracklist-indicia">7 Tracks // Independent</div>
             </div>
         </div>
     </section>

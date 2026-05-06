@@ -10,3 +10,17 @@ Thumbs.db
 tree-view/
 footer-view/
 mobile-view/
+
+# Local tooling — Playwright caches
+.playwright-cli/
+.playwright-mcp/
+
+# Agent / Claude workflow artifacts (local notes, not site content)
+AGENTS.md
+History.md
+issues/
+plans/
+
+# Design source files (large binaries, not for web)
+*.psd
+*.PSD
