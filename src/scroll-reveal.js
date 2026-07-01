@@ -48,13 +48,6 @@
     }
 
     var collageItems = document.querySelectorAll('.collage-item');
-    collageItems.forEach(function (item, i) {
-        var drift = (i % 2 === 0) ? -20 : 20;
-        scroll(
-            animate(item, { y: [drift, -drift] }, { ease: 'linear' }),
-            { target: item, offset: ['start end', 'end start'] }
-        );
-    });
 
     var albumCover = document.querySelector('.album-cover');
     if (albumCover) {
@@ -71,18 +64,6 @@
             animate(item, { scale: 1.04 }, { type: 'spring', stiffness: 300, damping: 20 });
             return function () {
                 animate(item, { scale: 1 }, { type: 'spring', stiffness: 200, damping: 25 });
-            };
-        });
-    });
-
-    document.querySelectorAll('.social-link').forEach(function (link) {
-        hover(link, function () {
-            animate(link, { x: 8 }, { type: 'spring', stiffness: 400, damping: 15 });
-            var arrow = link.querySelector('.arrow');
-            if (arrow) animate(arrow, { x: 6 }, { type: 'spring', stiffness: 500, damping: 12 });
-            return function () {
-                animate(link, { x: 0 }, { type: 'spring', stiffness: 200, damping: 25 });
-                if (arrow) animate(arrow, { x: 0 }, { type: 'spring', stiffness: 200, damping: 25 });
             };
         });
     });

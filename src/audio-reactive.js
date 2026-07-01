@@ -28,7 +28,7 @@
     // ── CACHED DOM REFS ──────────────────────
     var heroName = document.querySelector('.hero-name');
     var albumCover = document.querySelector('.album-cover-img');
-    var socialLinks = document.querySelectorAll('.social-link');
+    var socialLinks = document.querySelectorAll('.contact-right .contact-row');
     var followLabel = document.querySelector('.contact-right .section-label');
     var footerEl = document.querySelector('.footer');
     var footerSpans = footerEl ? footerEl.querySelectorAll('span') : [];

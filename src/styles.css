@@ -25,11 +25,11 @@
 
     --trunk-bg-y: 390px;
 
-    /* Hero cutout positioning */
-    --cutout-x: 0%;
-    --cutout-y: -70%;
-    --cutout-scale: 1;
+    /* Hero cutout positioning (anchored to .hero-name top-left) */
+    --cutout-x: -18%;
+    --cutout-y: -39%;
     --cutout-width: 20.9vw;
+    --cutout-scale: 0.6;
     --cutout-rotate: 0deg;
 
     /* Audio-reactive vars (set by audio-reactive.js) */
@@ -43,7 +43,17 @@ html {
 }
 
 body {
-    background: var(--bg);
+    /* Sky blue at top → dark at bottom. Anchored to body (NOT fixed),
+       so visible band shifts darker as the user scrolls. */
+    background: linear-gradient(180deg,
+        #87ceeb 0%,
+        #6e9bb6 14%,
+        #4a7894 30%,
+        #2c4a6e 50%,
+        #1a2f48 70%,
+        #15252e 86%,
+        #0c0c0e 100%);
+    background-color: var(--bg);
     color: var(--fg);
     font-family: 'Space Mono', monospace;
     cursor: crosshair;
@@ -82,7 +92,7 @@ img {
 }
 
 .section-tree-hidden {
-    background: rgba(12, 12, 14, 0.88) !important;
+    background: rgba(12, 12, 14, 0.62) !important;
 }
 
 .trunk-bg {
@@ -98,10 +108,10 @@ img {
     height: 100%;
     width: auto;
     max-width: none;
-    opacity: 0.22;
+    opacity: 0.58;
     z-index: 0;
     pointer-events: none;
-    filter: saturate(0.5) contrast(1.1) brightness(0.85);
+    filter: contrast(1.05) saturate(1.05);
 }
 
 .trunk-bg > section,
@@ -111,7 +121,7 @@ img {
 }
 
 .trunk-bg .section-tree-hidden {
-    background: rgba(12, 12, 14, 0.78) !important;
+    background: rgba(12, 12, 14, 0.42) !important;
 }
 
 /* ═══════════════════════════════════════════
@@ -181,7 +191,6 @@ body.game-active .hero-video {
     min-height: 100vh;
     display: grid;
     grid-template-columns: 1.4fr 1fr;
-    overflow: hidden;
 }
 
 .hero-video {
@@ -192,7 +201,7 @@ body.game-active .hero-video {
     object-fit: cover;
     z-index: 0;
     pointer-events: none;
-    filter: grayscale(0.9) contrast(1.15) brightness(0.55);
+    filter: grayscale(0.55) contrast(1.08) brightness(0.7);
 }
 
 .hero-video-veil {
@@ -201,34 +210,34 @@ body.game-active .hero-video {
     z-index: 1;
     pointer-events: none;
     background:
-        linear-gradient(95deg, rgba(12, 12, 14, 0.92) 0%, rgba(12, 12, 14, 0.65) 45%, rgba(12, 12, 14, 0.30) 100%),
-        radial-gradient(ellipse at 80% 50%, rgba(255, 107, 26, 0.18) 0%, rgba(255, 107, 26, 0) 60%);
+        linear-gradient(180deg,
+            rgba(135, 206, 235, 0.45) 0%,
+            rgba(74, 120, 148, 0.35) 35%,
+            rgba(12, 12, 14, 0.45) 100%),
+        linear-gradient(95deg,
+            rgba(12, 12, 14, 0.55) 0%,
+            rgba(12, 12, 14, 0.18) 55%,
+            rgba(12, 12, 14, 0) 100%),
+        radial-gradient(ellipse at 80% 60%, rgba(255, 107, 26, 0.16) 0%, rgba(255, 107, 26, 0) 60%);
 }
 
 .hero-left {
-    display: grid;
-    grid-template-rows: auto 1fr auto;
+    display: flex;
+    flex-direction: column;
     padding: 2.5rem 4rem 2.5rem 4rem;
     position: relative;
     z-index: 2;
     align-self: stretch;
 }
 
-.hero-tag {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.68rem;
-    letter-spacing: 0.4em;
-    text-transform: uppercase;
-    color: var(--fg-dim);
-    align-self: flex-start;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.6rem;
-}
-
-.hero-tag .globe {
-    font-size: 0.85rem;
-    opacity: 0.7;
+.hero-content-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    width: 100%;
+    padding-top: 2.75rem;
 }
 
 .hero-name {
@@ -239,7 +248,6 @@ body.game-active .hero-video {
     margin: 0;
     color: var(--fg);
     text-transform: uppercase;
-    align-self: center;
     position: relative;
 }
 
@@ -264,7 +272,6 @@ body.game-active .hero-video {
 }
 
 .hero-meta {
-    align-self: end;
     display: flex;
     flex-wrap: wrap;
     gap: 2rem;
@@ -273,9 +280,10 @@ body.game-active .hero-video {
     letter-spacing: 0.32em;
     text-transform: uppercase;
     color: var(--fg-dim);
-    margin: 0;
+    margin: 1.5rem 0 0;
     padding-top: 1.25rem;
     border-top: 1px solid var(--bg-rule);
+    align-self: stretch;
 }
 
 .hero-meta span {
@@ -291,25 +299,24 @@ body.game-active .hero-video {
 }
 
 /* ═══════════════════════════════════════════
-   HERO CUTOUT
+   HERO CUTOUT — anchored inside .hero-name so it
+   tracks the AYOPAPO text across screen sizes.
    ═══════════════════════════════════════════ */
 .hero-cutout {
-    position: relative;
+    position: absolute;
+    top: 0;
+    left: 0;
     z-index: 4;
-    height: 0;
-    overflow: visible;
-    text-align: left;
     pointer-events: none;
+    line-height: 0;
 }
 
 .hero-cutout img {
-    display: inline-block;
+    display: block;
     width: var(--cutout-width);
-    margin-left: 0;
     transform: translate(var(--cutout-x), var(--cutout-y)) scale(var(--cutout-scale)) rotate(var(--cutout-rotate));
     transform-origin: left top;
     filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.6));
-    z-index: 4;
 }
 
 /* ═══════════════════════════════════════════
@@ -346,12 +353,12 @@ body.game-active .hero-video {
     height: auto;
     aspect-ratio: 4 / 5;
     object-fit: cover;
-    filter: grayscale(0.85) contrast(1.08);
+    filter: contrast(1.05);
     transition: filter 0.6s ease;
 }
 
 .bio-image-col:hover img {
-    filter: grayscale(0) contrast(1.05);
+    filter: contrast(1.08);
 }
 
 .bio-label {
@@ -795,7 +802,7 @@ body.game-active .hero-video {
     content: '';
     position: absolute;
     inset: 0;
-    background: rgba(12, 12, 14, 0.32);
+    background: transparent;
     pointer-events: none;
     transition: background 0.4s ease;
     z-index: 2;
@@ -818,12 +825,12 @@ body.game-active .hero-video {
     height: 100%;
     object-fit: cover;
     display: block;
-    filter: grayscale(0.85) contrast(1.1) brightness(0.92);
+    filter: contrast(1.05);
     transition: filter 0.5s ease, transform 0.5s ease;
 }
 
 .collage-item:hover img {
-    filter: grayscale(0) contrast(1.05) brightness(1);
+    filter: contrast(1.08);
 }
 
 .collage-item.c11 img,
@@ -961,9 +968,18 @@ body.game-active .hero-video {
     transition: padding-left 0.3s ease, border-bottom-color 0.3s ease;
 }
 
+a.contact-row {
+    text-decoration: none;
+    color: inherit;
+}
+
 .contact-row:hover {
     padding-left: 0.5rem;
     border-bottom-color: var(--accent);
+}
+
+.contact-row:hover .contact-row-value {
+    color: var(--accent);
 }
 
 .contact-row-label {
@@ -978,6 +994,8 @@ body.game-active .hero-video {
     font-family: 'Space Mono', monospace;
     font-size: 0.95rem;
     color: var(--fg);
+    text-align: right;
+    transition: color 0.3s;
 }
 
 .contact-row-value a {
@@ -1002,69 +1020,6 @@ body.game-active .hero-video {
     margin-bottom: 2.5rem;
 }
 
-.social-links {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    max-width: 360px;
-    border-top: 1px solid var(--bg-rule);
-}
-
-.social-link {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    align-items: center;
-    padding: 1.4rem 0;
-    border-bottom: 1px solid var(--bg-rule);
-    background: transparent;
-    color: var(--fg);
-    font-family: 'Anton', sans-serif;
-    font-size: 1.4rem;
-    letter-spacing: 0.02em;
-    transition: padding-left 0.4s cubic-bezier(0.22, 1, 0.36, 1), color 0.4s ease, border-bottom-color 0.4s ease;
-    cursor: pointer;
-    position: relative;
-    text-transform: uppercase;
-}
-
-.social-link::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 0;
-    background: var(--accent);
-    transition: width 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-    pointer-events: none;
-}
-
-.social-link:hover {
-    color: var(--bg);
-    border-bottom-color: var(--accent);
-    padding-left: 1.4rem;
-}
-
-.social-link:hover::before {
-    width: 100%;
-}
-
-.social-link > * {
-    position: relative;
-    z-index: 1;
-}
-
-.social-link .arrow {
-    transition: transform 0.3s, color 0.3s;
-    font-family: 'Space Mono', monospace;
-    color: var(--accent);
-}
-
-.social-link:hover .arrow {
-    transform: translateX(6px);
-    color: var(--bg);
-}
-
 /* ═══════════════════════════════════════════
    FOOTER
    ═══════════════════════════════════════════ */
@@ -1082,12 +1037,7 @@ body.game-active .hero-video {
     color: var(--fg-muted);
 }
 
-.footer > span:nth-child(2) {
-    color: var(--fg-dim);
-    letter-spacing: 0.4em;
-}
-
-.footer > span:nth-child(3) a {
+.footer > span:nth-child(2) a {
     color: var(--accent) !important;
     text-decoration: none !important;
     border-bottom: 1px solid var(--accent);
@@ -1095,7 +1045,7 @@ body.game-active .hero-video {
     transition: color 0.3s, border-color 0.3s;
 }
 
-.footer > span:nth-child(3) a:hover {
+.footer > span:nth-child(2) a:hover {
     color: var(--fg) !important;
     border-bottom-color: var(--fg);
 }
@@ -1164,7 +1114,6 @@ body.game-active .hero-video {
     }
     .hero-cutout img {
         width: 36vw;
-        transform: translate(0, -65%) scale(1) rotate(0deg);
     }
     .bio-section { padding: 4rem 1.5rem; }
     .bio-feature { grid-template-columns: 1fr; gap: 3rem; }

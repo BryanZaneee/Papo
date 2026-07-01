@@ -4,54 +4,62 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is an Electronic Press Kit (EPK) website for **PAPO**, a rapper, DJ, and producer based in Gainesville, FL. It is a single-page static site — no build tools, no frameworks, no package manager.
+Electronic Press Kit (EPK) website for **PAPO** ("Ayo Papo" / "Papocito"), a rapper, DJ, and producer based in Gainesville, FL. Single-page static site — no build tools, no frameworks, no package manager, no npm dependencies (one CDN `<script>` for Motion One).
 
 ## Development
 
-Serve with any static file server (required for audio playback and asset loading):
+Serve with any static file server (audio playback and asset loading require HTTP, not `file://`):
 ```
 python3 -m http.server 8000
 # or
 npx serve .
 ```
 
-There is no build step, no linting, and no tests.
+No build step, no linting, no tests.
 
 ## Architecture
 
-- **`index.html`** — Lean HTML shell (~230 lines). Links to external CSS/JS. Contains all semantic sections: hero, bio grid, photo collage (12 items), music/tracklist (7 tracks with custom audio player), press quotes, contact/booking, footer.
-- **`src/styles.css`** — All CSS including custom properties, section layouts, audio player styles, animations, and responsive breakpoints (900px).
-- **`src/runner-game.js`** — 3-lane pseudo-3D runner game (vanilla Canvas 2D) that gates the EPK. Player dodges orange trees and speakers, jumps over fire hydrants and short speakers, collects oranges (+10 score, +60 distance boost). Renders on a full-screen `<canvas>` overlay (`#gameOverlay`). On completion or skip, the overlay fades out and reveals the EPK. Supports keyboard (arrows/WASD/space) and mobile (swipe). Game states: `title → playing → crashed | finished`.
-- **`src/scroll-reveal.js`** — IntersectionObserver adds `.visible` class to `.reveal` elements on scroll.
-- **`src/cursor-trail.js`** — Animated 8-dot trail following mouse position.
-- **`src/orange-tree.js`** — Procedurally generated background tree (canopy, trunk, branches, roots) drawn on a full-page `<canvas>` that resizes with the document.
-- **`src/audio-player.js`** — Custom styled audio player with play/pause, progress bar, seek, and time display. Only one track plays at a time.
+`index.html` is a ~310-line shell that links external CSS/JS and holds every section: game overlay, hero, bio, releases (album feature + tracklist), photo collage (10 items), contact/booking, footer, lightbox. Sections bio→footer are wrapped in a single `.trunk-bg` div carrying the tree background image.
+
+- **`src/styles.css`** (~1300 lines) — all CSS: custom properties, section layouts, audio player, animations, responsive breakpoints (900px).
+- **`src/runner-game.js`** (~980 lines) — 3-lane pseudo-3D runner game (vanilla Canvas 2D) that gates the EPK. Player dodges/jumps obstacles and collects oranges. Renders on a full-screen `#gameOverlay` canvas. On finish or skip, the overlay fades out and reveals the EPK. Keyboard (arrows/WASD/space) + mobile swipe. States: `title → playing → crashed | finished`. **Loaded first and NOT deferred** (the other scripts are `defer`).
+- **`src/audio-player.js`** — custom styled player for `.track-item[data-src]` elements: play/pause, progress bar, seek, time. Only one track plays at a time; toggles a `.playing` class on the active track.
+- **`src/audio-reactive.js`** (~330 lines) — hooks the Web Audio API into the playing `<audio>` element and drives page-wide visuals from live frequency data (hero pulse, album-cover glow, cursor-trail scaling, a lava-lamp canvas in the music section, social/footer effects). Flow: `.playing` class → MutationObserver → intercepted `play()` connects an AnalyserNode → per-frame `tick()` maps bass/mids/treble/energy to CSS inline styles and the `--audio-bass` / `--audio-energy` custom properties. Depends on the Motion One CDN global (`Motion.animate`).
+- **`src/scroll-reveal.js`** — IntersectionObserver adds `.visible` to `.reveal` elements on scroll.
+- **`src/cursor-trail.js`** — animated 8-dot trail following the mouse.
+- **`src/lightbox.js`** — click any `.collage-item img` to open `#lightbox` fullscreen; ESC or click to close.
 
 ## Key Design Patterns
 
-- **CSS custom properties** defined on `:root` — `--bg`, `--bg-card`, `--fg`, `--fg-dim`, `--accent`, `--accent-2`, `--accent-3`
-- **Tree visibility toggling**: Sections use `.section-tree-visible` (transparent, tree shows through) or `.section-tree-hidden` (solid `#1e1e1e` background)
-- **Film grain overlay**: Applied via `body::before` using an inline SVG noise filter in CSS
-- **Typography stack**: Anton (hero name), Bebas Neue (headings/labels), Space Mono (body), Playfair Display (editorial/italic), Oswald (loaded but lightly used)
-- **Reveal animations**: Elements with class `.reveal` animate in on scroll; stagger via `.reveal-delay-1` through `.reveal-delay-4`
-- **Audio player**: Track items with `data-src` attribute get custom players. `.track-info` div wraps clickable content, `.track-player` div holds progress bar and time.
-- **Runner game gate**: `#gameOverlay` with `<canvas id="gameCanvas">` covers the page on load. `body.game-active` locks scroll with `position:fixed` and hides tree background. On skip/finish, overlay fades out, `game-active` class removed, scroll resets to top. Skip button (`#gameSkip`) always visible at bottom-right with pulsing glow.
+- **CSS custom properties** on `:root` — palette `--bg`, `--bg-card`, `--bg-rule`, `--fg`, `--fg-dim`, `--fg-muted`, `--accent` (orange), `--accent-2`, `--accent-3`, `--hot`; hero-cutout positioning (`--cutout-*`); audio-reactive (`--audio-bass`, `--audio-energy`, set from JS).
+- **Tree visibility toggling**: sections use `.section-tree-visible` (transparent, tree image shows through) or `.section-tree-hidden` (solid background).
+- **Hero**: background `<video>` (`Assets/Videos/hero-bg.mp4`, poster `hero-bg-poster.jpg`) with a veil overlay; glitch-text name plus a `.hero-cutout` PNG.
+- **Film grain overlay**: `body::before` with an inline SVG noise filter in CSS.
+- **Typography**: Anton (hero name), Bebas Neue (headings/labels), Space Mono (body), Playfair Display + Fraunces (editorial/italic) — all from Google Fonts.
+- **Reveal animations**: `.reveal` elements animate in on scroll; stagger via `.reveal-delay-1`…`.reveal-delay-4`.
+- **Game gate**: `body.game-active` (set in HTML) locks scroll and hides the tree background until the game finishes/skips.
 
 ## Deployment
 
 - **Live site:** https://ayopapo.studio (behind Cloudflare)
-- **GitHub:** `BryanZaneee/Papo` — push to `main` branch
+- **GitHub:** `BryanZaneee/Papo` — push to `main`
 - **VPS:** `ssh root@100.88.216.70` — Caddy serves from `/var/www/papo-static/`
 
-**IMPORTANT:** After every `git push`, you MUST also update the VPS — there is no auto-deploy:
+**IMPORTANT:** No auto-deploy. After every `git push` you must update the VPS:
 ```
 ssh root@100.88.216.70 "cd /var/www/papo-static && git fetch origin && git checkout -f origin/main -- ."
 ```
 
-When updating CSS or JS files, bump the `?v=` query string in `index.html` to bust Cloudflare/browser cache (e.g., `styles.css?v=3`).
+When updating a CSS or JS file, bump its `?v=` query string in `index.html` to bust Cloudflare/browser cache (e.g. `styles.css?v=32`). Image assets are versioned the same way where cached (e.g. `treebackground.png?v=20260427`).
 
 ## Assets
 
-- `Assets/Music_/` — WAV audio files (7 tracks), referenced via `data-src` attributes on `.track-item` elements
-- `Assets/Photos/` — JPG/JPEG images (13 photos): DSC02086.JPG used as hero image, remaining 12 in the collage grid
-- `Assets/Videos/` — Empty directory
+- `Assets/Music_/` — 7 WAV tracks, referenced via `data-src` on `.track-item` elements.
+- `Assets/Photos/` — JPG/JPEG portraits; `IMG_1228.JPG` is the bio image, 10 others fill the collage grid.
+- `Assets/Videos/` — `hero-bg.mp4` + `hero-bg-poster.jpg` (hero background).
+- `Assets/flavor/` — cutout PNGs (`papo1`, `papo2`, `orange-can`) and `treebackground.png` (the trunk background).
+- Root `Assets/` — `orange1–4.png`, `jookjook.png` (album cover), favicon.
+
+## Note
+
+`AGENTS.md` is a Codex-targeted copy of this file and can drift; update both together when architecture changes.
