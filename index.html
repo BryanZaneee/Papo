@@ -11,7 +11,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Archivo:wght@400;500;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="src/styles.css?v=39">
+    <link rel="stylesheet" href="src/styles.css?v=40">
     <!-- Preload critical EPK assets while game runs -->
     <link rel="preload" as="image" href="Assets/Photos/IMG_1228.JPG">
     <link rel="preload" as="image" href="Assets/flavor/treebackground.png?v=20260701">
@@ -29,7 +29,8 @@
     <!-- ═══ FIXED BACKDROP LAYERS ═══ -->
     <div class="tree-bg" id="treeBg"></div>
     <div class="tree-veil"></div>
-    <div class="tree-glow"></div>
+    <div class="tree-glow tree-glow-blue" id="glowBlue"></div>
+    <div class="tree-glow tree-glow-orange" id="glowOrange"></div>
     <div class="grain"></div>
 
     <!-- ═══ NAV ═══ -->
@@ -184,7 +185,7 @@
     <!-- ═══ DJ EVENT ARCHIVES — full-bleed poster wall ═══ -->
     <section id="archives" class="archives-section">
         <div class="archives-head">
-            <h2 class="section-heading reveal reveal-delay-1">DJ Event Archives</h2>
+            <h2 class="section-heading reveal reveal-delay-1">DJ Events</h2>
         </div>
         <div class="poster-strip">
             <div class="poster-card lb-card"><img src="Assets/Posters/poster-01.jpg" alt="PAPO event poster" loading="lazy"></div>
@@ -309,15 +310,23 @@
     <script src="src/audio-player.js?v=6" defer></script>
     <script src="src/lightbox.js?v=5" defer></script>
     <script>
-        // Tree parallax: map scroll progress → background-position-y of the fixed tree
+        // Tree parallax + glow cross-fade: scroll progress drives the tree's
+        // background-position-y and fades the bottom glow from blue to orange
         (function () {
             var tree = document.getElementById('treeBg');
+            var glowBlue = document.getElementById('glowBlue');
+            var glowOrange = document.getElementById('glowOrange');
             var last = -1;
             function update() {
                 var doc = document.documentElement;
                 var max = (doc.scrollHeight - window.innerHeight) || 1;
                 var p = Math.min(1, Math.max(0, (window.scrollY || 0) / max));
-                if (p !== last) { last = p; tree.style.backgroundPositionY = (p * 100) + '%'; }
+                if (p !== last) {
+                    last = p;
+                    tree.style.backgroundPositionY = (p * 100) + '%';
+                    glowBlue.style.opacity = 1 - p;
+                    glowOrange.style.opacity = p;
+                }
             }
             window.addEventListener('scroll', update, { passive: true });
             window.addEventListener('resize', update);

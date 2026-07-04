@@ -89,12 +89,22 @@ img {
     background: radial-gradient(130% 85% at 50% 2%, rgba(13, 11, 6, 0.12), rgba(11, 10, 5, 0.66) 66%, rgba(9, 8, 4, 0.8) 100%);
 }
 
+/* Bottom glow: two stacked layers cross-faded by scroll progress
+   (opacity set from JS) — blue at the top of the page, orange at the bottom */
 .tree-glow {
     position: fixed;
     inset: 0;
     z-index: 1;
     pointer-events: none;
+}
+
+.tree-glow-blue {
+    background: radial-gradient(70% 46% at 50% 100%, rgba(95, 184, 224, 0.3), rgba(95, 184, 224, 0.05) 55%, transparent 72%);
+}
+
+.tree-glow-orange {
     background: radial-gradient(70% 46% at 50% 100%, rgba(234, 91, 26, 0.3), rgba(234, 91, 26, 0.05) 55%, transparent 72%);
+    opacity: 0;
 }
 
 .grain {
