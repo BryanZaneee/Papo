@@ -237,7 +237,8 @@ body.game-active {
 }
 
 body.game-active .hero-video {
-    display: none;
+    /* visibility (not display:none) so the video loads and plays behind the game overlay */
+    visibility: hidden;
 }
 
 /* ═══════════════════════════════════════════

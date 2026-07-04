@@ -229,6 +229,9 @@
         setTimeout(function () {
             overlay.style.display = 'none';
             document.body.classList.remove('game-active');
+            // Safari can pause hidden autoplay video; nudge it on reveal
+            var v = document.querySelector('.hero-video');
+            if (v && v.paused) v.play();
             window.scrollTo(0, 0);
         }, 800);
     }
