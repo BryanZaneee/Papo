@@ -236,10 +236,8 @@ body.game-active {
     height: 100%;
 }
 
-body.game-active .hero-video {
-    /* visibility (not display:none) so the video loads and plays behind the game overlay */
-    visibility: hidden;
-}
+/* .hero-video stays fully rendered during the game — the opaque .game-overlay
+   covers it, so it decodes/plays and is paint-ready the instant the overlay fades */
 
 /* ═══════════════════════════════════════════
    HERO — unchanged design, kept from v1
