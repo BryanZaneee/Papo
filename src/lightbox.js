@@ -1,10 +1,10 @@
-// Click any collage image → fullscreen lightbox. ESC or click to close.
+// Click any gallery image or poster → fullscreen lightbox. ESC or click to close.
 (function () {
     var lightbox = document.getElementById('lightbox');
     var lbImg = lightbox.querySelector('img');
     var closeBtn = lightbox.querySelector('.lightbox-close');
 
-    document.querySelectorAll('.collage-item img').forEach(img => {
+    document.querySelectorAll('img.lb, .lb-card img').forEach(img => {
         img.addEventListener('click', () => {
             lbImg.src = img.src;
             lbImg.alt = img.alt;

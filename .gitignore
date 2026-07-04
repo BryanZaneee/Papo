@@ -24,3 +24,7 @@ plans/
 # Design source files (large binaries, not for web)
 *.psd
 *.PSD
+
+# Poster originals (100MB of PNGs — web versions live in Assets/Posters/)
+Assets/DJ Event Archives/
+papo-tree.png
