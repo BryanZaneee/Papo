@@ -1,5 +1,6 @@
 # Audio files (too large for git)
 *.wav
+*.m4a
 *.WAV
 
 # OS files

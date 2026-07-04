@@ -71,7 +71,7 @@ img {
     position: fixed;
     inset: 0;
     z-index: 0;
-    background-image: url('../Assets/flavor/treebackground.png?v=20260701');
+    background-image: url('../Assets/flavor/treebackground.webp');
     background-repeat: no-repeat;
     background-position: center 0%;
     background-size: auto 250vh;
@@ -720,11 +720,6 @@ body.game-active .hero-video {
     padding: 0 56px;
 }
 
-.archives-sub {
-    font-size: 15px;
-    color: var(--fg-dim);
-    margin: 0;
-}
 
 /* Postered street wall — every flyer visible, wrapped, borderline overlapping */
 .poster-strip {

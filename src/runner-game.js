@@ -935,18 +935,18 @@
         // Uses requestIdleCallback (or setTimeout fallback) so it never
         // competes with the game's rendering budget.
         var urls = [
-            'Assets/Photos/AyoPapo_1.jpeg',
-            'Assets/Photos/DSC02620.JPG',
-            'Assets/Photos/DSC02910.JPG',
-            'Assets/Photos/IMG_0115%203.JPG',
-            'Assets/Photos/IMG_0218%202.jpg',
-            'Assets/Photos/IMG_0560.JPG',
-            'Assets/Photos/IMG_1228.JPG',
-            'Assets/Photos/IMG_1280.JPG',
-            'Assets/Photos/IMG_6116.JPG',
-            'Assets/Photos/IMG_9783.JPG',
-            'Assets/Photos/P1010002.JPG',
-            'Assets/Photos/36052C08-BC91-42F3-BB32-1A0140EF9E9B.JPG',
+            'Assets/Photos/AyoPapo_1.jpeg?v=1',
+            'Assets/Photos/DSC02620.JPG?v=1',
+            'Assets/Photos/DSC02910.JPG?v=1',
+            'Assets/Photos/IMG_0115%203.JPG?v=1',
+            'Assets/Photos/IMG_0218%202.jpg?v=1',
+            'Assets/Photos/IMG_0560.JPG?v=1',
+            'Assets/Photos/IMG_1228.JPG?v=1',
+            'Assets/Photos/IMG_1280.JPG?v=1',
+            'Assets/Photos/IMG_6116.JPG?v=1',
+            'Assets/Photos/IMG_9783.JPG?v=1',
+            'Assets/Photos/P1010002.JPG?v=1',
+            'Assets/Photos/36052C08-BC91-42F3-BB32-1A0140EF9E9B.JPG?v=1',
         ];
         var idx = 0;
         function next() {

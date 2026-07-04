@@ -55,12 +55,12 @@ Note: `*.wav` is gitignored — the music files must be copied to the VPS manual
 
 ## Assets
 
-- `Assets/Music_/` — 7 WAV tracks, referenced via `data-src` on `.track-item` elements (gitignored; live on the VPS).
-- `Assets/Photos/` — JPG/JPEG portraits; `IMG_1228.JPG` is the bio image, 12 fill the gallery masonry.
+- `Assets/Music_/` — 7 tracks served as 256k AAC `.m4a` (transcoded from the WAV masters with `ffmpeg -c:a aac -b:a 256k`), referenced via `data-src` on `.track-item` elements. Both `.wav` and `.m4a` are gitignored; the m4a files must be `scp`'d to the VPS. WAV masters stay local-only.
+- `Assets/Photos/` — JPG/JPEG portraits, web-sized to ≤1600px q78 via `sips -Z 1600 -s format jpeg -s formatOptions 78` (full-res originals live in git history before Jul 2026); `IMG_1228.JPG` is the bio image, 12 fill the gallery masonry. All referenced with `?v=1` in both `index.html` and the `preloadEPKAssets()` list in `src/runner-game.js` — keep those two URL lists identical or images download twice.
 - `Assets/Videos/` — `hero-bg.mp4` + `hero-bg-poster.jpg` (hero background), `Arcade Bar May23rd.mp4` (poster-wall video card).
 - `Assets/Posters/` — `poster-01.jpg`…`poster-27.jpg`, 900px-wide web versions of the DJ event flyers, with baked-in IG-screenshot black bars auto-trimmed. Originals are local-only in `Assets/DJ Event Archives/` (gitignored); regenerate with `sips` (resize) + a Pillow row-scan trim (a row is "bar" when ≥92% of pixels have max channel ≤60).
-- `Assets/flavor/` — cutout PNGs (`papo1`, `papo2`, `orange-can`) and `treebackground.png` (the fixed tree backdrop).
-- Root `Assets/` — `orange1–4.png`, `jookjook.png` (album cover), favicon.
+- `Assets/flavor/` — `papo2.webp` (hero cutout) and `treebackground.webp` (the fixed tree backdrop), both `cwebp` conversions of the old PNGs (in git history).
+- Root `Assets/` — `orange1.png` (64px favicon), `jookjook.webp` (album cover).
 
 ## Note
 
