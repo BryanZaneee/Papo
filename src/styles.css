@@ -849,17 +849,10 @@ body.game-active {
 
 .booking-card-label {
     font-family: 'Space Mono', monospace;
-    font-size: 10px;
+    font-size: 12px;
     letter-spacing: 0.16em;
     color: var(--accent-soft);
     text-transform: uppercase;
-    margin-bottom: 10px;
-}
-
-.booking-card-value {
-    font-weight: 600;
-    font-size: 13.5px;
-    word-break: break-word;
 }
 
 .social-pills {
