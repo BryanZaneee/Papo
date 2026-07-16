@@ -430,6 +430,35 @@ body.game-active {
 }
 
 /* ═══════════════════════════════════════════
+   SETS
+   ═══════════════════════════════════════════ */
+.sets-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+    max-width: 1200px;
+    margin: 40px auto 0;
+    padding: 0 56px;
+    scroll-margin-top: 90px;
+}
+
+.set-embed {
+    aspect-ratio: 16 / 9;
+    background: #000;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid rgba(244, 235, 214, 0.14);
+    box-shadow: 0 30px 60px -30px rgba(0, 0, 0, 0.8);
+}
+
+.set-embed iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+}
+
+/* ═══════════════════════════════════════════
    BIO
    ═══════════════════════════════════════════ */
 .bio-grid {
@@ -1139,6 +1168,11 @@ body.game-active {
     .releases-grid {
         grid-template-columns: 1fr;
         gap: 36px;
+    }
+    .sets-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+        padding: 0 22px;
     }
     .release-cover-col {
         max-width: 400px;
