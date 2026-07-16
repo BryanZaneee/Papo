@@ -53,6 +53,8 @@ When updating a CSS or JS file, bump its `?v=` query string in `index.html` to b
 
 Note: `*.wav` is gitignored — the music files must be copied to the VPS manually if they ever change.
 
+A Content-Security-Policy header is set server-side in `/etc/caddy/Caddyfile` (ayopapo.studio block, ~line 424) — new external resources (iframes, scripts, etc.) must be allowlisted there and Caddy reloaded (`systemctl reload caddy`). Current `frame-src` allows only `https://www.youtube-nocookie.com` (the Sets embeds). Don't run `caddy validate` over SSH — it false-fails because the Cloudflare DNS token env var only exists in the systemd unit.
+
 ## Assets
 
 - `Assets/Music_/` — 7 tracks served as 256k AAC `.m4a` (transcoded from the WAV masters with `ffmpeg -c:a aac -b:a 256k`), referenced via `data-src` on `.track-item` elements. Both `.wav` and `.m4a` are gitignored; the m4a files must be `scp`'d to the VPS. WAV masters stay local-only.
