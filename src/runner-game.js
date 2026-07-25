@@ -7,51 +7,81 @@
     const LANE_COUNT = 3;
     const MAX_Z = 300;
     const OBSTACLE_GAP = 45;
-    const FINISH_DISTANCE = 2400;
-    const BASE_SPEED = 130;
-    const MAX_SPEED = 220;
+    const FINISH_DISTANCE = 1800;   // ~10.5s clean run at the speed curve below
+    const BASE_SPEED = 150;
+    const SPEED_RAMP = 0.03;        // speed = BASE_SPEED + distance * SPEED_RAMP
+    const MAX_SPEED = 340;          // only reachable in endless mode
     const JUMP_DURATION = 0.55;
     const JUMP_HEIGHT = 80;
+    const HORIZON_FRAC = 0.22;
+    const MAX_DPR = 2;
+    const ORANGE = '🍊'; // 🍊 — the pickup, and the site's signature
 
-    // Daytime street palette: blue sky + clouds, green grass, black asphalt
-    // with white markings, blue runner, red apples on trees, cyan gem pickups.
+    // Daytime street palette: blue sky + clouds, green grass, cool-dark asphalt.
+    //
+    // Obstacle colour encodes AFFORDANCE, not object identity:
+    //   dodge-only  → hot red/orange, tall, dark outline
+    //   jumpable    → yellow warning band, deliberately short
+    // Roadside scenery is desaturated and fogged so it can never be mistaken
+    // for something that kills you.
     const COLORS = {
         sky: '#5fb8e0',
         skyHorizon: '#bfe2f0',
+        sun: 'rgba(255,244,214,0.95)',
+        sunGlow: 'rgba(255,232,170,0.35)',
+        hillFar: '#7fa8c4',
+        hillNear: '#4e7a4a',
         cloud: 'rgba(255,255,255,0.92)',
         cloudSoft: 'rgba(255,255,255,0.55)',
         ground: '#5a8a3e',
         groundDark: '#3d6a26',
-        road: '#262626',
-        roadLight: '#3a3a3a',
-        rumble: '#f0f0f0',
-        rumbleDim: '#f0f0f0',
+        road: '#1e1f24',
+        roadLight: '#33353d',
+        rumble: '#f4f4f4',
+        rumbleDim: '#9aa0ad',
         lane: 'rgba(255,255,255,0.75)',
         player: '#2a5fa0',
         playerGlow: 'rgba(120,180,255,0.45)',
         text: '#f0f6ff',
         textDim: '#a8c0d4',
         accent: '#5fb8e0',
-        treeTrunk: '#6b4226',
-        treeCanopy: '#3a7a2a',
-        treeCanopyDark: '#2d5a1e',
-        fruit: '#c8312b',
-        orangeCanopy: '#d4882e',
-        orangeCanopyDark: '#a85a14',
-        orangeFruit: '#ff8a1f',
-        pickup: '#5fb8e0',
+        // Scenery — muted, never confusable with an obstacle
+        treeTrunk: '#5a3b26',
+        treeCanopy: '#4a7a52',
+        treeCanopyDark: '#3a6242',
+        fruit: '#a8544a',
+        orangeCanopy: '#a88a52',
+        orangeCanopyDark: '#8a6c3c',
+        orangeFruit: '#c98a45',
+        // Obstacles — dodge (hot) vs jump (warning band)
+        dodgeBody: '#e03a26',
+        dodgeDark: '#a3220f',
+        dodgeRim: '#ff9a7a',
+        jumpBody: '#3a3f4a',
+        jumpDark: '#22252c',
+        jumpBand: '#ffd23f',
+        jumpRim: '#fff2b0',
+        outline: 'rgba(8,10,14,0.85)',
+        // Orange pickups
+        pickup: '#ff8a1f',
+        pickupDark: '#ea5b1a',
+        pickupLeaf: '#4a9a3a',
         pickupShine: 'rgba(255,255,255,0.85)',
-        speakerBody: '#2a2a2a',
-        speakerCone: '#101010',
+        pickupGlow: 'rgba(255,160,60,0.45)',
+        speakerBody: '#3a3a3a',
+        speakerCone: '#1a1a1a',
         speakerRing: '#888888',
-        shadow: 'rgba(0,0,0,0.3)',
+        shadow: 'rgba(0,0,0,0.35)',
     };
 
     // ═══════════════════════════════════════════
     //  STATE
     // ═══════════════════════════════════════════
     let canvas, ctx;
+    let W = 0, H = 0;        // CSS-pixel viewport; the backing store is W*dpr × H*dpr
     let gameState = 'title'; // title | playing | crashed | finished
+    let endless = false;     // set when the player chooses KEEP RUNNING after finishing
+    let running = true;      // false once the EPK is revealed — stops the rAF loop
     let playerLane = 1;
     let targetLane = 1;
     let laneFrom = 1; // lane position when move started
@@ -71,6 +101,60 @@
     let screenShake = 0;
     let titleRoadOffset = 0; // animate road on title screen
     let clouds = [];
+    let hills = [];
+    let skyGrad = null, roadGrad = null, groundGrad = null, vignette = null;
+
+    // ═══════════════════════════════════════════
+    //  VIEWPORT
+    // ═══════════════════════════════════════════
+    // Every draw function works in CSS pixels (W/H). The backing store is scaled
+    // by devicePixelRatio and the context pre-transformed, so nothing downstream
+    // has to know about DPR — but that also means nothing may read canvas.width.
+    function resize() {
+        W = window.innerWidth;
+        H = window.innerHeight;
+        var dpr = Math.min(window.devicePixelRatio || 1, MAX_DPR);
+        canvas.width = Math.round(W * dpr);
+        canvas.height = Math.round(H * dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        buildGradients();
+    }
+
+    // Gradients are viewport-sized, so they only change on resize — rebuilding
+    // them per frame was costing four object allocations every frame.
+    function buildGradients() {
+        var horizonY = H * HORIZON_FRAC;
+
+        skyGrad = ctx.createLinearGradient(0, 0, 0, horizonY);
+        skyGrad.addColorStop(0, COLORS.sky);
+        skyGrad.addColorStop(1, COLORS.skyHorizon);
+
+        groundGrad = ctx.createLinearGradient(0, horizonY, 0, H);
+        groundGrad.addColorStop(0, COLORS.ground);
+        groundGrad.addColorStop(1, COLORS.groundDark);
+
+        var pNear = project(0), pFar = project(MAX_Z);
+        roadGrad = ctx.createLinearGradient(0, pFar.y, 0, pNear.y);
+        roadGrad.addColorStop(0, COLORS.road);
+        roadGrad.addColorStop(1, COLORS.roadLight);
+
+        // Kept deliberately light — it's there to focus the eye on the lanes, not
+        // to darken the scene. At 0.42 it turned a bright daytime road murky.
+        vignette = ctx.createRadialGradient(W / 2, H * 0.55, H * 0.45, W / 2, H * 0.55, H * 1.05);
+        vignette.addColorStop(0, 'rgba(0,0,0,0)');
+        vignette.addColorStop(1, 'rgba(0,0,0,0.18)');
+
+        // Two parallax ridges sitting on the horizon, regenerated at viewport width
+        hills = [];
+        for (var layer = 0; layer < 2; layer++) {
+            var pts = [];
+            var step = W / 12;
+            for (var x = -step; x <= W + step; x += step) {
+                pts.push({ x: x, y: (layer === 0 ? 26 : 42) * (0.5 + Math.abs(Math.sin(x * 0.011 + layer * 2.3))) });
+            }
+            hills.push(pts);
+        }
+    }
 
     // ═══════════════════════════════════════════
     //  PROJECTION
@@ -78,14 +162,21 @@
     function project(z) {
         var d = z / MAX_Z;
         var perspective = 1 / (1 + d * 5);
-        var horizonY = canvas.height * 0.22;
-        var playerY = canvas.height * 0.93;
+        var horizonY = H * HORIZON_FRAC;
+        var playerY = H * 0.93;
         return { y: horizonY + (playerY - horizonY) * perspective, scale: perspective };
     }
 
+    // Distance fog — everything fades toward the horizon haze as z grows.
+    // Returns 0 (near, full colour) → 1 (far, fully hazed).
+    function fogAt(z) {
+        var t = z / MAX_Z;
+        return Math.min(1, Math.max(0, (t - 0.25) / 0.75)) * 0.85;
+    }
+
     function laneToX(lane, scale) {
-        var cx = canvas.width / 2;
-        var halfW = canvas.width * 0.32 * scale;
+        var cx = W / 2;
+        var halfW = W * 0.32 * scale;
         return cx + (lane - 1) * halfW * 0.7;
     }
 
@@ -97,10 +188,6 @@
         if (!canvas) return;
         ctx = canvas.getContext('2d');
 
-        function resize() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
         resize();
         window.addEventListener('resize', resize);
 
@@ -114,9 +201,11 @@
             decorations.push({
                 z: Math.random() * MAX_Z,
                 side: Math.random() < 0.5 ? -1 : 1,
-                offset: 1.3 + Math.random() * 0.8,
+                // Pushed off the shoulder so scenery never crowds the lanes and
+                // reads as something you have to dodge.
+                offset: 1.5 + Math.random() * 0.9,
                 type: decType,
-                size: 0.5 + Math.random() * 0.5,
+                size: 0.8 + Math.random() * 0.7,
             });
         }
 
@@ -138,6 +227,12 @@
             }
             if (gameState === 'crashed') {
                 if (e.code === 'Space' || e.code === 'Enter') { e.preventDefault(); startGame(); }
+                return;
+            }
+            if (gameState === 'finished') {
+                // Buttons are real DOM elements, so Tab/Enter already work on them.
+                // Space is the one key players will reach for out of habit.
+                if (e.code === 'Space') { e.preventDefault(); enterSite(); }
                 return;
             }
             if (gameState === 'playing') {
@@ -178,14 +273,20 @@
         // Skip button
         var skipBtn = document.getElementById('gameSkip');
         if (skipBtn) skipBtn.addEventListener('click', function (e) { e.stopPropagation(); enterSite(); });
+
+        // Finish-screen choices — real buttons, so hover/focus/keyboard come free
+        var enterBtn = document.getElementById('gameEnter');
+        if (enterBtn) enterBtn.addEventListener('click', function (e) { e.stopPropagation(); enterSite(); });
+        var againBtn = document.getElementById('gameKeepRunning');
+        if (againBtn) againBtn.addEventListener('click', function (e) { e.stopPropagation(); goEndless(); });
     }
 
     function spawnClouds() {
         clouds = [];
         for (var i = 0; i < 7; i++) {
             clouds.push({
-                x: Math.random() * canvas.width,
-                y: canvas.height * (0.02 + Math.random() * 0.14),
+                x: Math.random() * W,
+                y: H * (0.02 + Math.random() * 0.14),
                 scale: 0.6 + Math.random() * 0.9,
                 speed: 6 + Math.random() * 10,
             });
@@ -201,6 +302,7 @@
     // ═══════════════════════════════════════════
     function startGame() {
         gameState = 'playing';
+        endless = false;
         distance = 0;
         speed = BASE_SPEED;
         playerLane = 1;
@@ -214,14 +316,33 @@
         jumpTime = 0;
         jumpHeight = 0;
         screenShake = 0;
+        crashTimer = 0;
+        finishTimer = 0;
+        showFinishButtons(false);
         lastTime = performance.now();
         seedObstacles();
+    }
+
+    // Chosen from the finish screen: drop the finish line and keep the run going.
+    // Oranges carry over, speed keeps climbing toward MAX_SPEED.
+    function goEndless() {
+        endless = true;
+        gameState = 'playing';
+        finishTimer = 0;
+        showFinishButtons(false);
+        lastTime = performance.now();
+    }
+
+    function showFinishButtons(show) {
+        var el = document.getElementById('gameFinishActions');
+        if (el) el.classList.toggle('is-visible', !!show);
     }
 
     var entered = false;
     function enterSite() {
         if (entered) return;
         entered = true;
+        showFinishButtons(false);
         var overlay = document.getElementById('gameOverlay');
         if (!overlay) return;
         overlay.style.transition = 'opacity 0.8s ease';
@@ -229,6 +350,9 @@
         setTimeout(function () {
             overlay.style.display = 'none';
             document.body.classList.remove('game-active');
+            // The loop used to keep rendering a full-screen canvas for the rest of
+            // the session; nothing is visible past this point, so stop it.
+            running = false;
             // Safari can pause hidden autoplay video; nudge it on reveal
             var v = document.querySelector('.hero-video');
             if (v && v.paused) v.play();
@@ -271,9 +395,9 @@
             var c = clouds[ci];
             c.x += c.speed * dt;
             var w = 60 * c.scale;
-            if (c.x - w * 2 > canvas.width) {
+            if (c.x - w * 2 > W) {
                 c.x = -w * 2;
-                c.y = canvas.height * (0.02 + Math.random() * 0.14);
+                c.y = H * (0.02 + Math.random() * 0.14);
                 c.scale = 0.6 + Math.random() * 0.9;
                 c.speed = 6 + Math.random() * 10;
             }
@@ -285,7 +409,7 @@
         }
         if (gameState !== 'playing') return;
 
-        speed = Math.min(MAX_SPEED, BASE_SPEED + distance * 0.025);
+        speed = Math.min(MAX_SPEED, BASE_SPEED + distance * SPEED_RAMP);
         distance += speed * dt;
 
         // Move world
@@ -334,8 +458,8 @@
             var c = collectibles[i];
             if (!c.collected && c.z < 8 && c.z > -12 && c.lane === pLane) {
                 c.collected = true;
-                score += 10;
-                distance += 60; // gems boost you toward the finish line
+                score += 1;
+                distance += 60; // oranges boost you toward the finish line
             }
         }
 
@@ -348,8 +472,8 @@
         for (var i = 0; i < obstacles.length; i++) if (obstacles[i].z > maxZ) maxZ = obstacles[i].z;
         while (maxZ < MAX_Z) { maxZ += OBSTACLE_GAP + Math.random() * 25; spawnAt(maxZ); }
 
-        // Win
-        if (distance >= FINISH_DISTANCE) { gameState = 'finished'; finishTimer = 0; }
+        // Win — endless runs have no finish line to cross
+        if (!endless && distance >= FINISH_DISTANCE) { gameState = 'finished'; finishTimer = 0; }
     }
 
     function crash() {
@@ -361,32 +485,30 @@
     // ═══════════════════════════════════════════
     //  RENDER
     // ═══════════════════════════════════════════
-    function render() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    function render(dt) {
+        ctx.clearRect(0, 0, W, H);
 
         if (screenShake > 0) {
             ctx.save();
             ctx.translate((Math.random() - 0.5) * screenShake, (Math.random() - 0.5) * screenShake);
         }
 
-        var horizonY = canvas.height * 0.22;
+        var horizonY = H * HORIZON_FRAC;
 
         // Sky
-        var sky = ctx.createLinearGradient(0, 0, 0, horizonY);
-        sky.addColorStop(0, COLORS.sky);
-        sky.addColorStop(1, COLORS.skyHorizon);
-        ctx.fillStyle = sky;
-        ctx.fillRect(0, 0, canvas.width, horizonY);
+        ctx.fillStyle = skyGrad;
+        ctx.fillRect(0, 0, W, horizonY);
+        drawSun(horizonY);
 
         // Clouds drift across the upper sky
         drawClouds();
 
         // Ground
-        var gnd = ctx.createLinearGradient(0, horizonY, 0, canvas.height);
-        gnd.addColorStop(0, COLORS.ground);
-        gnd.addColorStop(1, COLORS.groundDark);
-        ctx.fillStyle = gnd;
-        ctx.fillRect(0, horizonY, canvas.width, canvas.height - horizonY);
+        ctx.fillStyle = groundGrad;
+        ctx.fillRect(0, horizonY, W, H - horizonY);
+
+        drawHills(horizonY);
+        drawHaze(horizonY);
 
         // Road
         var roadOff = gameState === 'title' ? titleRoadOffset : distance;
@@ -421,13 +543,78 @@
         // Player (only during gameplay / crash)
         if (gameState === 'playing' || gameState === 'crashed') drawPlayer();
 
+        if (gameState === 'playing') drawSpeedLines();
+
         if (screenShake > 0) ctx.restore();
+
+        ctx.fillStyle = vignette;
+        ctx.fillRect(0, 0, W, H);
 
         // UI overlays
         if (gameState === 'playing') drawHUD();
         if (gameState === 'title') drawTitle();
-        if (gameState === 'crashed') drawCrash();
-        if (gameState === 'finished') drawFinish();
+        if (gameState === 'crashed') drawCrash(dt);
+        if (gameState === 'finished') drawFinish(dt);
+    }
+
+    // ── Atmosphere ────────────────────────────
+    // Sun sits at the road's vanishing point, so the whole scene reads as one
+    // perspective instead of a gradient with a road pasted on it.
+    function drawSun(horizonY) {
+        var sx = W / 2, sy = horizonY - H * 0.055, r = Math.min(W, H) * 0.055;
+        ctx.fillStyle = COLORS.sunGlow;
+        ctx.beginPath(); ctx.arc(sx, sy, r * 3.2, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = COLORS.sun;
+        ctx.beginPath(); ctx.arc(sx, sy, r, 0, Math.PI * 2); ctx.fill();
+    }
+
+    // Two parallax ridges. They scroll far slower than the road, which is what
+    // sells the distance.
+    function drawHills(horizonY) {
+        var off = (gameState === 'title' ? titleRoadOffset : distance);
+        for (var layer = 0; layer < hills.length; layer++) {
+            var pts = hills[layer];
+            if (!pts || !pts.length) continue;
+            var shift = -(off * (layer === 0 ? 0.012 : 0.028)) % (W + 200);
+            ctx.fillStyle = layer === 0 ? COLORS.hillFar : COLORS.hillNear;
+            ctx.globalAlpha = layer === 0 ? 0.55 : 0.75;
+            ctx.beginPath();
+            ctx.moveTo(pts[0].x + shift, horizonY + 2);
+            for (var i = 0; i < pts.length; i++) ctx.lineTo(pts[i].x + shift, horizonY - pts[i].y);
+            ctx.lineTo(pts[pts.length - 1].x + shift, horizonY + 2);
+            ctx.closePath();
+            ctx.fill();
+            ctx.globalAlpha = 1;
+        }
+    }
+
+    // Thin haze right at the horizon so the ground doesn't meet the sky on a
+    // hard line. A wide, opaque band here just greyed out the whole middle.
+    function drawHaze(horizonY) {
+        var band = H * 0.05;
+        var g = ctx.createLinearGradient(0, horizonY - band, 0, horizonY + band);
+        g.addColorStop(0, 'rgba(191,226,240,0)');
+        g.addColorStop(0.5, 'rgba(191,226,240,0.4)');
+        g.addColorStop(1, 'rgba(191,226,240,0)');
+        ctx.fillStyle = g;
+        ctx.fillRect(0, horizonY - band, W, band * 2);
+    }
+
+    // Streaks along the road edges that only appear once you're moving fast.
+    function drawSpeedLines() {
+        var t = (speed - BASE_SPEED) / (MAX_SPEED - BASE_SPEED);
+        if (t <= 0.05) return;
+        ctx.save();
+        ctx.strokeStyle = 'rgba(255,255,255,' + (0.06 + t * 0.16).toFixed(3) + ')';
+        ctx.lineWidth = 2;
+        for (var i = 0; i < 10; i++) {
+            var seed = (i * 137.5 + distance * 2.2) % 100 / 100;
+            var y = H * (0.35 + seed * 0.6);
+            var len = 40 + t * 120;
+            var edge = i % 2 === 0 ? W * 0.06 : W * 0.94;
+            ctx.beginPath(); ctx.moveTo(edge, y); ctx.lineTo(edge, y + len); ctx.stroke();
+        }
+        ctx.restore();
     }
 
     // ── Clouds ────────────────────────────────
@@ -454,8 +641,8 @@
 
     // ── Road ──────────────────────────────────
     function drawRoad(horizonY, offset) {
-        var cx = canvas.width / 2;
-        var baseW = canvas.width * 0.65;
+        var cx = W / 2;
+        var baseW = W * 0.65;
 
         // Road surface — single gradient-filled trapezoid (1 draw call)
         var pNear = project(0), pFar = project(MAX_Z);
@@ -468,11 +655,8 @@
         ctx.closePath();
         ctx.clip();
 
-        var roadGrad = ctx.createLinearGradient(0, pFar.y, 0, pNear.y);
-        roadGrad.addColorStop(0, COLORS.road);
-        roadGrad.addColorStop(1, COLORS.roadLight);
         ctx.fillStyle = roadGrad;
-        ctx.fillRect(0, pFar.y, canvas.width, pNear.y - pFar.y);
+        ctx.fillRect(0, pFar.y, W, pNear.y - pFar.y);
         ctx.restore();
 
         // Edge stripes — 30 white segments along the road shoulder
@@ -514,8 +698,8 @@
             ctx.beginPath(); ctx.moveTo(cx + w1 * 0.33, p1.y); ctx.lineTo(cx + w2 * 0.33, p2.y); ctx.stroke();
         }
 
-        // Finish line preview
-        if (gameState === 'playing') {
+        // Finish line preview — endless runs never show one
+        if (gameState === 'playing' && !endless) {
             var remaining = FINISH_DISTANCE - distance;
             if (remaining < MAX_Z * 2 && remaining > 0) {
                 var fz = remaining * 0.5;
@@ -537,12 +721,18 @@
     }
 
     // ── Decorations ───────────────────────────
+    // Scenery. Muted and fogged so it visibly sits *behind* the play space —
+    // the old version reused obstacle art at obstacle saturation, which made
+    // harmless roadside trees read as things you had to dodge.
     function drawDecoration(dec, y, scale) {
-        var cx = canvas.width / 2;
-        var hw = canvas.width * 0.32 * scale;
+        var cx = W / 2;
+        var hw = W * 0.32 * scale;
         var x = cx + dec.side * (hw + dec.offset * hw);
         var s = 30 * scale * dec.size;
         if (s < 2) return;
+
+        ctx.save();
+        ctx.globalAlpha = 0.9 * (1 - fogAt(dec.z) * 0.55);
 
         if (dec.type === 'tree') {
             ctx.fillStyle = COLORS.treeTrunk;
@@ -569,63 +759,91 @@
             ctx.fillStyle = COLORS.speakerCone;
             ctx.beginPath(); ctx.arc(x, y - s * 0.4, s * 0.2, 0, Math.PI * 2); ctx.fill();
         }
+
+        ctx.restore();
     }
 
     // ── Obstacles ─────────────────────────────
+    // Colour encodes what you must DO, not what the object is:
+    //   dodge-only → tall, hot red, hazard chevrons
+    //   jumpable   → short, dark, bright yellow band on top
+    // Both get a dark outline and a light top rim so they separate from the
+    // asphalt regardless of hue — the old speaker was #2a2a2a on a #262626 road
+    // and effectively invisible.
     function drawObstacle(obs, y, scale) {
         var x = laneToX(obs.lane, scale);
         var s = 40 * scale;
         if (s < 3) return;
 
-        // Shadow
+        // Contact shadow — anchors the object to the road
         ctx.fillStyle = COLORS.shadow;
-        ctx.beginPath(); ctx.ellipse(x, y, s * 0.7, s * 0.18, 0, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.ellipse(x, y, s * 0.75, s * 0.2, 0, 0, Math.PI * 2); ctx.fill();
 
-        if (obs.type === 'tree') {
-            // Tall tree — must dodge, cannot jump
-            ctx.fillStyle = COLORS.treeTrunk;
-            ctx.fillRect(x - s * 0.1, y - s * 2, s * 0.2, s * 2);
-            ctx.fillStyle = COLORS.treeCanopy;
-            ctx.beginPath(); ctx.arc(x, y - s * 2.2, s * 0.65, 0, Math.PI * 2); ctx.fill();
-            ctx.fillStyle = COLORS.treeCanopyDark;
-            ctx.beginPath(); ctx.arc(x - s * 0.15, y - s * 2.4, s * 0.35, 0, Math.PI * 2); ctx.fill();
-            ctx.fillStyle = COLORS.fruit;
-            var oo = [[0.25, -2.0], [-0.2, -2.3], [0.1, -2.5], [-0.35, -1.95]];
-            for (var i = 0; i < oo.length; i++) {
-                ctx.beginPath(); ctx.arc(x + oo[i][0] * s, y + oo[i][1] * s, s * 0.1, 0, Math.PI * 2); ctx.fill();
+        ctx.save();
+        ctx.globalAlpha = 1 - fogAt(obs.z) * 0.55;
+        ctx.lineJoin = 'round';
+        ctx.strokeStyle = COLORS.outline;
+        ctx.lineWidth = Math.max(1, s * 0.05);
+
+        if (!obs.jumpable) {
+            // ── DODGE — a tall hazard barrier, impossible to read as scenery
+            var bw = s * 1.15, bh = s * 2.4;
+            ctx.fillStyle = COLORS.dodgeBody;
+            rrect(x - bw / 2, y - bh, bw, bh, s * 0.07); ctx.fill(); ctx.stroke();
+
+            // Diagonal hazard chevrons
+            ctx.save();
+            rrect(x - bw / 2, y - bh, bw, bh, s * 0.07); ctx.clip();
+            ctx.strokeStyle = COLORS.dodgeDark;
+            ctx.lineWidth = Math.max(1.5, s * 0.13);
+            for (var i = -2; i < 6; i++) {
+                var ox = x - bw / 2 + i * s * 0.34;
+                ctx.beginPath();
+                ctx.moveTo(ox, y);
+                ctx.lineTo(ox + bh * 0.6, y - bh);
+                ctx.stroke();
             }
-        } else if (obs.type === 'hydrant') {
-            // Fire hydrant — jumpable
-            var hw = s * 0.3, hh = s * 0.7;
-            ctx.fillStyle = '#cc2222';
-            rrect(x - hw * 0.6, y - hh * 0.15, hw * 1.2, hh * 0.15, s * 0.02); ctx.fill();
-            ctx.fillStyle = '#dd3333';
-            rrect(x - hw / 2, y - hh, hw, hh, s * 0.04); ctx.fill();
-            ctx.fillStyle = '#bb2222';
-            rrect(x - hw * 0.35, y - hh - hh * 0.18, hw * 0.7, hh * 0.18, s * 0.03); ctx.fill();
-            ctx.fillStyle = '#cc2222';
-            ctx.beginPath(); ctx.arc(x, y - hh - hh * 0.18, hw * 0.2, 0, Math.PI * 2); ctx.fill();
-            ctx.fillStyle = '#aa1818';
-            rrect(x - hw * 0.75, y - hh * 0.65, hw * 0.3, hh * 0.12, s * 0.02); ctx.fill();
-            rrect(x + hw * 0.45, y - hh * 0.65, hw * 0.3, hh * 0.12, s * 0.02); ctx.fill();
-            ctx.fillStyle = 'rgba(255,255,255,0.15)';
-            rrect(x - hw * 0.15, y - hh * 0.9, hw * 0.12, hh * 0.6, s * 0.01); ctx.fill();
+            ctx.restore();
+
+            // Top rim light
+            ctx.fillStyle = COLORS.dodgeRim;
+            rrect(x - bw / 2, y - bh, bw, Math.max(1, s * 0.1), s * 0.04); ctx.fill();
+
+            // Post
+            ctx.fillStyle = COLORS.dodgeDark;
+            ctx.fillRect(x - s * 0.06, y - s * 0.2, s * 0.12, s * 0.2);
         } else {
-            // Speaker — short, jumpable
-            var sw = s * 0.6, sh = s * 0.65;
-            ctx.fillStyle = COLORS.speakerBody;
-            rrect(x - sw / 2, y - sh, sw, sh, s * 0.06); ctx.fill();
-            ctx.fillStyle = COLORS.speakerCone;
-            ctx.beginPath(); ctx.arc(x, y - sh * 0.5, sw * 0.28, 0, Math.PI * 2); ctx.fill();
-            ctx.strokeStyle = COLORS.speakerRing;
-            ctx.lineWidth = Math.max(1, s * 0.03); ctx.stroke();
-            ctx.strokeStyle = COLORS.accent;
-            ctx.lineWidth = Math.max(1, s * 0.05);
-            ctx.beginPath(); ctx.arc(x, y - sh * 0.5, sw * 0.13, 0, Math.PI * 2); ctx.stroke();
+            // ── JUMP — wide and low, with a bright warning band on top. Reads
+            // as "hurdle" at a glance next to the tall dodge barriers.
+            var jw = s * 1.15, jh = s * 0.8;
+            ctx.fillStyle = COLORS.jumpBody;
+            rrect(x - jw / 2, y - jh, jw, jh, s * 0.06); ctx.fill(); ctx.stroke();
+
+            ctx.fillStyle = COLORS.jumpDark;
+            rrect(x - jw / 2, y - jh * 0.45, jw, jh * 0.45, s * 0.04); ctx.fill();
+
+            // The band is the single strongest "you can clear this" signal
+            ctx.fillStyle = COLORS.jumpBand;
+            rrect(x - jw / 2, y - jh - s * 0.14, jw, s * 0.26, s * 0.05); ctx.fill(); ctx.stroke();
+            ctx.fillStyle = COLORS.jumpRim;
+            rrect(x - jw / 2, y - jh - s * 0.14, jw, Math.max(1, s * 0.08), s * 0.03); ctx.fill();
+
+            // Speaker cone detail, kept from the old art
+            if (obs.type === 'speaker') {
+                ctx.fillStyle = COLORS.speakerCone;
+                ctx.beginPath(); ctx.arc(x, y - jh * 0.55, jw * 0.2, 0, Math.PI * 2); ctx.fill();
+                ctx.strokeStyle = COLORS.jumpBand;
+                ctx.lineWidth = Math.max(1, s * 0.035);
+                ctx.beginPath(); ctx.arc(x, y - jh * 0.55, jw * 0.2, 0, Math.PI * 2); ctx.stroke();
+            }
         }
+
+        ctx.restore();
     }
 
     // ── Collectibles ──────────────────────────
+    // Oranges — the site's signature. Warm, so they never compete with the
+    // yellow jump-band or the red dodge-barrier for meaning.
     function drawCollectible(col, y, scale) {
         var x = laneToX(col.lane, scale);
         var s = 14 * scale;
@@ -633,12 +851,28 @@
         var float = Math.sin(performance.now() * 0.005 + col.z) * 5 * scale;
         var cy = y - 30 * scale + float;
 
-        ctx.fillStyle = COLORS.playerGlow;
-        ctx.beginPath(); ctx.arc(x, cy, s * 1.5, 0, Math.PI * 2); ctx.fill();
-        ctx.fillStyle = COLORS.pickup;
+        ctx.save();
+        ctx.globalAlpha = 1 - fogAt(col.z) * 0.5;
+
+        ctx.fillStyle = COLORS.pickupGlow;
+        ctx.beginPath(); ctx.arc(x, cy, s * 1.6, 0, Math.PI * 2); ctx.fill();
+
+        var g = ctx.createRadialGradient(x - s * 0.3, cy - s * 0.3, s * 0.15, x, cy, s);
+        g.addColorStop(0, COLORS.pickup);
+        g.addColorStop(1, COLORS.pickupDark);
+        ctx.fillStyle = g;
         ctx.beginPath(); ctx.arc(x, cy, s, 0, Math.PI * 2); ctx.fill();
+
+        // Leaf
+        ctx.fillStyle = COLORS.pickupLeaf;
+        ctx.beginPath();
+        ctx.ellipse(x + s * 0.32, cy - s * 0.92, s * 0.34, s * 0.16, -0.6, 0, Math.PI * 2);
+        ctx.fill();
+
         ctx.fillStyle = COLORS.pickupShine;
-        ctx.beginPath(); ctx.arc(x - s * 0.35, cy - s * 0.35, s * 0.32, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(x - s * 0.35, cy - s * 0.35, s * 0.26, 0, Math.PI * 2); ctx.fill();
+
+        ctx.restore();
     }
 
     // ── Player ────────────────────────────────
@@ -664,9 +898,9 @@
         ctx.save();
         ctx.translate(x, y);
 
-        // Glow
+        // Glow — kept tight; at 25 it smeared the limbs into a blue blob
         ctx.shadowColor = COLORS.accent;
-        ctx.shadowBlur = 25;
+        ctx.shadowBlur = 10;
 
         ctx.fillStyle = COLORS.player;
         ctx.strokeStyle = COLORS.player;
@@ -736,31 +970,44 @@
 
     // ── HUD ───────────────────────────────────
     function drawHUD() {
-        var progress = Math.min(1, distance / FINISH_DISTANCE);
-        var bw = Math.min(canvas.width * 0.35, 250);
-        var bh = 5;
-        var bx = (canvas.width - bw) / 2;
         var by = 28;
 
-        // Bar bg
-        ctx.fillStyle = 'rgba(255,255,255,0.18)';
-        rrect(bx, by, bw, bh, 3); ctx.fill();
-        // Bar fill
-        ctx.fillStyle = COLORS.accent;
-        if (bw * progress > 0) { rrect(bx, by, bw * progress, bh, 3); ctx.fill(); }
+        if (endless) {
+            // No finish line to progress toward — show how far you've gone
+            ctx.fillStyle = COLORS.textDim;
+            ctx.font = "11px 'Space Mono', monospace";
+            ctx.textAlign = 'center';
+            ctx.fillText('ENDLESS  //  ' + Math.floor(distance) + 'M', W / 2, by + 2);
+        } else {
+            var progress = Math.min(1, distance / FINISH_DISTANCE);
+            var bw = Math.min(W * 0.35, 250);
+            var bh = 5;
+            var bx = (W - bw) / 2;
 
-        // Label
-        ctx.fillStyle = COLORS.textDim;
-        ctx.font = "11px 'Space Mono', monospace";
-        ctx.textAlign = 'center';
-        ctx.fillText(Math.floor(progress * 100) + '% to finish', canvas.width / 2, by - 6);
-
-        // Score
-        if (score > 0) {
+            // Bar bg
+            ctx.fillStyle = 'rgba(255,255,255,0.18)';
+            rrect(bx, by, bw, bh, 3); ctx.fill();
+            // Bar fill
             ctx.fillStyle = COLORS.accent;
-            ctx.font = "18px 'Bebas Neue', sans-serif";
-            ctx.textAlign = 'left';
-            ctx.fillText('\uD83D\uDC8E ' + score, 20, by + 4);
+            if (bw * progress > 0) { rrect(bx, by, bw * progress, bh, 3); ctx.fill(); }
+
+            // Label
+            ctx.fillStyle = COLORS.textDim;
+            ctx.font = "11px 'Space Mono', monospace";
+            ctx.textAlign = 'center';
+            ctx.fillText(Math.floor(progress * 100) + '% to finish', W / 2, by - 6);
+        }
+
+        // Orange count — top right, always visible so the goal is never a mystery
+        {
+            ctx.save();
+            ctx.fillStyle = COLORS.pickup;
+            ctx.font = "22px 'Bebas Neue', sans-serif";
+            ctx.textAlign = 'right';
+            ctx.shadowColor = 'rgba(0,0,0,0.55)';
+            ctx.shadowBlur = 6;
+            ctx.fillText(ORANGE + ' ' + score, W - 22, by + 6);
+            ctx.restore();
         }
 
         // Controls hint
@@ -771,13 +1018,13 @@
             ctx.font = "11px 'Space Mono', monospace";
             ctx.textAlign = 'center';
             var mobile = 'ontouchstart' in window;
-            var hintY = canvas.height - 50;
+            var hintY = H - 50;
             if (mobile) {
-                ctx.fillText('SWIPE \u2190 \u2192 TO SWITCH LANES  //  SWIPE \u2191 TO JUMP', canvas.width / 2, hintY);
+                ctx.fillText('SWIPE \u2190 \u2192 TO SWITCH LANES  //  SWIPE \u2191 TO JUMP', W / 2, hintY);
             } else {
-                ctx.fillText('\u2190 \u2192 TO SWITCH LANES  //  SPACE TO JUMP OVER LOW OBSTACLES', canvas.width / 2, hintY);
+                ctx.fillText('\u2190 \u2192 TO SWITCH LANES  //  SPACE TO JUMP THE YELLOW-TOPPED ONES', W / 2, hintY);
             }
-            ctx.fillText('COLLECT \uD83D\uDC8E TO REACH THE FINISH FASTER', canvas.width / 2, hintY + 18);
+            ctx.fillText('COLLECT ' + ORANGE + ' TO REACH THE FINISH FASTER', W / 2, hintY + 18);
             ctx.globalAlpha = 1;
         }
     }
@@ -785,10 +1032,10 @@
     // ── Title Screen ──────────────────────────
     function drawTitle() {
         ctx.fillStyle = 'rgba(20,30,45,0.7)';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillRect(0, 0, W, H);
 
-        var cx = canvas.width / 2;
-        var cy = canvas.height * 0.42;
+        var cx = W / 2;
+        var cy = H * 0.42;
         var mobile = 'ontouchstart' in window;
 
         ctx.textAlign = 'center';
@@ -801,13 +1048,13 @@
         ctx.shadowOffsetY = 5;
         ctx.shadowBlur = 0;
         ctx.fillStyle = COLORS.text;
-        ctx.font = "bold " + Math.min(80, canvas.width * 0.12) + "px 'Anton', sans-serif";
+        ctx.font = "bold " + Math.min(80, W * 0.12) + "px 'Anton', sans-serif";
         ctx.fillText('AYOPAPO', cx, cy - 80);
         ctx.restore();
 
         // EPK goal text
         ctx.fillStyle = COLORS.accent;
-        ctx.font = "italic " + Math.min(22, canvas.width * 0.04) + "px 'Playfair Display', serif";
+        ctx.font = "italic " + Math.min(22, W * 0.04) + "px 'Space Mono', monospace";
         ctx.fillText('Reach the finish line to enter the EPK', cx, cy - 20);
 
         // Prompt
@@ -824,30 +1071,32 @@
         var lineY = cy + 70;
         if (mobile) {
             ctx.fillText('SWIPE \u2190 \u2192 TO SWITCH LANES', cx, lineY);
-            ctx.fillText('SWIPE \u2191 TO JUMP OVER LOW OBSTACLES', cx, lineY + 20);
-            ctx.fillText('COLLECT \uD83D\uDC8E TO REACH THE FINISH FASTER', cx, lineY + 40);
+            ctx.fillText('SWIPE \u2191 TO JUMP THE YELLOW-TOPPED ONES', cx, lineY + 20);
+            ctx.fillText('COLLECT ' + ORANGE + ' TO REACH THE FINISH FASTER', cx, lineY + 40);
         } else {
             ctx.fillText('\u2190 \u2192 ARROWS TO SWITCH LANES', cx, lineY);
-            ctx.fillText('SPACE TO JUMP OVER LOW OBSTACLES', cx, lineY + 20);
-            ctx.fillText('COLLECT \uD83D\uDC8E TO REACH THE FINISH FASTER', cx, lineY + 40);
+            ctx.fillText('SPACE TO JUMP THE YELLOW-TOPPED ONES', cx, lineY + 20);
+            ctx.fillText('COLLECT ' + ORANGE + ' TO REACH THE FINISH FASTER', cx, lineY + 40);
         }
 
         ctx.textBaseline = 'alphabetic';
     }
 
     // ── Crash Screen ──────────────────────────
-    function drawCrash() {
-        crashTimer += 0.016;
+    // Timers advance by real dt — they used to add a hardcoded 0.016 per frame,
+    // which ran them at double speed on a 120Hz display.
+    function drawCrash(dt) {
+        crashTimer += dt;
         if (crashTimer < 0.15) {
             ctx.fillStyle = 'rgba(200,50,30,' + (0.3 * (1 - crashTimer / 0.15)) + ')';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillRect(0, 0, W, H);
         }
         var alpha = Math.min(0.7, crashTimer * 2);
         ctx.fillStyle = 'rgba(20,30,45,' + alpha + ')';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillRect(0, 0, W, H);
 
         if (crashTimer > 0.25) {
-            var cx = canvas.width / 2, cy = canvas.height / 2;
+            var cx = W / 2, cy = H / 2;
             ctx.textAlign = 'center';
             ctx.fillStyle = '#ff4444';
             ctx.font = "bold 56px 'Bebas Neue', sans-serif";
@@ -855,7 +1104,9 @@
 
             ctx.fillStyle = COLORS.textDim;
             ctx.font = "13px 'Space Mono', monospace";
-            ctx.fillText(Math.floor(distance / FINISH_DISTANCE * 100) + '% completed', cx, cy + 15);
+            ctx.fillText(endless
+                ? Math.floor(distance) + 'M  //  ' + ORANGE + ' ' + score
+                : Math.floor(distance / FINISH_DISTANCE * 100) + '% completed', cx, cy + 15);
 
             var pulse = 0.5 + 0.5 * Math.sin(performance.now() * 0.004);
             ctx.globalAlpha = 0.4 + pulse * 0.6;
@@ -868,14 +1119,17 @@
     }
 
     // ── Finish Screen ─────────────────────────
-    function drawFinish() {
-        finishTimer += 0.016;
+    // No longer auto-enters the site. The player picks: ENTER EPK, or KEEP
+    // RUNNING into endless mode. The choices are real DOM buttons living in
+    // #gameFinishActions, revealed once the text has faded in.
+    function drawFinish(dt) {
+        finishTimer += dt;
         var alpha = Math.min(0.85, finishTimer);
         ctx.fillStyle = 'rgba(20,30,45,' + alpha + ')';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillRect(0, 0, W, H);
 
         if (finishTimer > 0.3) {
-            var cx = canvas.width / 2, cy = canvas.height / 2;
+            var cx = W / 2, cy = H / 2;
             ctx.textAlign = 'center';
 
             ctx.save();
@@ -885,21 +1139,15 @@
             ctx.shadowBlur = 0;
             ctx.fillStyle = COLORS.accent;
             ctx.font = "bold 56px 'Bebas Neue', sans-serif";
-            ctx.fillText('YOU MADE IT!', cx, cy - 30);
+            ctx.fillText('YOU MADE IT!', cx, cy - 70);
             ctx.restore();
 
-            if (score > 0) {
-                ctx.fillStyle = COLORS.textDim;
-                ctx.font = "14px 'Space Mono', monospace";
-                ctx.fillText('\uD83D\uDC8E ' + score + ' gems collected', cx, cy + 10);
-            }
-
-            ctx.fillStyle = COLORS.text;
-            ctx.font = "15px 'Space Mono', monospace";
-            ctx.fillText('ENTERING EPK...', cx, cy + 50);
+            ctx.fillStyle = COLORS.textDim;
+            ctx.font = "14px 'Space Mono', monospace";
+            ctx.fillText(ORANGE + ' ' + score + (score === 1 ? ' orange' : ' oranges') + ' collected', cx, cy - 30);
         }
 
-        if (finishTimer > 2.5) enterSite();
+        if (finishTimer > 0.6) showFinishButtons(true);
     }
 
     // ═══════════════════════════════════════════
@@ -926,8 +1174,8 @@
         var dt = Math.min(0.05, (ts - lastTime) / 1000);
         lastTime = ts;
         update(dt);
-        render();
-        requestAnimationFrame(loop);
+        render(dt);
+        if (running) requestAnimationFrame(loop);
     }
 
     // ═══════════════════════════════════════════
