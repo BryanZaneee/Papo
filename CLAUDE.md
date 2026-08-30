@@ -107,7 +107,7 @@ The script builds the admin, rsyncs the site (excluding `*.wav`, `*.psd`, `DJ Ev
 
 The Caddy block is `deploy/caddy-papo.conf` — paste it over the `ayopapo.studio` block in `/etc/caddy/Caddyfile` (~line 424) and `systemctl reload caddy` the first time (the script tells you if it's missing). It spells out its own headers instead of `import sechdrs` because the editor's live preview iframes the site: `X-Frame-Options: SAMEORIGIN` / `frame-ancestors 'self'`. CSP: new external resources (iframes, scripts) must be allowlisted there. Don't run `caddy validate` over SSH — it false-fails because the Cloudflare DNS token env var only exists in the systemd unit.
 
-When updating a CSS or JS file, bump its `?v=` query string in `index.html` to bust Cloudflare/browser cache (e.g. `styles.css?v=48`).
+**Cloudflare caches everything on this zone** (a cache rule with an edge TTL that overrides the origin's `no-cache` — `/` has been seen as an 8-hour-old edge HIT). Consequences: bump the `?v=` query string on any CSS/JS you change in `index.html`; `src/content.js` fetches `site.json` with a unique query string so a publish shows up immediately; old admin bundles are kept on deploy so a stale cached `/admin/` still works. After a deploy that changes `index.html`, purge the cache in the Cloudflare dashboard (or add a cache rule that bypasses `/`, `/admin/*`, `/api/*`, `/content/*` — then this paragraph can go).
 
 To pull the client's live content back into the repo: `rsync -az --exclude .backups root@100.88.216.70:/var/www/papo/content/ content/`, then commit.
 

@@ -167,7 +167,10 @@
             if (d.type === 'scrollTo') scrollTo(d.target);
         });
     } else {
-        fetch('/content/site.json', { cache: 'no-cache' })
+        // Cloudflare caches everything on this zone (edge TTL overrides the
+        // origin's no-cache), so a unique query string is what actually gets
+        // a fresh copy the moment Papo publishes.
+        fetch('/content/site.json?t=' + Date.now(), { cache: 'no-cache' })
             .then(function (r) { return r.json(); })
             .then(render)
             .catch(function (err) { console.error('Could not load content/site.json', err); });

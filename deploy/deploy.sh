@@ -25,7 +25,9 @@ ssh "$VPS" "mkdir -p ${SITE_DIR}/admin ${APP_DIR}/api ${APP_DIR}/content/uploads
 # WAV masters, PSDs and the raw poster originals never leave this machine.
 rsync -az --delete --exclude '*.wav' --exclude '*.WAV' --exclude '*.psd' --exclude 'DJ Event Archives' \
 	"$ROOT/index.html" "$ROOT/src" "$ROOT/Assets" "${VPS}:${SITE_DIR}/"
-rsync -az --delete "$ROOT/dist/admin/" "${VPS}:${SITE_DIR}/admin/"
+# No --delete: Cloudflare may serve a cached /admin/index.html for a while
+# after a deploy, and it must still find the hashed bundle it references.
+rsync -az "$ROOT/dist/admin/" "${VPS}:${SITE_DIR}/admin/"
 rsync -az "$ROOT/api/server.js" "$ROOT/api/setup.js" "$ROOT/api/package.json" "$ROOT/api/config.json" "${VPS}:${APP_DIR}/api/"
 
 # Content is SEED ONLY — never overwrite. The client edits this live through the
