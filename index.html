@@ -12,10 +12,8 @@
         href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Archivo:wght@400;500;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="src/styles.css?v=47">
-    <!-- Preload critical EPK assets while game runs -->
-    <link rel="preload" as="image" href="Assets/Photos/IMG_1228.JPG?v=1">
+    <!-- Preload the fixed backdrop while the game runs (photos are picked from site.json by runner-game.js) -->
     <link rel="preload" as="image" href="Assets/flavor/treebackground.webp">
-    <link rel="preload" as="image" href="Assets/jookjook.webp">
 </head>
 
 <body class="game-active">
@@ -53,33 +51,26 @@
     <!-- ═══ HERO ═══ -->
     <section class="hero">
         <video class="hero-video" autoplay muted loop playsinline preload="auto"
-            poster="Assets/Videos/hero-bg-poster.jpg">
-            <source src="Assets/Videos/hero-bg.mp4" type="video/mp4">
+            poster="/Assets/Videos/hero-bg-poster.jpg">
+            <source src="/Assets/Videos/hero-bg.mp4" type="video/mp4">
         </video>
         <div class="hero-video-veil"></div>
         <div class="hero-left">
             <div class="hero-content-group">
                 <h1 class="hero-name reveal reveal-delay-1">
-                    <span class="glitch-text">AYOPAPO</span>
+                    <span class="glitch-text"></span>
                     <span class="hero-cutout" aria-hidden="true">
                         <img src="Assets/flavor/papo2.webp" alt="">
                     </span>
                 </h1>
 
-                <p class="hero-subtitle reveal reveal-delay-2">
-                    Rapper, DJ &amp; Producer
-                </p>
+                <p class="hero-subtitle reveal reveal-delay-2"></p>
 
                 <div class="hero-meta reveal reveal-delay-3">
-                    <span><span class="dot"></span> Based in Gainesville, FL</span>
+                    <span><span class="dot"></span></span>
                 </div>
 
-                <div class="hero-links reveal reveal-delay-4">
-                    <a href="https://www.instagram.com/papocitoo/" target="_blank" rel="noopener">Instagram</a>
-                    <a href="https://open.spotify.com/artist/6UlBkddI4ImO6R2oTNrErA" target="_blank" rel="noopener">Spotify</a>
-                    <a href="https://music.apple.com/us/artist/ayooo-papo/1630292624" target="_blank" rel="noopener">Apple Music</a>
-                    <a href="https://soundcloud.com/ayopapo" target="_blank" rel="noopener">SoundCloud</a>
-                </div>
+                <div class="hero-links reveal reveal-delay-4"></div>
             </div>
         </div>
 
@@ -92,18 +83,12 @@
         <section id="bio" class="epk-section">
             <div class="bio-grid">
                 <div class="bio-image reveal">
-                    <div class="bio-image-frame">
-                        <img src="Assets/Photos/IMG_1228.JPG?v=1" alt="Ayo Papo portrait" loading="lazy">
-                    </div>
-                    <div class="bio-image-caption"><span>Papocito</span><span>Gainesville, FL</span></div>
+                    <div class="bio-image-frame"></div>
+                    <div class="bio-image-caption"></div>
                 </div>
                 <div class="bio-copy">
-                    <h2 class="section-heading reveal reveal-delay-1">Biography</h2>
-                    <div class="bio-text reveal reveal-delay-2">
-                        <p>Born in South Florida in 1993, Ayo Papo, known as <strong>"Papocito,"</strong> grew up moving across the state, absorbing and being shaped by the competitive spirit of Fort Myers and the Latin and R&amp;B sounds of his household. The result is a signature style of uniquely pocketed compositions that carry the warmth, grit, and groove of the South.</p>
-                        <p>Inspired by the genre-defying artistry of Sam Gellaitry, Dominic Fike, and Kid Cudi, his music is melodic yet raw, polished yet deeply personal. His singles <em>Gushy</em> featuring LocalHotBoy and <em>Jook Jook</em> featuring WhoDidIt? highlight his ability to blend infectious energy with intentional lyricism, and his upcoming project <em>Juice Worth The Squeeze</em> is set to be his most ambitious work yet.</p>
-                        <p>With a refined sound and a clear vision, Papocito is stepping into his moment.</p>
-                    </div>
+                    <h2 class="section-heading reveal reveal-delay-1"></h2>
+                    <div class="bio-text reveal reveal-delay-2"></div>
                 </div>
             </div>
         </section>
@@ -113,81 +98,15 @@
             <div class="eyebrow reveal">Releases</div>
             <div class="releases-grid">
                 <div class="release-cover-col reveal reveal-delay-1">
-                    <div class="release-cover">
-                        <img src="Assets/jookjook.webp" alt="Juice Worth The Squeeze — cover art">
-                    </div>
-                    <div class="release-tags">
-                        <span>2026</span><span>Independent</span><span>7 Cuts</span>
-                    </div>
+                    <div class="release-cover"></div>
+                    <div class="release-tags"></div>
                 </div>
                 <div class="release-info">
-                    <h2 class="release-title reveal">Juice Worth The Squeeze</h2>
-                    <p class="release-blurb reveal reveal-delay-1">A Florida record. Seven cuts — humid, melodic, pocketed. Produced almost entirely by Papo, with features from Localhotboy, Tipot, Teddy Txne and whodidit.</p>
+                    <h2 class="release-title reveal"></h2>
+                    <p class="release-blurb reveal reveal-delay-1"></p>
 
-                    <div class="track-list">
-                        <div class="track-item" data-src="Assets/Music_/1.Gushy ft. Localhotboy .m4a" data-title="Gushy" data-feat="ft. Localhotboy">
-                            <span class="track-num">01</span>
-                            <button class="track-btn" aria-label="Play Gushy"></button>
-                            <div class="track-meta">
-                                <div class="track-name">Gushy</div>
-                                <div class="track-feat">ft. Localhotboy</div>
-                            </div>
-                            <div class="track-eq"><span></span><span></span><span></span><span></span><span></span></div>
-                        </div>
-                        <div class="track-item" data-src="Assets/Music_/2.Gyawd it_s hot interlude Ft. Tipot.m4a" data-title="Gyawd It's Hot" data-feat="ft. Tipot">
-                            <span class="track-num">02</span>
-                            <button class="track-btn" aria-label="Play Gyawd It's Hot"></button>
-                            <div class="track-meta">
-                                <div class="track-name">Gyawd It's Hot <span class="track-badge">Interlude</span></div>
-                                <div class="track-feat">ft. Tipot</div>
-                            </div>
-                            <div class="track-eq"><span></span><span></span><span></span><span></span><span></span></div>
-                        </div>
-                        <div class="track-item" data-src="Assets/Music_/3.Vert Burt Ft. Teddy Txne.m4a" data-title="Vert Burt" data-feat="ft. Teddy Txne">
-                            <span class="track-num">03</span>
-                            <button class="track-btn" aria-label="Play Vert Burt"></button>
-                            <div class="track-meta">
-                                <div class="track-name">Vert Burt</div>
-                                <div class="track-feat">ft. Teddy Txne</div>
-                            </div>
-                            <div class="track-eq"><span></span><span></span><span></span><span></span><span></span></div>
-                        </div>
-                        <div class="track-item" data-src="Assets/Music_/4.Cheffin (Off 8th) Interlude.m4a" data-title="Cheffin (Off 8th)" data-feat="">
-                            <span class="track-num">04</span>
-                            <button class="track-btn" aria-label="Play Cheffin (Off 8th)"></button>
-                            <div class="track-meta">
-                                <div class="track-name">Cheffin (Off 8th) <span class="track-badge">Interlude</span></div>
-                            </div>
-                            <div class="track-eq"><span></span><span></span><span></span><span></span><span></span></div>
-                        </div>
-                        <div class="track-item" data-src="Assets/Music_/5.Jook Jook ft. whodidit.m4a" data-title="Jook Jook" data-feat="ft. whodidit">
-                            <span class="track-num">05</span>
-                            <button class="track-btn" aria-label="Play Jook Jook"></button>
-                            <div class="track-meta">
-                                <div class="track-name">Jook Jook</div>
-                                <div class="track-feat">ft. whodidit</div>
-                            </div>
-                            <div class="track-eq"><span></span><span></span><span></span><span></span><span></span></div>
-                        </div>
-                        <div class="track-item" data-src="Assets/Music_/6.Boutta Crashout _0 Interlude.m4a" data-title="Boutta Crashout" data-feat="">
-                            <span class="track-num">06</span>
-                            <button class="track-btn" aria-label="Play Boutta Crashout"></button>
-                            <div class="track-meta">
-                                <div class="track-name">Boutta Crashout <span class="track-badge">Interlude</span></div>
-                            </div>
-                            <div class="track-eq"><span></span><span></span><span></span><span></span><span></span></div>
-                        </div>
-                        <div class="track-item" data-src="Assets/Music_/7.Papo Made This ft. Teddy Txne.m4a" data-title="Papo Made This" data-feat="ft. Teddy Txne">
-                            <span class="track-num">07</span>
-                            <button class="track-btn" aria-label="Play Papo Made This"></button>
-                            <div class="track-meta">
-                                <div class="track-name">Papo Made This</div>
-                                <div class="track-feat">ft. Teddy Txne</div>
-                            </div>
-                            <div class="track-eq"><span></span><span></span><span></span><span></span><span></span></div>
-                        </div>
-                    </div>
-                    <div class="track-indicia">▶ Tap a track to play · full project 2026</div>
+                    <div class="track-list"></div>
+                    <div class="track-indicia"></div>
                 </div>
             </div>
         </section>
@@ -197,59 +116,12 @@
     <!-- ═══ DJ EVENT ARCHIVES — full-bleed poster wall ═══ -->
     <section id="archives" class="archives-section">
         <div class="archives-head">
-            <h2 class="section-heading reveal reveal-delay-1">DJ Events</h2>
+            <h2 class="section-heading reveal reveal-delay-1"></h2>
         </div>
-        <div class="poster-strip">
-            <div class="poster-card lb-card"><img src="Assets/Posters/poster-01.jpg" alt="PAPO event poster" loading="lazy"></div>
-            <div class="poster-card lb-card"><img src="Assets/Posters/poster-02.jpg" alt="PAPO event poster" loading="lazy"></div>
-            <div class="poster-card lb-card"><img src="Assets/Posters/poster-03.jpg" alt="PAPO event poster" loading="lazy"></div>
-            <div class="poster-card lb-card"><img src="Assets/Posters/poster-04.jpg" alt="PAPO event poster" loading="lazy"></div>
-            <div class="poster-card lb-card"><img src="Assets/Posters/poster-05.jpg" alt="PAPO event poster" loading="lazy"></div>
-            <div class="poster-card lb-card"><img src="Assets/Posters/poster-06.jpg" alt="PAPO event poster" loading="lazy"></div>
-            <div class="poster-card lb-card"><img src="Assets/Posters/poster-07.jpg" alt="PAPO event poster" loading="lazy"></div>
-            <div class="poster-card lb-card"><img src="Assets/Posters/poster-08.jpg" alt="PAPO event poster" loading="lazy"></div>
-            <div class="poster-card lb-card"><img src="Assets/Posters/poster-09.jpg" alt="PAPO event poster" loading="lazy"></div>
-            <div class="poster-card lb-card"><img src="Assets/Posters/poster-10.jpg" alt="PAPO event poster" loading="lazy"></div>
-            <div class="poster-card lb-card"><img src="Assets/Posters/poster-11.jpg" alt="PAPO event poster" loading="lazy"></div>
-            <div class="poster-card lb-card"><img src="Assets/Posters/poster-12.jpg" alt="PAPO event poster" loading="lazy"></div>
-            <div class="poster-card lb-card"><img src="Assets/Posters/poster-13.jpg" alt="PAPO event poster" loading="lazy"></div>
-            <div class="poster-card poster-video">
-                <video class="autovid" muted loop playsinline preload="metadata">
-                    <source src="Assets/Videos/Arcade Bar May23rd.mp4" type="video/mp4">
-                </video>
-                <div class="poster-video-tag">Arcade Bar · May 23</div>
-            </div>
-            <div class="poster-card lb-card"><img src="Assets/Posters/poster-14.jpg" alt="PAPO event poster" loading="lazy"></div>
-            <div class="poster-card lb-card"><img src="Assets/Posters/poster-15.jpg" alt="PAPO event poster" loading="lazy"></div>
-            <div class="poster-card lb-card"><img src="Assets/Posters/poster-16.jpg" alt="PAPO event poster" loading="lazy"></div>
-            <div class="poster-card lb-card"><img src="Assets/Posters/poster-17.jpg" alt="PAPO event poster" loading="lazy"></div>
-            <div class="poster-card lb-card"><img src="Assets/Posters/poster-18.jpg" alt="PAPO event poster" loading="lazy"></div>
-            <div class="poster-card lb-card"><img src="Assets/Posters/poster-19.jpg" alt="PAPO event poster" loading="lazy"></div>
-            <div class="poster-card lb-card"><img src="Assets/Posters/poster-20.jpg" alt="PAPO event poster" loading="lazy"></div>
-            <div class="poster-card lb-card"><img src="Assets/Posters/poster-21.jpg" alt="PAPO event poster" loading="lazy"></div>
-            <div class="poster-card lb-card"><img src="Assets/Posters/poster-22.jpg" alt="PAPO event poster" loading="lazy"></div>
-            <div class="poster-card lb-card"><img src="Assets/Posters/poster-23.jpg" alt="PAPO event poster" loading="lazy"></div>
-            <div class="poster-card lb-card"><img src="Assets/Posters/poster-24.jpg" alt="PAPO event poster" loading="lazy"></div>
-            <div class="poster-card lb-card"><img src="Assets/Posters/poster-25.jpg" alt="PAPO event poster" loading="lazy"></div>
-            <div class="poster-card lb-card"><img src="Assets/Posters/poster-26.jpg" alt="PAPO event poster" loading="lazy"></div>
-            <div class="poster-card lb-card"><img src="Assets/Posters/poster-27.jpg" alt="PAPO event poster" loading="lazy"></div>
-        </div>
+        <div class="poster-strip"></div>
 
         <!-- ═══ SETS — live DJ set videos ═══ -->
-        <div id="sets" class="sets-grid">
-            <div class="set-embed reveal reveal-delay-1">
-                <iframe src="https://www.youtube-nocookie.com/embed/2tmAzKEgYls?autoplay=1&mute=1&playsinline=1"
-                    title="PAPO — DJ set" loading="lazy"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    allowfullscreen></iframe>
-            </div>
-            <div class="set-embed reveal reveal-delay-2">
-                <iframe src="https://www.youtube-nocookie.com/embed/B8RhRzGLGMg?autoplay=1&mute=1&playsinline=1"
-                    title="PAPO — DJ set" loading="lazy"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    allowfullscreen></iframe>
-            </div>
-        </div>
+        <div id="sets" class="sets-grid"></div>
     </section>
 
     <div class="trunk">
@@ -257,51 +129,20 @@
         <!-- ═══ GALLERY ═══ -->
         <section id="gallery" class="epk-section">
             <h2 class="section-heading reveal reveal-delay-1">Gallery</h2>
-            <div class="gallery-masonry">
-                <img class="lb" src="Assets/Photos/P1010002.JPG?v=1" alt="PAPO backstage" loading="lazy">
-                <img class="lb" src="Assets/Photos/DSC02086.JPG?v=1" alt="PAPO portrait" loading="lazy">
-                <img class="lb" src="Assets/Photos/AyoPapo_1.jpeg?v=1" alt="PAPO editorial" loading="lazy">
-                <img class="lb" src="Assets/Photos/DSC02910.JPG?v=1" alt="PAPO on stage" loading="lazy">
-                <img class="lb" src="Assets/Photos/IMG_6116.JPG?v=1" alt="PAPO performance" loading="lazy">
-                <img class="lb" src="Assets/Photos/DSC02620.JPG?v=1" alt="PAPO portrait" loading="lazy">
-                <img class="lb" src="Assets/Photos/IMG_1280.JPG?v=1" alt="PAPO candid" loading="lazy">
-                <img class="lb" src="Assets/Photos/IMG_0218%202.jpg?v=1" alt="PAPO behind the scenes" loading="lazy">
-                <img class="lb" src="Assets/Photos/IMG_9783.JPG?v=1" alt="PAPO on stage" loading="lazy">
-                <img class="lb" src="Assets/Photos/36052C08-BC91-42F3-BB32-1A0140EF9E9B.JPG?v=1" alt="PAPO photo" loading="lazy">
-                <img class="lb" src="Assets/Photos/IMG_0560.JPG?v=1" alt="PAPO editorial" loading="lazy">
-                <img class="lb" src="Assets/Photos/IMG_0115%203.JPG?v=1" alt="PAPO studio session" loading="lazy">
-            </div>
+            <div class="gallery-masonry"></div>
         </section>
 
     </div>
 
     <!-- ═══ BOOKING FOOTER ═══ -->
     <footer id="book" class="booking-section">
-        <div class="eyebrow reveal">Booking</div>
-        <h2 class="booking-heading reveal reveal-delay-1">BOOK PAPO</h2>
-        <p class="booking-sub reveal reveal-delay-2">Shows, features, production and DJ sets. Reach the right inbox below.</p>
-        <div class="booking-cards">
-            <a href="mailto:unklepapo@gmail.com" class="booking-card reveal reveal-delay-1">
-                <div class="booking-card-label">Booking</div>
-            </a>
-            <a href="mailto:unklepapo@gmail.com" class="booking-card reveal reveal-delay-2">
-                <div class="booking-card-label">Management</div>
-            </a>
-            <a href="mailto:unklepapo@gmail.com" class="booking-card reveal reveal-delay-3">
-                <div class="booking-card-label">Press</div>
-            </a>
-            <a href="mailto:unklepapo@gmail.com" class="booking-card reveal reveal-delay-4">
-                <div class="booking-card-label">DJ Inquiries</div>
-            </a>
-        </div>
-        <div class="social-pills">
-            <a href="https://www.instagram.com/papocitoo/" target="_blank" rel="noopener">Instagram</a>
-            <a href="https://open.spotify.com/artist/6UlBkddI4ImO6R2oTNrErA" target="_blank" rel="noopener">Spotify</a>
-            <a href="https://music.apple.com/us/artist/ayooo-papo/1630292624" target="_blank" rel="noopener">Apple Music</a>
-            <a href="https://soundcloud.com/ayopapo" target="_blank" rel="noopener">SoundCloud</a>
-        </div>
+        <div class="eyebrow reveal"></div>
+        <h2 class="booking-heading reveal reveal-delay-1"></h2>
+        <p class="booking-sub reveal reveal-delay-2"></p>
+        <div class="booking-cards"></div>
+        <div class="social-pills"></div>
         <div class="footer-line">
-            <span>© 2026 AYOPAPO</span>
+            <span></span>
             <span>Made with love by <a href="https://bryanzane.com" target="_blank" rel="noopener">Bryan Zane</a></span>
         </div>
     </footer>
@@ -310,7 +151,7 @@
     <div class="now-playing" id="nowPlaying">
         <button class="np-toggle" id="npToggle" aria-label="Play / pause"></button>
         <div class="np-info">
-            <div class="np-label">Now Playing · Juice Worth The Squeeze</div>
+            <div class="np-label"></div>
             <div class="np-title" id="npTitle"></div>
         </div>
         <div class="np-progress">
@@ -328,10 +169,11 @@
     </div>
 
     <!-- ═══ SCRIPTS ═══ -->
-    <script src="src/runner-game.js?v=19"></script>
-    <script src="src/scroll-reveal.js?v=7" defer></script>
-    <script src="src/audio-player.js?v=6" defer></script>
-    <script src="src/lightbox.js?v=5" defer></script>
+    <script src="src/runner-game.js?v=20"></script>
+    <script src="src/content.js?v=2" defer></script>
+    <script src="src/scroll-reveal.js?v=8" defer></script>
+    <script src="src/audio-player.js?v=7" defer></script>
+    <script src="src/lightbox.js?v=6" defer></script>
     <script>
         // Tree parallax + glow cross-fade: scroll progress drives the tree's
         // background-position-y and fades the bottom glow from blue to orange
@@ -354,19 +196,6 @@
             window.addEventListener('scroll', update, { passive: true });
             window.addEventListener('resize', update);
             update();
-        })();
-
-        // Inline videos: play only while on screen (browsers pause offscreen autoplay anyway)
-        (function () {
-            var vids = document.querySelectorAll('video.autovid');
-            if (!('IntersectionObserver' in window)) return;
-            var io = new IntersectionObserver(function (entries) {
-                entries.forEach(function (e) {
-                    if (e.isIntersecting) e.target.play().catch(function () {});
-                    else e.target.pause();
-                });
-            }, { threshold: 0.2 });
-            vids.forEach(function (v) { io.observe(v); });
         })();
     </script>
 

@@ -1,0 +1,563 @@
+{
+  "hero": {
+    "name": "AYOPAPO",
+    "subtitle": "Rapper, DJ & Producer",
+    "location": "Based in Gainesville, FL",
+    "video": "/Assets/Videos/hero-bg.mp4",
+    "poster": "/Assets/Videos/hero-bg-poster.jpg"
+  },
+  "socials": [
+    {
+      "label": "Instagram",
+      "href": "https://www.instagram.com/papocitoo/"
+    },
+    {
+      "label": "Spotify",
+      "href": "https://open.spotify.com/artist/6UlBkddI4ImO6R2oTNrErA"
+    },
+    {
+      "label": "Apple Music",
+      "href": "https://music.apple.com/us/artist/ayooo-papo/1630292624"
+    },
+    {
+      "label": "SoundCloud",
+      "href": "https://soundcloud.com/ayopapo"
+    }
+  ],
+  "bio": {
+    "heading": "Biography",
+    "portrait": {
+      "sources": {},
+      "img": {
+        "src": "/Assets/Photos/IMG_1228.JPG",
+        "w": 1600,
+        "h": 1200
+      }
+    },
+    "captionName": "Papocito",
+    "captionPlace": "Gainesville, FL",
+    "paragraphs": [
+      "Born in South Florida in 1993, Ayo Papo, known as **\"Papocito,\"** grew up moving across the state, absorbing and being shaped by the competitive spirit of Fort Myers and the Latin and R&B sounds of his household. The result is a signature style of uniquely pocketed compositions that carry the warmth, grit, and groove of the South.",
+      "Inspired by the genre-defying artistry of Sam Gellaitry, Dominic Fike, and Kid Cudi, his music is melodic yet raw, polished yet deeply personal. His singles _Gushy_ featuring LocalHotBoy and _Jook Jook_ featuring WhoDidIt? highlight his ability to blend infectious energy with intentional lyricism, and his upcoming project _Juice Worth The Squeeze_ is set to be his most ambitious work yet.",
+      "With a refined sound and a clear vision, Papocito is stepping into his moment."
+    ]
+  },
+  "release": {
+    "title": "Juice Worth The Squeeze",
+    "cover": {
+      "sources": {},
+      "img": {
+        "src": "/Assets/jookjook.webp",
+        "w": 1200,
+        "h": 1197
+      }
+    },
+    "tags": [
+      "2026",
+      "Independent",
+      "7 Cuts"
+    ],
+    "blurb": "A Florida record. Seven cuts — humid, melodic, pocketed. Produced almost entirely by Papo, with features from Localhotboy, Tipot, Teddy Txne and whodidit.",
+    "indicia": "▶ Tap a track to play · full project 2026",
+    "tracks": [
+      {
+        "title": "Gushy",
+        "feat": "ft. Localhotboy",
+        "badge": "",
+        "audio": "/Assets/Music_/1.Gushy ft. Localhotboy .m4a"
+      },
+      {
+        "title": "Gyawd It's Hot",
+        "feat": "ft. Tipot",
+        "badge": "Interlude",
+        "audio": "/Assets/Music_/2.Gyawd it_s hot interlude Ft. Tipot.m4a"
+      },
+      {
+        "title": "Vert Burt",
+        "feat": "ft. Teddy Txne",
+        "badge": "",
+        "audio": "/Assets/Music_/3.Vert Burt Ft. Teddy Txne.m4a"
+      },
+      {
+        "title": "Cheffin (Off 8th)",
+        "feat": "",
+        "badge": "Interlude",
+        "audio": "/Assets/Music_/4.Cheffin (Off 8th) Interlude.m4a"
+      },
+      {
+        "title": "Jook Jook",
+        "feat": "ft. whodidit",
+        "badge": "",
+        "audio": "/Assets/Music_/5.Jook Jook ft. whodidit.m4a"
+      },
+      {
+        "title": "Boutta Crashout",
+        "feat": "",
+        "badge": "Interlude",
+        "audio": "/Assets/Music_/6.Boutta Crashout _0 Interlude.m4a"
+      },
+      {
+        "title": "Papo Made This",
+        "feat": "ft. Teddy Txne",
+        "badge": "",
+        "audio": "/Assets/Music_/7.Papo Made This ft. Teddy Txne.m4a"
+      }
+    ]
+  },
+  "events": {
+    "heading": "DJ Events",
+    "posters": [
+      {
+        "image": {
+          "sources": {},
+          "img": {
+            "src": "/Assets/Posters/poster-01.jpg",
+            "w": 900,
+            "h": 1200
+          }
+        },
+        "caption": ""
+      },
+      {
+        "image": {
+          "sources": {},
+          "img": {
+            "src": "/Assets/Posters/poster-02.jpg",
+            "w": 900,
+            "h": 1199
+          }
+        },
+        "caption": ""
+      },
+      {
+        "image": {
+          "sources": {},
+          "img": {
+            "src": "/Assets/Posters/poster-03.jpg",
+            "w": 900,
+            "h": 1199
+          }
+        },
+        "caption": ""
+      },
+      {
+        "image": {
+          "sources": {},
+          "img": {
+            "src": "/Assets/Posters/poster-04.jpg",
+            "w": 900,
+            "h": 1199
+          }
+        },
+        "caption": ""
+      },
+      {
+        "image": {
+          "sources": {},
+          "img": {
+            "src": "/Assets/Posters/poster-05.jpg",
+            "w": 900,
+            "h": 1147
+          }
+        },
+        "caption": ""
+      },
+      {
+        "image": {
+          "sources": {},
+          "img": {
+            "src": "/Assets/Posters/poster-06.jpg",
+            "w": 878,
+            "h": 1144
+          }
+        },
+        "caption": ""
+      },
+      {
+        "image": {
+          "sources": {},
+          "img": {
+            "src": "/Assets/Posters/poster-07.jpg",
+            "w": 900,
+            "h": 1128
+          }
+        },
+        "caption": ""
+      },
+      {
+        "image": {
+          "sources": {},
+          "img": {
+            "src": "/Assets/Posters/poster-08.jpg",
+            "w": 872,
+            "h": 1086
+          }
+        },
+        "caption": ""
+      },
+      {
+        "image": {
+          "sources": {},
+          "img": {
+            "src": "/Assets/Posters/poster-09.jpg",
+            "w": 843,
+            "h": 1113
+          }
+        },
+        "caption": ""
+      },
+      {
+        "image": {
+          "sources": {},
+          "img": {
+            "src": "/Assets/Posters/poster-10.jpg",
+            "w": 900,
+            "h": 1126
+          }
+        },
+        "caption": ""
+      },
+      {
+        "image": {
+          "sources": {},
+          "img": {
+            "src": "/Assets/Posters/poster-11.jpg",
+            "w": 900,
+            "h": 1126
+          }
+        },
+        "caption": ""
+      },
+      {
+        "image": {
+          "sources": {},
+          "img": {
+            "src": "/Assets/Posters/poster-12.jpg",
+            "w": 900,
+            "h": 1126
+          }
+        },
+        "caption": ""
+      },
+      {
+        "image": {
+          "sources": {},
+          "img": {
+            "src": "/Assets/Posters/poster-13.jpg",
+            "w": 900,
+            "h": 1126
+          }
+        },
+        "caption": ""
+      },
+      {
+        "video": "/Assets/Videos/Arcade Bar May23rd.mp4",
+        "caption": "Arcade Bar · May 23"
+      },
+      {
+        "image": {
+          "sources": {},
+          "img": {
+            "src": "/Assets/Posters/poster-14.jpg",
+            "w": 900,
+            "h": 1126
+          }
+        },
+        "caption": ""
+      },
+      {
+        "image": {
+          "sources": {},
+          "img": {
+            "src": "/Assets/Posters/poster-15.jpg",
+            "w": 900,
+            "h": 870
+          }
+        },
+        "caption": ""
+      },
+      {
+        "image": {
+          "sources": {},
+          "img": {
+            "src": "/Assets/Posters/poster-16.jpg",
+            "w": 900,
+            "h": 1122
+          }
+        },
+        "caption": ""
+      },
+      {
+        "image": {
+          "sources": {},
+          "img": {
+            "src": "/Assets/Posters/poster-17.jpg",
+            "w": 900,
+            "h": 947
+          }
+        },
+        "caption": ""
+      },
+      {
+        "image": {
+          "sources": {},
+          "img": {
+            "src": "/Assets/Posters/poster-18.jpg",
+            "w": 900,
+            "h": 952
+          }
+        },
+        "caption": ""
+      },
+      {
+        "image": {
+          "sources": {},
+          "img": {
+            "src": "/Assets/Posters/poster-19.jpg",
+            "w": 900,
+            "h": 988
+          }
+        },
+        "caption": ""
+      },
+      {
+        "image": {
+          "sources": {},
+          "img": {
+            "src": "/Assets/Posters/poster-20.jpg",
+            "w": 900,
+            "h": 883
+          }
+        },
+        "caption": ""
+      },
+      {
+        "image": {
+          "sources": {},
+          "img": {
+            "src": "/Assets/Posters/poster-21.jpg",
+            "w": 900,
+            "h": 905
+          }
+        },
+        "caption": ""
+      },
+      {
+        "image": {
+          "sources": {},
+          "img": {
+            "src": "/Assets/Posters/poster-22.jpg",
+            "w": 900,
+            "h": 905
+          }
+        },
+        "caption": ""
+      },
+      {
+        "image": {
+          "sources": {},
+          "img": {
+            "src": "/Assets/Posters/poster-23.jpg",
+            "w": 900,
+            "h": 897
+          }
+        },
+        "caption": ""
+      },
+      {
+        "image": {
+          "sources": {},
+          "img": {
+            "src": "/Assets/Posters/poster-24.jpg",
+            "w": 882,
+            "h": 1065
+          }
+        },
+        "caption": ""
+      },
+      {
+        "image": {
+          "sources": {},
+          "img": {
+            "src": "/Assets/Posters/poster-25.jpg",
+            "w": 900,
+            "h": 898
+          }
+        },
+        "caption": ""
+      },
+      {
+        "image": {
+          "sources": {},
+          "img": {
+            "src": "/Assets/Posters/poster-26.jpg",
+            "w": 900,
+            "h": 933
+          }
+        },
+        "caption": ""
+      },
+      {
+        "image": {
+          "sources": {},
+          "img": {
+            "src": "/Assets/Posters/poster-27.jpg",
+            "w": 900,
+            "h": 971
+          }
+        },
+        "caption": ""
+      }
+    ]
+  },
+  "sets": [
+    "https://www.youtube.com/watch?v=2tmAzKEgYls",
+    "https://www.youtube.com/watch?v=B8RhRzGLGMg"
+  ],
+  "gallery": [
+    {
+      "image": {
+        "sources": {},
+        "img": {
+          "src": "/Assets/Photos/P1010002.JPG",
+          "w": 1280,
+          "h": 1600
+        }
+      },
+      "alt": "PAPO backstage"
+    },
+    {
+      "image": {
+        "sources": {},
+        "img": {
+          "src": "/Assets/Photos/DSC02086.JPG",
+          "w": 1280,
+          "h": 1600
+        }
+      },
+      "alt": "PAPO portrait"
+    },
+    {
+      "image": {
+        "sources": {},
+        "img": {
+          "src": "/Assets/Photos/AyoPapo_1.jpeg",
+          "w": 1125,
+          "h": 1418
+        }
+      },
+      "alt": "PAPO editorial"
+    },
+    {
+      "image": {
+        "sources": {},
+        "img": {
+          "src": "/Assets/Photos/DSC02910.JPG",
+          "w": 1280,
+          "h": 1600
+        }
+      },
+      "alt": "PAPO on stage"
+    },
+    {
+      "image": {
+        "sources": {},
+        "img": {
+          "src": "/Assets/Photos/IMG_6116.JPG",
+          "w": 543,
+          "h": 405
+        }
+      },
+      "alt": "PAPO performance"
+    },
+    {
+      "image": {
+        "sources": {},
+        "img": {
+          "src": "/Assets/Photos/DSC02620.JPG",
+          "w": 1280,
+          "h": 1600
+        }
+      },
+      "alt": "PAPO portrait"
+    },
+    {
+      "image": {
+        "sources": {},
+        "img": {
+          "src": "/Assets/Photos/IMG_1280.JPG",
+          "w": 1600,
+          "h": 1200
+        }
+      },
+      "alt": "PAPO candid"
+    },
+    {
+      "image": {
+        "sources": {},
+        "img": {
+          "src": "/Assets/Photos/IMG_0218%202.jpg",
+          "w": 1280,
+          "h": 1600
+        }
+      },
+      "alt": "PAPO behind the scenes"
+    },
+    {
+      "image": {
+        "sources": {},
+        "img": {
+          "src": "/Assets/Photos/IMG_9783.JPG",
+          "w": 1600,
+          "h": 1072
+        }
+      },
+      "alt": "PAPO on stage"
+    },
+    {
+      "image": {
+        "sources": {},
+        "img": {
+          "src": "/Assets/Photos/36052C08-BC91-42F3-BB32-1A0140EF9E9B.JPG",
+          "w": 590,
+          "h": 1049
+        }
+      },
+      "alt": "PAPO photo"
+    },
+    {
+      "image": {
+        "sources": {},
+        "img": {
+          "src": "/Assets/Photos/IMG_0560.JPG",
+          "w": 1600,
+          "h": 1066
+        }
+      },
+      "alt": "PAPO editorial"
+    },
+    {
+      "image": {
+        "sources": {},
+        "img": {
+          "src": "/Assets/Photos/IMG_0115%203.JPG",
+          "w": 1600,
+          "h": 898
+        }
+      },
+      "alt": "PAPO studio session"
+    }
+  ],
+  "booking": {
+    "eyebrow": "Booking",
+    "heading": "BOOK PAPO",
+    "sub": "Shows, features, production and DJ sets. Reach the right inbox below.",
+    "email": "unklepapo@gmail.com",
+    "labels": [
+      "Booking",
+      "Management",
+      "Press",
+      "DJ Inquiries"
+    ]
+  }
+}

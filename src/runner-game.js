@@ -1185,22 +1185,14 @@
         // Prefetch gallery and other images into browser cache while game runs.
         // Uses requestIdleCallback (or setTimeout fallback) so it never
         // competes with the game's rendering budget.
-        var urls = [
-            'Assets/Photos/AyoPapo_1.jpeg?v=1',
-            'Assets/Photos/DSC02620.JPG?v=1',
-            'Assets/Photos/DSC02910.JPG?v=1',
-            'Assets/Photos/IMG_0115%203.JPG?v=1',
-            'Assets/Photos/IMG_0218%202.jpg?v=1',
-            'Assets/Photos/IMG_0560.JPG?v=1',
-            'Assets/Photos/IMG_1228.JPG?v=1',
-            'Assets/Photos/IMG_1280.JPG?v=1',
-            'Assets/Photos/IMG_6116.JPG?v=1',
-            'Assets/Photos/IMG_9783.JPG?v=1',
-            'Assets/Photos/P1010002.JPG?v=1',
-            'Assets/Photos/36052C08-BC91-42F3-BB32-1A0140EF9E9B.JPG?v=1',
-        ];
+        // Read from the DOM (content.js has filled the gallery + bio from
+        // site.json by the time the 1.5 s delay below is up).
+        var urls = [];
         var idx = 0;
         function next() {
+            if (!urls.length) {
+                urls = Array.prototype.map.call(document.querySelectorAll('.gallery-masonry img, .bio-image img'), function (i) { return i.currentSrc || i.src; });
+            }
             if (idx >= urls.length) return;
             var img = new Image();
             img.src = urls[idx++];

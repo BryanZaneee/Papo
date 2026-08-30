@@ -4,12 +4,13 @@
     var lbImg = lightbox.querySelector('img');
     var closeBtn = lightbox.querySelector('.lightbox-close');
 
-    document.querySelectorAll('img.lb, .lb-card img').forEach(img => {
-        img.addEventListener('click', () => {
-            lbImg.src = img.src;
-            lbImg.alt = img.alt;
-            lightbox.classList.add('active');
-        });
+    // Delegated: the gallery and poster wall are rendered from site.json after load.
+    document.addEventListener('click', e => {
+        var img = e.target.closest('img.lb, .lb-card img');
+        if (!img) return;
+        lbImg.src = img.src;
+        lbImg.alt = img.alt;
+        lightbox.classList.add('active');
     });
 
     function close() {
