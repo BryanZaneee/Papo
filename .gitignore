@@ -29,3 +29,11 @@ plans/
 # Poster originals (100MB of PNGs — web versions live in Assets/Posters/)
 Assets/DJ Event Archives/
 papo-tree.png
+
+# Admin editor + API
+node_modules/
+dist/
+*.tsbuildinfo
+api/config.json
+content/.backups/
+tests/.test-tmp/
