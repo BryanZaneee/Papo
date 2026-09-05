@@ -1,0 +1,23 @@
+[Unit]
+Description=AYOPAPO EPK Admin API
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+WorkingDirectory=/var/www/papo/api
+ExecStart=/usr/bin/node server.js
+Restart=on-failure
+RestartSec=5
+Environment=NODE_ENV=production
+Environment=PORT=3006
+
+# sharp decodes untrusted uploads — keep a bug there inside content/.
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+ReadWritePaths=/var/www/papo/content
+
+[Install]
+WantedBy=multi-user.target

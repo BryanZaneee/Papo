@@ -1,0 +1,16 @@
+/* Tokens the bzs-edit admin kit expects — the site's own palette. */
+:root {
+  --bg: #0b0a05;
+  --surface: #100d07;
+  --surface-hover: #1a150c;
+  --border: rgba(244, 235, 214, 0.09);
+  --border-light: rgba(244, 235, 214, 0.18);
+  --gold: #ea5b1a;
+  --gold-dim: #8a3a14;
+  --white: #f4ebd6;
+  --cream: rgba(244, 235, 214, 0.75);
+  --muted: rgba(244, 235, 214, 0.45);
+  --display: "Bricolage Grotesque", sans-serif;
+  --body: "Archivo", system-ui, sans-serif;
+  --mono: "Space Mono", monospace;
+}

@@ -1,15 +1,18 @@
 // IntersectionObserver adds .visible to .reveal elements on scroll.
+// Re-run on content:rendered — content.js adds .reveal elements after load.
 (function () {
-    var revealEls = document.querySelectorAll('.reveal');
+    var observer = 'IntersectionObserver' in window && new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+            if (entry.isIntersecting) entry.target.classList.add('visible');
+        });
+    }, { threshold: 0.15 });
 
-    if ('IntersectionObserver' in window) {
-        var observer = new IntersectionObserver(function (entries) {
-            entries.forEach(function (entry) {
-                if (entry.isIntersecting) entry.target.classList.add('visible');
-            });
-        }, { threshold: 0.15 });
-        revealEls.forEach(function (el) { observer.observe(el); });
-    } else {
-        revealEls.forEach(function (el) { el.classList.add('visible'); });
+    function observeAll() {
+        document.querySelectorAll('.reveal:not(.visible)').forEach(function (el) {
+            if (observer) observer.observe(el);
+            else el.classList.add('visible');
+        });
     }
+    observeAll();
+    document.addEventListener('content:rendered', observeAll);
 })();

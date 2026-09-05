@@ -1,7 +1,6 @@
 // One shared <audio>, per-row play buttons, fixed now-playing bar with seek.
 (function () {
     var audio = document.getElementById('sharedAudio');
-    var rows = Array.prototype.slice.call(document.querySelectorAll('.track-item[data-src]'));
     var bar = document.getElementById('nowPlaying');
     var npToggle = document.getElementById('npToggle');
     var npTitle = document.getElementById('npTitle');
@@ -46,8 +45,10 @@
         audio.play();
     }
 
-    rows.forEach(function (row) {
-        row.addEventListener('click', function () { play(row); });
+    // Delegated: the track list is rendered from site.json after load.
+    document.addEventListener('click', function (e) {
+        var row = e.target.closest('.track-item[data-src]');
+        if (row) play(row);
     });
 
     npToggle.addEventListener('click', function () {
