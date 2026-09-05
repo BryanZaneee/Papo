@@ -1,6 +1,5 @@
 import type { GalleryPhoto, PosterCard, SiteContent, Social, Track } from "./types";
-import { FileField, ImageField, ListEditor, StringList, TextInput, thumbUrl } from "./fields";
-import { rowScroller } from "./preview";
+import { FileField, ImageField, ListEditor, StringList, TextInput, rowScroller, thumbUrl } from "bzs-edit/admin";
 
 type Editor<K extends keyof SiteContent> = { value: SiteContent[K]; onChange: (next: SiteContent[K]) => void };
 

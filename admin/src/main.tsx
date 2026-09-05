@@ -1,7 +1,8 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
+import "bzs-edit/admin/admin.css";
+import "./papo.css";
 import { AdminApp } from "./App";
-import "./admin.css";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

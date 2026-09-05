@@ -3,7 +3,7 @@
 # Usage: ./deploy/deploy.sh root@100.88.216.70
 #
 # The admin password ships as a bcrypt hash inside api/config.json (gitignored).
-# Create/rotate it locally with: cd api && node setup.js '<password>'
+# Create/rotate it locally with: cd api && npm run setup -- '<password>'
 
 set -euo pipefail
 
@@ -12,7 +12,7 @@ SITE_DIR="/var/www/papo-static"   # Caddy web root: index.html, src/, Assets/, a
 APP_DIR="/var/www/papo"           # api/ + content/ — outside the web root
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 
-[ -f "$ROOT/api/config.json" ] || { echo "api/config.json missing — run: cd api && node setup.js '<password>'"; exit 1; }
+[ -f "$ROOT/api/config.json" ] || { echo "api/config.json missing — run: cd api && npm run setup -- '<password>'"; exit 1; }
 
 echo "=== Deploying AYOPAPO to ${VPS} ==="
 
@@ -28,7 +28,7 @@ rsync -az --delete --exclude '*.wav' --exclude '*.WAV' --exclude '*.psd' --exclu
 # No --delete: Cloudflare may serve a cached /admin/index.html for a while
 # after a deploy, and it must still find the hashed bundle it references.
 rsync -az "$ROOT/dist/admin/" "${VPS}:${SITE_DIR}/admin/"
-rsync -az "$ROOT/api/server.js" "$ROOT/api/setup.js" "$ROOT/api/package.json" "$ROOT/api/config.json" "${VPS}:${APP_DIR}/api/"
+rsync -az "$ROOT/api/server.js" "$ROOT/api/package.json" "$ROOT/api/package-lock.json" "$ROOT/api/config.json" "${VPS}:${APP_DIR}/api/"
 
 # Content is SEED ONLY — never overwrite. The client edits this live through the
 # admin; an unconditional copy would destroy everything he has published since

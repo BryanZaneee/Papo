@@ -6,6 +6,8 @@ import react from "@vitejs/plugin-react";
 // preview can iframe `/?preview=1` on the same origin in dev.
 export default defineConfig({
   plugins: [react()],
+  // bzs-edit ships TypeScript source — let this project's toolchain compile it.
+  optimizeDeps: { exclude: ["bzs-edit"] },
   build: {
     rolldownOptions: { input: "admin/index.html" },
     assetsDir: "admin/assets", // everything lands under dist/admin/

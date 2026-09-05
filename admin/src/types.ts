@@ -1,10 +1,7 @@
 /** Shape of content/site.json — the single source of truth the public site renders from (src/content.js). */
 
-/** Responsive image. `sources` are srcset strings (empty for seed images that were never uploaded). */
-export type Picture = {
-  sources: { avif?: string; webp?: string; jpeg?: string };
-  img: { src: string; w: number; h: number };
-};
+export type { Picture } from "bzs-edit/admin";
+import type { Picture } from "bzs-edit/admin";
 
 export type Social = { label: string; href: string };
 export type Track = { title: string; feat: string; badge: string; audio: string };

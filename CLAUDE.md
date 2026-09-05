@@ -10,12 +10,11 @@ Electronic Press Kit (EPK) website for **PAPO** ("Ayo Papo" / "Papocito"), a rap
 
 ```bash
 npm install && (cd api && npm install)   # root = admin editor; api/ = Express server
-cd api && node setup.js '<password>'     # writes api/config.json (bcrypt hash + JWT secret). Gitignored. Re-run to rotate.
+cd api && npm run setup -- '<password>'  # writes api/config.json (bcrypt hash + JWT secret). Gitignored. Re-run to rotate.
 npm run dev:api    # Express API on http://127.0.0.1:3006 (node --watch)
 npm run dev        # Vite at http://localhost:5174/ — public site at /, editor at /admin/, proxies /api → 3006
 npm run build      # typecheck + build the editor to dist/admin/ (the public site is not built)
 npm run typecheck  # tsc --noEmit
-npm test           # API smoke test (node --test, spins up a throwaway server on :3199)
 ./deploy/deploy.sh root@100.88.216.70   # build + rsync to the VPS (see Deployment)
 ```
 
@@ -44,7 +43,7 @@ Built for a non-technical user on a phone. **There is no link to it anywhere on 
 - `api.ts` — `login`, `verify`, `getSite`, `putSite`, `uploadImage` (→ `Picture`), `uploadFile` (→ URL). Bearer JWT in `localStorage.admin_token`; a 401 dispatches `admin:signed-out`.
 - `App.tsx` — SignIn → Home (one card per page section, `SCREENS`) → section screen. Draft `SiteContent` lives in memory; `dirty = JSON.stringify(site) !== original` shows the **Publish to site / Undo all** bar. Publish = one `PUT`.
 - **Live preview**: `App.tsx` embeds `<iframe src="/?preview=1">` and posts `{type:'content', content}` (debounced 150 ms) on every edit. `preview.ts` posts `{type:'scrollTo', target}` when the screen changes (`SCREENS[].anchor`, a selector for the section's *content*) and when a list row is opened (`ListEditor` `onOpen` → `rowScroller('.track-list .track-item')` etc.), so the preview shows the exact row being edited. Desktop = editor left / preview right; ≤900px = **Edit | Preview** toggle.
-- `fields.tsx` — `TextInput`, `ImageField` (photo → sharp pipeline), `FileField` (`kind` video/image/audio → raw URL), `ListEditor<T>` (collapsed rows, tap to open, ▲▼ reorder, two-tap inline delete, "+ Add"), `StringList`.
+- Field primitives, the API client, preview scroll helpers and the editor shell (`AdminShell`: sign-in, section cards, publish bar, mobile toggle, preview iframe) come from `bzs-edit/admin`; `App.tsx` only lists the screens and `sections.tsx` the per-section forms.
 - `sections.tsx` — one editor per screen: hero, socials (shared by hero + footer), bio, release + tracks, events (poster wall: image or video card), sets (YouTube links), gallery, booking.
 - `admin.css` — layout plus its own tokens/reset; the public `styles.css` is not loaded in the editor.
 
@@ -52,7 +51,7 @@ Plain-language rule: labels say "Photo", "Tagline", "Card label" — never `slug
 
 ## API (`api/server.js`, port 3006, loopback only)
 
-Same code as `../jordie/api/server.js` with a different `validateSite()`. Same-origin through Caddy/Vite, so no CORS.
+`api/server.js` is three lines: it starts the shared [bzs-edit](https://github.com/BryanZaneee/bzs-edit) server with the `papo` site module (`bzs-edit/sites/papo.js` — port, `validateSite()`, allowed raw mimes incl. audio). Tests are `bzs-edit/tests/papo.test.js`. Same-origin through Caddy/Vite, so no CORS.
 
 | Route | Auth | Notes |
 |---|---|---|
@@ -62,7 +61,7 @@ Same code as `../jordie/api/server.js` with a different `validateSite()`. Same-o
 | `PUT /api/content/site.json` | Bearer | `validateSite()` (shape; portrait + cover present; every gallery photo has an image, every poster an image or video, every track an audio file; social hrefs `https:`/`mailto:`; sets are YouTube links; no string > 1000 chars) → `backupFile()` (keeps `maxBackups` in `content/.backups/`) → `writeAtomic()` |
 | `POST /api/upload` | Bearer | multipart `file` + `kind`. `kind=image` (jpg/png/webp) → sharp → widths `[320,640,1200,2000]` capped at the source × `{avif,webp,jpeg}` → `{picture}`. `kind=file` (mp4 / jpg / png / m4a / mp3 / svg) → bytes sniffed against the claimed type, jpg/png shrunk to ≤2000px, raw write → `{url}`. 100 MB cap. |
 
-Upload filenames are server-generated (`slugify()` + a fixed extension map). Config (`api/config.json`, gitignored; template in `config.example.json`). Rotating the password with `setup.js` also rotates the JWT secret, which signs everyone out. Per-field character limits are `max=` props in `sections.tsx`; `MAX_STRING` in the API is the backstop.
+Upload filenames are server-generated (`slugify()` + a fixed extension map). Config (`api/config.json`, gitignored; template in `config.example.json`). Rotating the password with `npm run setup` also rotates the JWT secret, which signs everyone out. Per-field character limits are `max=` props in `sections.tsx`; `MAX_STRING` in the API is the backstop.
 
 Deliberate omissions (`ponytail:` comments): no `DELETE` for uploads (orphans accumulate), no ffmpeg/audio transcode (he uploads a web-ready m4a/mp3 — see Assets for the recipe), no drag-and-drop reorder (▲▼ buttons).
 
