@@ -9,6 +9,6 @@
     "setup": "bzs-edit-setup"
   },
   "dependencies": {
-    "bzs-edit": "github:BryanZaneee/bzs-edit#main"
+    "bzs-edit": "github:BryanZaneee/bzs-edit#v0.1.0"
   }
 }
