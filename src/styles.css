@@ -1014,15 +1014,17 @@ body.game-active {
 }
 
 .footer-line {
-    margin-top: 36px;
+    margin-top: 64px;
+    padding-top: 22px;
+    border-top: 1px solid rgba(244, 235, 214, 0.12);
     font-family: 'Space Mono', monospace;
     font-size: 11px;
     letter-spacing: 0.16em;
     color: rgba(244, 235, 214, 0.5);
     text-transform: uppercase;
     display: flex;
-    gap: 20px;
-    justify-content: center;
+    gap: 12px 20px;
+    justify-content: space-between;
     flex-wrap: wrap;
     padding-bottom: 70px;
 }
