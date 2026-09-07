@@ -11,7 +11,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Archivo:wght@400;500;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="src/styles.css?v=47">
+    <link rel="stylesheet" href="src/styles.css?v=48">
     <!-- Preload the fixed backdrop while the game runs (photos are picked from site.json by runner-game.js) -->
     <link rel="preload" as="image" href="Assets/flavor/treebackground.webp">
 </head>
@@ -19,12 +19,44 @@
 <body class="game-active">
 
     <!-- ═══ RUNNER GAME OVERLAY ═══ -->
-    <div id="gameOverlay" class="game-overlay">
+    <div id="gameOverlay" class="game-overlay" data-state="title">
         <canvas id="gameCanvas"></canvas>
-        <div id="gameFinishActions" class="game-finish-actions">
-            <button id="gameEnter" class="game-btn game-btn-primary">ENTER EPK →</button>
-            <button id="gameKeepRunning" class="game-btn">KEEP RUNNING</button>
+
+        <div class="game-ui game-title">
+            <h1 class="game-name">AYOPAPO</h1>
+            <p class="game-copy">Collect oranges and avoid obstacles to check out Papo's EPK.</p>
+            <p class="game-copy game-copy-dim" id="gameControls">Swipe / arrow keys to switch lanes. Space to jump over obstacles.</p>
+            <button id="gameStart" class="game-btn game-btn-primary game-btn-start">SPACE TO START</button>
+            <button id="gameSkipInline" class="game-link">…or press here to skip if you can't make it.</button>
         </div>
+
+        <div class="game-hud">
+            <div class="game-progress">
+                <span id="gameProgressLabel">0% to finish</span>
+                <div class="game-progress-track"><div id="gameProgress" class="game-progress-fill"></div></div>
+            </div>
+            <div class="game-oranges">🍊 <span id="gameScore">0</span></div>
+            <p id="gameHint" class="game-hint"></p>
+        </div>
+
+        <div class="game-ui game-crashed">
+            <h2 class="game-heading game-heading-bad">CRASHED</h2>
+            <p class="game-copy game-copy-dim" id="gameCrashStat"></p>
+            <div class="game-actions">
+                <button id="gameRetry" class="game-btn game-btn-primary">RETRY</button>
+                <button id="gameCrashEnter" class="game-btn">ENTER EPK →</button>
+            </div>
+        </div>
+
+        <div class="game-ui game-finished">
+            <h2 class="game-heading">YOU MADE IT</h2>
+            <p class="game-copy game-copy-dim" id="gameFinishStat"></p>
+            <div class="game-actions">
+                <button id="gameEnter" class="game-btn game-btn-primary">ENTER EPK →</button>
+                <button id="gameKeepRunning" class="game-btn">KEEP RUNNING</button>
+            </div>
+        </div>
+
         <button id="gameSkip" class="game-skip">SKIP →</button>
     </div>
 
@@ -169,7 +201,7 @@
     </div>
 
     <!-- ═══ SCRIPTS ═══ -->
-    <script src="src/runner-game.js?v=20"></script>
+    <script src="src/runner-game.js?v=21"></script>
     <script src="src/content.js?v=3" defer></script>
     <script src="src/scroll-reveal.js?v=8" defer></script>
     <script src="src/audio-player.js?v=7" defer></script>
