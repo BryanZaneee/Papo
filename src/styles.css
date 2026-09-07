@@ -1033,6 +1033,10 @@ body.game-active {
     padding-bottom: 1px;
 }
 
+.footer-line .heart {
+    color: var(--accent);
+}
+
 /* ═══════════════════════════════════════════
    NOW PLAYING BAR
    ═══════════════════════════════════════════ */
